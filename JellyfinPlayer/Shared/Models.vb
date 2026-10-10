@@ -23,6 +23,12 @@ Namespace Global.JellyfinPlayer.Shared
     End Class
 
     <DataContract>
+    Public Class AuthenticateRequestDto
+        <DataMember> Public Property Username As String
+        <DataMember> Public Property Pw As String
+    End Class
+
+    <DataContract>
     Public Class AuthenticateResultDto
         <DataMember> Public Property User As UserDto
         <DataMember> Public Property AccessToken As String
