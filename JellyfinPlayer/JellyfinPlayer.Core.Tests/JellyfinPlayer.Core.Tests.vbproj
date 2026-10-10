@@ -43,6 +43,11 @@
     <Compile Include="*.vb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="test.settings.local" Condition="Exists('test.settings.local')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
