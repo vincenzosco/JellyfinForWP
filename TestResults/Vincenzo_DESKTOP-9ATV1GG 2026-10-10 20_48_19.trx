@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="f8fadd17-da04-4b7b-b763-ef8db354fa2e" name="Vincenzo@DESKTOP-9ATV1GG 2026-10-10 20:48:19" runUser="DESKTOP-9ATV1GG\Vincenzo" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Default Test Settings" id="d14e4cfb-2899-4913-b8fe-4cf0e8da6fa5">
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+    <Deployment runDeploymentRoot="Vincenzo_DESKTOP-9ATV1GG 2026-10-10 20_48_19" />
+    <Properties />
+  </TestSettings>
+  <Times creation="2026-10-10T20:48:19.8153993+02:00" queuing="2026-10-10T20:48:20.5033848+02:00" start="2026-10-10T20:48:20.5919495+02:00" finish="2026-10-10T20:48:21.2624496+02:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Authenticate_sends_password_for_old_and_new_servers" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="0adf70c5-7904-345b-36df-b67c936b312c">
+      <Execution id="9a615355-831e-41cf-a534-b20d4dbe02d5" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.AuthTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Authenticate_sends_password_for_old_and_new_servers" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="0adf70c5-7904-345b-36df-b67c936b312c" executionId="9a615355-831e-41cf-a534-b20d4dbe02d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="9a615355-831e-41cf-a534-b20d4dbe02d5" testId="0adf70c5-7904-345b-36df-b67c936b312c" testName="Authenticate_sends_password_for_old_and_new_servers" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0908877" startTime="2026-10-10T20:48:20.6484579+02:00" endTime="2026-10-10T20:48:21.1969968+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a615355-831e-41cf-a534-b20d4dbe02d5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsTrue failed. {"Pw":"pw","Username":"bob"}</Message>
+          <StackTrace>   in JellyfinPlayer.Core.Tests.AuthTests.Authenticate_sends_password_for_old_and_new_servers() in C:\Users\Vincenzo\Documents\JellyfinForWP81\JellyfinPlayer\JellyfinPlayer.Core.Tests\AuthTests.vb:riga 34
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>
