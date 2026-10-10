@@ -19,3 +19,6 @@ TestResults/
 # Build and tool byproducts
 JellyfinPlayer/JellyfinPlayer/BundleArtifacts/
 __pycache__/
+
+# bug-hunter pipeline artifacts
+.bug-hunter/
