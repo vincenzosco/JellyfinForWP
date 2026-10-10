@@ -29,4 +29,19 @@ Public Class TicksTests
     Public Sub FormatDuration_uses_same_rules()
         Assert.AreEqual("2:05", Ticks.FormatDuration(1250000000L))
     End Sub
+
+    <TestMethod>
+    Public Sub FormatSpan_minutes_seconds()
+        Assert.AreEqual("2:05", Ticks.FormatSpan(TimeSpan.FromSeconds(125)))
+    End Sub
+
+    <TestMethod>
+    Public Sub FormatSpan_hours_minutes_seconds()
+        Assert.AreEqual("1:00:03", Ticks.FormatSpan(TimeSpan.FromSeconds(3603)))
+    End Sub
+
+    <TestMethod>
+    Public Sub FormatSpan_negative_is_zero()
+        Assert.AreEqual("0:00", Ticks.FormatSpan(TimeSpan.FromSeconds(-5)))
+    End Sub
 End Class
