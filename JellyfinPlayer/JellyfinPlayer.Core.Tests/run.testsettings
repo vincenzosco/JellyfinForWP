@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSettings
+  name="JellyfinPlayerTests"
+  id="6f1d2c3a-0000-4000-8000-000000000002"
+  xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Description>Runs tests in place (deployment disabled) so test.settings.local is read from bin\Debug.</Description>
+  <Deployment enabled="false" />
+  <Execution>
+    <TestTypeSpecific />
+  </Execution>
+</TestSettings>
