@@ -42,4 +42,13 @@ Public Class PlaybackApiTests
         MakeClient(fake).ReportPlaybackProgressAsync(New PlaybackProgressDto With {.ItemId = "i1", .PositionTicks = 30000000L}).Wait()
         Assert.IsTrue(fake.LastJson.Contains("""PositionTicks"":30000000"), fake.LastJson)
     End Sub
+
+    <TestMethod>
+    Public Sub GetPlaybackInfo_carries_the_requested_bitrate()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""MediaSources"":[],""PlaySessionId"":""ps1""}"
+        MakeClient(fake).GetPlaybackInfoAsync("u1", "i1", 0L, 2000000).Wait()
+        Assert.IsTrue(fake.LastJson.Contains("""MaxStreamingBitrate"":2000000"), fake.LastJson)
+        Assert.IsFalse(fake.LastJson.Contains("""MaxStreamingBitrate"":8000000"), fake.LastJson)
+    End Sub
 End Class

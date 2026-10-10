@@ -7,9 +7,9 @@ Namespace Global.JellyfinPlayer.Shared
         ' Direct play for MP4/MKV H.264+AAC/MP3, with a progressive HTTP MP4
         ' h264+aac transcode fallback. WP8.1 has no AdaptiveMediaSource (no HLS),
         ' but MediaElement plays progressive MP4 natively.
-        Public Function DefaultProfile() As DeviceProfileDto
+        Public Function DefaultProfile(Optional maxBitrate As Integer = DefaultBitrate) As DeviceProfileDto
             Dim dp As New DeviceProfileDto()
-            dp.MaxStreamingBitrate = DefaultBitrate
+            dp.MaxStreamingBitrate = maxBitrate
             dp.TranscodingProfiles = New List(Of TranscodingProfileDto) From {
                 New TranscodingProfileDto With {.Container = "mp4", .Type = "Video", .VideoCodec = "h264",
                                                  .AudioCodec = "aac", .Protocol = "http", .Context = "Streaming",
@@ -25,13 +25,13 @@ Namespace Global.JellyfinPlayer.Shared
             Return dp
         End Function
 
-        Public Function ToRequest(userId As String, startTicks As Long) As PlaybackInfoRequestDto
+        Public Function ToRequest(userId As String, startTicks As Long, Optional maxBitrate As Integer = DefaultBitrate) As PlaybackInfoRequestDto
             Return New PlaybackInfoRequestDto With {
                 .UserId = userId,
-                .MaxStreamingBitrate = DefaultBitrate,
+                .MaxStreamingBitrate = maxBitrate,
                 .StartTimeTicks = startTicks,
                 .AutoOpenLiveStream = True,
-                .DeviceProfile = DefaultProfile()
+                .DeviceProfile = DefaultProfile(maxBitrate)
             }
         End Function
     End Module

@@ -124,8 +124,8 @@ Namespace Global.JellyfinPlayer.Shared
 
         ' ---- playback / user data ------------------------------------------
 
-        Public Async Function GetPlaybackInfoAsync(userId As String, itemId As String, startTicks As Long) As Task(Of PlaybackInfoResponseDto)
-            Dim req = DeviceProfileBuilder.ToRequest(userId, startTicks)
+        Public Async Function GetPlaybackInfoAsync(userId As String, itemId As String, startTicks As Long, Optional maxBitrate As Integer = DeviceProfileBuilder.DefaultBitrate) As Task(Of PlaybackInfoResponseDto)
+            Dim req = DeviceProfileBuilder.ToRequest(userId, startTicks, maxBitrate)
             Dim body As String = Await _transport.PostJsonAsync(_urls.PlaybackInfo(itemId, userId), Json.Serialize(req), TokenHeaders())
             Return ResponseFailures.Parse(Of PlaybackInfoResponseDto)(body)
         End Function
