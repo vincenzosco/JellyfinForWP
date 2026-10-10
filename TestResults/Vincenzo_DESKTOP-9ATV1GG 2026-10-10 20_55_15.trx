@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="7f915ad4-b98f-4462-8b85-4d663544184e" name="Vincenzo@DESKTOP-9ATV1GG 2026-10-10 20:55:15" runUser="DESKTOP-9ATV1GG\Vincenzo" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="JellyfinPlayerTests" id="6f1d2c3a-0000-4000-8000-000000000002">
+    <Description>Runs tests in place (deployment disabled) so test.settings.local is read from bin\Debug.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Vincenzo_DESKTOP-9ATV1GG 2026-10-10 20_55_15" />
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+    <Properties />
+  </TestSettings>
+  <Times creation="2026-10-10T20:55:15.3009088+02:00" queuing="2026-10-10T20:55:15.8667630+02:00" start="2026-10-10T20:55:15.9296873+02:00" finish="2026-10-10T20:55:16.6857330+02:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Playback_info_returns_a_playable_source_for_the_first_video" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="24e95996-a5a2-4185-d14b-1df3dac26757">
+      <TestCategory>
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="70f5227e-9042-49c3-945a-e18aa2798bb5" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.LocalServerIntegrationTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Playback_info_returns_a_playable_source_for_the_first_video" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="24e95996-a5a2-4185-d14b-1df3dac26757" executionId="70f5227e-9042-49c3-945a-e18aa2798bb5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="70f5227e-9042-49c3-945a-e18aa2798bb5" testId="24e95996-a5a2-4185-d14b-1df3dac26757" testName="Playback_info_returns_a_playable_source_for_the_first_video" computerName="DESKTOP-9ATV1GG" duration="00:00:00.4235984" startTime="2026-10-10T20:55:15.9646715+02:00" endTime="2026-10-10T20:55:16.6198011+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="70f5227e-9042-49c3-945a-e18aa2798bb5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsTrue failed. expected a direct or transcoding URL</Message>
+          <StackTrace>   in JellyfinPlayer.Core.Tests.LocalServerIntegrationTests.Playback_info_returns_a_playable_source_for_the_first_video() in C:\Users\Vincenzo\Documents\JellyfinForWP81\JellyfinPlayer\JellyfinPlayer.Core.Tests\LocalServerIntegrationTests.vb:riga 138
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>
