@@ -95,7 +95,10 @@ Public Class LocalizationTests
 
     <TestMethod>
     Public Sub Manifest_declares_english_and_italian()
-        Dim text As String = System.IO.File.ReadAllText(System.IO.Path.Combine(BaseDir, "Manifest", "Package.appxmanifest"))
+        ' The check is about which languages are declared, not about how the XML is
+        ' written: Visual Studio reflows this file (spaces before '/>', one attribute
+        ' per line) whenever the manifest designer saves it, and that must not fail.
+        Dim text As String = System.IO.File.ReadAllText(System.IO.Path.Combine(BaseDir, "Manifest", "Package.appxmanifest")).Replace(" />", "/>")
         Assert.IsTrue(text.Contains("<Resource Language=""en-US""/>"), text)
         Assert.IsTrue(text.Contains("<Resource Language=""it-IT""/>"), text)
         Assert.IsFalse(text.Contains("x-generate"), "declare the supported languages explicitly")
