@@ -90,6 +90,9 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\*.vb">
+      <Link>Shared\%(Filename)%(Extension)</Link>
+    </Compile>
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
