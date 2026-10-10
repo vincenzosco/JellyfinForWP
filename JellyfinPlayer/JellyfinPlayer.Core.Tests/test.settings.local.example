@@ -1,0 +1,6 @@
+# Copy to test.settings.local (git-ignored) and fill in the password.
+# Environment variables JELLYFIN_TEST_URL / JELLYFIN_TEST_USER / JELLYFIN_TEST_PASSWORD
+# take precedence when set.
+url=http://192.168.0.108:8096
+user=vincenzo
+password=CHANGEME
