@@ -43,11 +43,22 @@ Public NotInheritable Class MainPage
                 Return
             End If
 
-            ServerBox.Text = found(0).Address
+            ' 7359 answers with anything that cares to reply, so the address is only
+            ' filled in once it has answered as a Jellyfin server.
+            Dim session = AppSession.Current
+            Dim server = Await ServerProbe.FindFirstJellyfinAsync(
+                found, Function(baseUrl) New JellyfinApiClient(New HttpTransport(), New JellyfinUrls(baseUrl), session.DeviceId))
+
+            If server Is Nothing Then
+                DiscoveryStatus.Text = Localized.Text("DiscoveryRejected")
+                Return
+            End If
+
+            ServerBox.Text = server.Address
             If found.Count = 1 Then
-                DiscoveryStatus.Text = Localized.Format("DiscoveryFound", found(0).Name)
+                DiscoveryStatus.Text = Localized.Format("DiscoveryFound", server.Name)
             Else
-                DiscoveryStatus.Text = Localized.Format("DiscoveryFoundMany", found.Count, found(0).Name)
+                DiscoveryStatus.Text = Localized.Format("DiscoveryFoundMany", found.Count, server.Name)
             End If
         Catch ex As Exception
             DiscoveryStatus.Text = Localized.Format("DiscoveryFailed", ex.Message)
