@@ -5,7 +5,7 @@ VS2013 / MSBuild 12.
 
 ## Features
 
-- Connect to a Jellyfin server by URL and sign in (`POST /Users/AuthenticateByName`).
+- **Auto-detect the server on launch** (UDP probe on port 7359), falling back to manual URL entry; then sign in (`POST /Users/AuthenticateByName`).
 - Home: Continue watching (`/Items/Resume`), Next up (`/Shows/NextUp`), and the library list (`/Users/{id}/Views`).
 - Library grid with `StartIndex`/`Limit` paging.
 - Series page with season picker and episode list.
@@ -26,3 +26,8 @@ JellyfinPlayer/
   JellyfinPlayer.Core.Tests/  desktop MSTest suite over Shared/
 tools/generate_assets.py  regenerates the .scale-240 assets from a source logo
 ```
+
+## Tests
+
+- Unit tests over `Shared/` (no server) and integration tests against a real
+  server. See [`../agents/TESTING.md`](../agents/TESTING.md).
