@@ -9,6 +9,14 @@ Namespace Global.JellyfinPlayer.Shared
         <DataMember> Public Property Id As String
     End Class
 
+    ' Reply from a Jellyfin server to the UDP discovery probe on port 7359.
+    <DataContract>
+    Public Class DiscoveredServerDto
+        <DataMember> Public Property Address As String
+        <DataMember> Public Property Id As String
+        <DataMember> Public Property Name As String
+    End Class
+
     <DataContract>
     Public Class PublicUserDto
         <DataMember> Public Property Id As String
