@@ -328,7 +328,8 @@ git commit -m "feat: add the player system-chrome state machine"
 
 **Interfaces:**
 - Consumes: nothing new (this task only reshapes the screen and keeps the existing functions).
-- Produces: the element names Task 4 wires — `RootGrid`, `MediaEl`, `OverlayRoot`, `TopBar`, `CloseButton`, `TitleText`, `CenterCluster`, `PlayPauseButton`, `PlayIcon`, `PauseIcon`, `BottomBar`, `PositionText`, `SeekSlider`, `DurationText`, `ErrorText`, `DirectButton`, plus the geometry resources `IconPlay`, `IconPause`, `IconChevronBack`, `IconSpeaker`, `IconFit`, `IconFill`, `IconEnterFullScreen`, `IconExitFullScreen`, `IconSkipBack`, `IconSkipForward`.
+- Produces: the element names Task 4 wires — `RootGrid`, `MediaEl`, `OverlayRoot`, `TopBar`, `CloseButton`, `TitleText`, `CenterCluster`, `PlayPauseButton`, `PlayIcon`, `PauseIcon`, `BottomBar`, `PositionText`, `SeekSlider`, `DurationText`, `Busy`, `ErrorText`, `DirectButton`, plus the geometry resources `IconPlay`, `IconPause`, `IconChevronBack`.
+- Note: the geometries the new buttons use (`IconSpeaker`, `IconFit`, `IconFill`, `IconEnterFullScreen`, `IconExitFullScreen`, `IconSkipBack`, `IconSkipForward`) are declared in Task 4 together with those buttons, so no commit carries an unused resource. The play/pause `ProgressRing` keeps its old name `Busy` in this task; Task 4 renames it `BufferingRing` when it adds `BufferingText`.
 
 - [ ] **Step 1: Rewrite `PlayerPage.xaml`**
 
@@ -404,9 +405,9 @@ Layout values to use: top bar 52 px, bottom bar padding `16,8,16,12`, icon butto
 
 The other icon buttons get their names in Task 4, together with their behaviour. Keep `Stop_Click`, `PlayPause_Click`, `Direct_Click`, `Seek_Changed`, `Media_Opened`, `Media_Ended`, `Media_Failed` and the progress-reporting helpers as they are.
 
-- [ ] **Step 3: Drop the two resource keys the icons replaced**
+- [ ] **Step 3: Move the resource keys the icons replaced**
 
-Remove `PlayPauseButton.Content` and `StopButton.Content` from **both** `Strings/en-US/Resources.resw` and `Strings/it-IT/Resources.resw` (the elements no longer carry `x:Uid`, and `PlayAction`/`PauseAction` remain used from code for the accessible names). `DirectButton.Content` stays — that button keeps visible text.
+Remove `PlayPauseButton.Content` and `StopButton.Content` from **both** `Strings/en-US/Resources.resw` and `Strings/it-IT/Resources.resw` (the elements no longer carry `x:Uid`, and `PlayAction`/`PauseAction` remain used from code for the accessible names). `DirectButton.Content` stays — that button keeps visible text. Add `ActionClose` (`Close the player` / `Chiudi il lettore`) to both files in this step, next to `PauseAction`: this is the task whose code first calls `Localized.Text("ActionClose")`, and `Every_key_used_from_code_exists` fails on a key that only exists in the plan.
 
 - [ ] **Step 4: Run the localisation suite and the app build**
 
@@ -439,7 +440,6 @@ git commit -m "feat: restyle the playback screen with icon controls"
 
 | Key | English | Italiano |
 | --- | --- | --- |
-| `ActionClose` | Close the player | Chiudi il lettore |
 | `ActionFullScreen` | Full screen | Schermo intero |
 | `ActionExitFullScreen` | Exit full screen | Esci da schermo intero |
 | `ActionMute` | Mute the sound | Disattiva l'audio |

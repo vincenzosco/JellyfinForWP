@@ -27,6 +27,7 @@ Public NotInheritable Class PlayerPage
         If _item Is Nothing Then Return
         TitleText.Text = _item.Name
         _client = AppSession.Current.CreateClient()
+        Windows.UI.Xaml.Automation.AutomationProperties.SetName(CloseButton, Localized.Text("ActionClose"))
 
         Dim startTicks As Long = 0
         If _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue Then
@@ -64,28 +65,40 @@ Public NotInheritable Class PlayerPage
     Private Sub Media_Opened(sender As Object, e As RoutedEventArgs)
         If _plan IsNot Nothing Then MediaEl.Position = _plan.StartPosition
         SeekSlider.Maximum = Math.Max(1, MediaEl.NaturalDuration.TimeSpan.TotalSeconds)
+        ShowPlayingState()
     End Sub
 
     Private Async Sub Media_Failed(sender As Object, e As ExceptionRoutedEventArgs)
         ErrorText.Text = Localized.Format("PlaybackFailed", If(e.ErrorMessage, Localized.Text("UnknownError")))
         DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
+        ShowPlayingState()
         Await SafeReportStoppedAsync()
     End Sub
 
     Private Async Sub Media_Ended(sender As Object, e As RoutedEventArgs)
         SeekSlider.Value = SeekSlider.Maximum
+        ShowPlayingState()
         Await ReportProgressAsync()
         Await SafeReportStoppedAsync()
+    End Sub
+
+    ' The button carries an icon instead of a word, so the state shows twice:
+    ' which of the two Paths is visible, and the accessible name a screen reader
+    ' announces.
+    Private Sub ShowPlayingState()
+        Dim playing = MediaEl.CurrentState = MediaElementState.Playing
+        PlayIcon.Visibility = If(playing, Visibility.Collapsed, Visibility.Visible)
+        PauseIcon.Visibility = If(playing, Visibility.Visible, Visibility.Collapsed)
+        Windows.UI.Xaml.Automation.AutomationProperties.SetName(PlayPauseButton, Localized.Text(If(playing, "PauseAction", "PlayAction")))
     End Sub
 
     Private Sub PlayPause_Click(sender As Object, e As RoutedEventArgs)
         If MediaEl.CurrentState = MediaElementState.Playing Then
             MediaEl.Pause()
-            PlayPauseButton.Content = Localized.Text("PlayAction")
         Else
             MediaEl.Play()
-            PlayPauseButton.Content = Localized.Text("PauseAction")
         End If
+        ShowPlayingState()
     End Sub
 
     Private Async Sub Direct_Click(sender As Object, e As RoutedEventArgs)
@@ -118,6 +131,7 @@ Public NotInheritable Class PlayerPage
         _updatingSeek = True
         SeekSlider.Value = MediaEl.Position.TotalSeconds
         _updatingSeek = False
+        ShowPlayingState()
         Await ReportProgressAsync()
     End Sub
 

@@ -7,22 +7,68 @@
     mc:Ignorable="d"
     Background="Black">
 
-    <Grid>
+    <Page.Resources>
+        <!-- 24x24 viewBox, filled shapes drawn as Path data: no icon font, so no
+             missing-glyph box can appear on a device. -->
+        <Geometry x:Key="IconPlay">M 6,4 L 20,12 L 6,20 Z</Geometry>
+        <Geometry x:Key="IconPause">M 7,4 H 10.6 V 20 H 7 Z M 13.4,4 H 17 V 20 H 13.4 Z</Geometry>
+        <Geometry x:Key="IconChevronBack">M 16,4 L 8,12 L 16,20 L 18,18 L 12,12 L 18,6 Z</Geometry>
+    </Page.Resources>
+
+    <Grid x:Name="RootGrid" Background="Black">
         <MediaElement x:Name="MediaEl" Stretch="Uniform" MediaOpened="Media_Opened" MediaEnded="Media_Ended" MediaFailed="Media_Failed"/>
 
-        <StackPanel VerticalAlignment="Top" Margin="16,10">
-            <TextBlock x:Name="TitleText" Foreground="White" FontSize="18" TextWrapping="Wrap"/>
-        </StackPanel>
+        <Grid x:Name="OverlayRoot">
+            <!-- Title row: translucent, so the video still reads through it. -->
+            <Grid x:Name="TopBar" VerticalAlignment="Top" Height="52">
+                <Rectangle Fill="#99000000"/>
+                <Button x:Name="CloseButton" Click="Stop_Click" Width="48" Height="48"
+                        HorizontalAlignment="Left" Margin="4,2,0,0" Padding="0"
+                        BorderThickness="0" Background="Transparent">
+                    <Path Data="{StaticResource IconChevronBack}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                </Button>
+                <TextBlock x:Name="TitleText" Foreground="White" FontSize="17" TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="60,0,16,0"/>
+            </Grid>
 
-        <StackPanel VerticalAlignment="Bottom" Margin="16,0,16,16">
-            <TextBlock x:Name="ErrorText" Foreground="#FF8A80" TextWrapping="Wrap" Margin="0,0,0,6"/>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="PlayPauseButton" x:Uid="PlayPauseButton" Click="PlayPause_Click"/>
-                <Button x:Name="DirectButton" x:Uid="DirectButton" Click="Direct_Click" Visibility="Collapsed" Margin="8,0,0,0"/>
-                <Button x:Name="StopButton" x:Uid="StopButton" Click="Stop_Click" Margin="8,0,0,0"/>
-                <ProgressRing x:Name="Busy" IsActive="False" Height="32" Width="32" Margin="8,0,0,0"/>
+            <!-- The one control that is always where the thumb is: play/pause. -->
+            <StackPanel x:Name="CenterCluster" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="PlayPauseButton" Width="72" Height="72" Click="PlayPause_Click"
+                        Padding="0" BorderThickness="0" Background="#66000000">
+                    <Grid>
+                        <Path x:Name="PlayIcon" Data="{StaticResource IconPlay}" Width="34" Height="34" Fill="White" Stretch="Uniform"/>
+                        <Path x:Name="PauseIcon" Data="{StaticResource IconPause}" Width="34" Height="34" Fill="White" Stretch="Uniform" Visibility="Collapsed"/>
+                    </Grid>
+                </Button>
+                <ProgressRing x:Name="Busy" IsActive="False" Width="32" Height="32" Margin="0,16,0,0"/>
             </StackPanel>
-            <Slider x:Name="SeekSlider" Minimum="0" Maximum="100" ValueChanged="Seek_Changed" Margin="0,8,0,0"/>
-        </StackPanel>
+
+            <!-- Bottom row: position, seek, duration, then the actions. -->
+            <Grid x:Name="BottomBar" VerticalAlignment="Bottom">
+                <Rectangle Fill="#99000000" RadiusX="12" RadiusY="12"/>
+                <StackPanel Margin="16,8,16,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="PositionText" Grid.Column="0" Foreground="White" FontSize="13"
+                                   VerticalAlignment="Center" MinWidth="42"/>
+                        <Slider x:Name="SeekSlider" Grid.Column="1" Minimum="0" Maximum="100"
+                                ValueChanged="Seek_Changed" Margin="8,0" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="DurationText" Grid.Column="2" Foreground="#B3FFFFFF" FontSize="13"
+                                   VerticalAlignment="Center" MinWidth="42" TextAlignment="Right"/>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <Button x:Name="DirectButton" x:Uid="DirectButton" Click="Direct_Click"
+                                Visibility="Collapsed" Padding="12,6" Margin="0,0,8,0"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="ErrorText" Foreground="#FF8A80" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>
