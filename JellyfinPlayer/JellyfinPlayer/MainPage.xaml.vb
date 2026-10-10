@@ -1,24 +1,66 @@
-﻿' The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
+Imports System
+Imports JellyfinPlayer.Shared
+Imports JellyfinPlayer.Services
+Imports Windows.UI.Xaml
+Imports Windows.UI.Xaml.Controls
+Imports Windows.UI.Xaml.Navigation
 
 ''' <summary>
-''' An empty page that can be used on its own or navigated to within a Frame.
+''' Server connect / login page.
 ''' </summary>
 Public NotInheritable Class MainPage
     Inherits Page
 
-    ''' <summary>
-    ''' Invoked when this page is about to be displayed in a Frame.
-    ''' </summary>
-    ''' <param name="e">Event data that describes how this page was reached.
-    ''' This parameter is typically used to configure the page.</param>
-    Protected Overrides Sub OnNavigatedTo(e As Navigation.NavigationEventArgs)
-        ' TODO: Prepare the page for display here.
-
-        ' TODO: If your application contains multiple pages, ensure that you are
-        ' handling the hardware Back button by registering for the
-        ' Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
-        ' If you are using the NavigationHelper provided by some templates,
-        ' this event is handled for you.
+    Public Sub New()
+        InitializeComponent()
     End Sub
 
+    Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
+        MyBase.OnNavigatedTo(e)
+        Dim session = AppSession.Current
+        ServerBox.Text = If(String.IsNullOrEmpty(session.BaseUrl), "http://", session.BaseUrl)
+    End Sub
+
+    Private Async Sub ConnectButton_Click(sender As Object, e As RoutedEventArgs)
+        Dim baseUrl = ServerBox.Text.Trim()
+        If String.IsNullOrEmpty(baseUrl) Then
+            StatusText.Text = "Enter the server address."
+            Return
+        End If
+        If Not baseUrl.StartsWith("http") Then baseUrl = "http://" & baseUrl
+
+        Busy.IsActive = True
+        ConnectButton.IsEnabled = False
+        StatusText.Text = ""
+
+        Try
+            Dim session = AppSession.Current
+            Dim urls As New JellyfinUrls(baseUrl)
+            Dim client As New JellyfinApiClient(New HttpTransport(), urls, session.DeviceId)
+
+            Dim info = Await client.GetServerInfoAsync()
+            If info Is Nothing Then Throw New JellyfinException("That address is not a Jellyfin server.", 0)
+
+            Dim result = Await client.AuthenticateAsync(UserBox.Text.Trim(), PassBox.Password)
+            If result Is Nothing OrElse String.IsNullOrEmpty(result.AccessToken) Then
+                StatusText.Text = "Wrong username or password."
+                Return
+            End If
+
+            session.BaseUrl = urls.BaseUrl
+            session.AccessToken = client.AccessToken
+            session.UserId = client.UserId
+            session.ServerId = client.ServerId
+            session.Save()
+
+            NavigationService.Navigate(GetType(HomePage), Nothing)
+        Catch ex As JellyfinException
+            StatusText.Text = If(ex.StatusCode = 401, "Wrong username or password.", ex.Message)
+        Catch ex As Exception
+            StatusText.Text = ex.Message
+        Finally
+            Busy.IsActive = False
+            ConnectButton.IsEnabled = True
+        End Try
+    End Sub
 End Class
