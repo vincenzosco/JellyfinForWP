@@ -1,0 +1,11 @@
+bin/
+obj/
+AppPackages/
+.vs/
+*.suo
+*.user
+.superpowers/
+*.appx
+*.appxupload
+*.appxsym
+JellyfinPlayer/JellyfinPlayer/AppPackages/
