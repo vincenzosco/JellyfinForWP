@@ -42,8 +42,11 @@ Public NotInheritable Class ItemDetailPage
         If _item.RunTimeTicks.HasValue Then meta &= "  " & Ticks.FormatDuration(_item.RunTimeTicks)
         MetaText.Text = meta.Trim()
 
-        If ImageHelper.HasPrimaryImage(_item) Then
+        If ImageHelper.HasBackdropImage(_item) Then
             BackdropImage.Source = New Windows.UI.Xaml.Media.Imaging.BitmapImage(ImageHelper.BackdropUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
+        ElseIf ImageHelper.HasPrimaryImage(_item) Then
+            ' No backdrop: fall back to the primary image so the banner is not empty.
+            BackdropImage.Source = New Windows.UI.Xaml.Media.Imaging.BitmapImage(ImageHelper.ImageUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
         End If
 
         Dim resuming = _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue AndAlso _item.UserData.PlaybackPositionTicks.Value > 0
