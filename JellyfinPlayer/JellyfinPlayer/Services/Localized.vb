@@ -18,23 +18,11 @@ Namespace Services
         End Function
 
         ' The user-facing sentence for a failed request, chosen from the
-        ' classification the shared layer attached to it. A 401 stays a
+        ' classification the shared layer attached to it (FailureText owns the
+        ' decision, so it is covered by the desktop tests). A 401 stays a
         ' credentials message and is handled by the caller.
         Public Function DescribeError(ex As Exception) As String
-            Dim failure = TryCast(ex, JellyfinException)
-            If failure Is Nothing Then Return Format("ErrorGeneric", ex.Message)
-            Select Case failure.Kind
-                Case JellyfinErrorKind.HttpFailure
-                    Return Format("ErrorHttp", failure.StatusCode)
-                Case JellyfinErrorKind.NonJsonResponse
-                    Return Text("ErrorNotJson")
-                Case JellyfinErrorKind.Timeout
-                    Return Text("ErrorTimeout")
-                Case JellyfinErrorKind.Unreachable
-                    Return Text("ErrorUnreachable")
-                Case Else
-                    Return Format("ErrorGeneric", failure.Message)
-            End Select
+            Return FailureText.Describe(ex, AddressOf Text)
         End Function
     End Module
 End Namespace
