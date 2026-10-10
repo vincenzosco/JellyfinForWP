@@ -22,10 +22,13 @@ Namespace Global.JellyfinPlayer.Shared
         <DataMember> Public Property Name As String
     End Class
 
+    ' Jellyfin 10.9+ reads "Pw"; 10.8 and earlier read "Password". Both are sent
+    ' so login works against either generation of server.
     <DataContract>
     Public Class AuthenticateRequestDto
         <DataMember> Public Property Username As String
         <DataMember> Public Property Pw As String
+        <DataMember> Public Property Password As String
     End Class
 
     <DataContract>

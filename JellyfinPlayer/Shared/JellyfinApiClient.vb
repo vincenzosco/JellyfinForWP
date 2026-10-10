@@ -57,7 +57,7 @@ Namespace Global.JellyfinPlayer.Shared
         End Function
 
         Public Async Function AuthenticateAsync(username As String, password As String) As Task(Of AuthenticateResultDto)
-            Dim req As New AuthenticateRequestDto With {.Username = username, .Pw = password}
+            Dim req As New AuthenticateRequestDto With {.Username = username, .Pw = password, .Password = password}
             Dim body As String = Await _transport.PostJsonAsync(_urls.AuthenticateByName(), Json.Serialize(req), AuthHeaders())
             Dim result = Json.Deserialize(Of AuthenticateResultDto)(body)
             If result IsNot Nothing Then

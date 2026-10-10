@@ -26,6 +26,15 @@ Public Class AuthTests
     End Sub
 
     <TestMethod>
+    Public Sub Authenticate_sends_password_for_old_and_new_servers()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""AccessToken"":""T""}"
+        MakeClient(fake).AuthenticateAsync("bob", "pw").Wait()
+        Assert.IsTrue(fake.LastJson.Contains("""Pw"":""pw"""), fake.LastJson)
+        Assert.IsTrue(fake.LastJson.Contains("""Password"":""pw"""), fake.LastJson)
+    End Sub
+
+    <TestMethod>
     Public Sub Authenticate_with_401_throws_401()
         Dim fake = New FakeTransport()
         fake.ErrorToThrow = New JellyfinException("nope", 401)
