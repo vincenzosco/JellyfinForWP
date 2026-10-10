@@ -36,10 +36,10 @@ Public Class UrlsTests
     End Sub
 
     <TestMethod>
-    Public Sub Device_profile_uses_hls()
+    Public Sub Device_profile_uses_progressive_mp4()
         Dim dp = DeviceProfileBuilder.DefaultProfile()
-        Assert.AreEqual("hls", dp.TranscodingProfiles(0).Protocol)
-        Assert.AreEqual("ts", dp.TranscodingProfiles(0).Container)
+        Assert.AreEqual("http", dp.TranscodingProfiles(0).Protocol)
+        Assert.AreEqual("mp4", dp.TranscodingProfiles(0).Container)
     End Sub
 
     <TestMethod>

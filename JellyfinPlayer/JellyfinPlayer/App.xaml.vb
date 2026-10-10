@@ -1,4 +1,12 @@
-﻿' The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
+' The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
+
+Imports System
+Imports JellyfinPlayer.Services
+Imports Windows.Phone.UI.Input
+Imports Windows.UI.Xaml
+Imports Windows.UI.Xaml.Controls
+Imports Windows.UI.Xaml.Media.Animation
+Imports Windows.UI.Xaml.Navigation
 
 ''' <summary>
 ''' Provides application-specific behavior to supplement the default Application class.
@@ -8,48 +16,30 @@ NotInheritable Class App
 
     Private _transitions As TransitionCollection
 
-    ''' <summary>
-    ''' Initializes the singleton application object. This is the first line of authored code
-    ''' executed, and as such is the logical equivalent of main() or WinMain().
-    ''' </summary>
     Public Sub New()
         InitializeComponent()
+        AppSession.Current.Load()
+        AddHandler HardwareButtons.BackPressed, AddressOf OnBackPressed
     End Sub
 
-    ''' <summary>
-    ''' Invoked when the application is launched normally by the end user. Other entry points
-    ''' will be used when the application is launched to open a specific file, to display
-    ''' search results, and so forth.
-    ''' </summary>
-    ''' <param name="e">Details about the launch request and process.</param>
-    Protected Overrides Sub OnLaunched(e As LaunchActivatedEventArgs)
-#If DEBUG Then
-        If System.Diagnostics.Debugger.IsAttached Then
-            DebugSettings.EnableFrameRateCounter = True
+    Private Sub OnBackPressed(sender As Object, e As BackPressedEventArgs)
+        If NavigationService.CanGoBack Then
+            NavigationService.GoBack()
+            e.Handled = True
         End If
-#End If
+    End Sub
 
+    Protected Overrides Sub OnLaunched(e As LaunchActivatedEventArgs)
         Dim rootFrame As Frame = TryCast(Window.Current.Content, Frame)
 
-        ' Do not repeat app initialization when the Window already has content,
-        ' just ensure that the window is active
         If rootFrame Is Nothing Then
-            ' Create a Frame to act as the navigation context and navigate to the first page
             rootFrame = New Frame()
+            rootFrame.CacheSize = 2
 
-            ' TODO: change this value to a cache size that is appropriate for your application
-            rootFrame.CacheSize = 1
-
-            If e.PreviousExecutionState = ApplicationExecutionState.Terminated Then
-                ' TODO: Load state from previously suspended application
-            End If
-
-            ' Place the frame in the current Window
             Window.Current.Content = rootFrame
         End If
 
         If rootFrame.Content Is Nothing Then
-            ' Removes the turnstile navigation for startup.
             If rootFrame.ContentTransitions IsNot Nothing Then
                 _transitions = New TransitionCollection()
                 For Each transition As Transition In rootFrame.ContentTransitions
@@ -60,21 +50,15 @@ NotInheritable Class App
             rootFrame.ContentTransitions = Nothing
             AddHandler rootFrame.Navigated, AddressOf RootFrame_FirstNavigated
 
-            ' When the navigation stack isn't restored navigate to the first page,
-            ' configuring the new page by passing required information as a navigation
-            ' parameter
-            If Not rootFrame.Navigate(GetType(MainPage), e.Arguments) Then
+            Dim target As Type = If(AppSession.Current.IsLoggedIn, GetType(HomePage), GetType(MainPage))
+            If Not rootFrame.Navigate(target, e.Arguments) Then
                 Throw New Exception("Failed to create initial page")
             End If
         End If
 
-        ' Ensure the current window is active
         Window.Current.Activate()
     End Sub
 
-    ''' <summary>
-    ''' Restores the content transitions after the app has launched.
-    ''' </summary>
     Private Sub RootFrame_FirstNavigated(sender As Object, e As NavigationEventArgs)
         Dim newTransitions As TransitionCollection
         If _transitions Is Nothing Then
@@ -89,16 +73,8 @@ NotInheritable Class App
         RemoveHandler rootFrame.Navigated, AddressOf RootFrame_FirstNavigated
     End Sub
 
-    ''' <summary>
-    ''' Invoked when application execution is being suspended.Application state is saved
-    ''' without knowing whether the application will be terminated or resumed with the contents
-    ''' of memory still intact.
-    ''' </summary>
     Private Sub OnSuspending(sender As Object, e As SuspendingEventArgs) Handles Me.Suspending
         Dim deferral As SuspendingDeferral = e.SuspendingOperation.GetDeferral()
-
-        ' TODO: Save application state and stop any background activity
         deferral.Complete()
     End Sub
-
 End Class

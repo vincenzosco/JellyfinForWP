@@ -13,7 +13,7 @@ Public Class PlaybackApiTests
         Dim r = MakeClient(fake).GetPlaybackInfoAsync("u1", "i1", 0L).Result
         Assert.AreEqual("http://h/x.m3u8", r.MediaSources(0).TranscodingUrl)
         Assert.AreEqual("ps1", r.PlaySessionId)
-        Assert.IsTrue(fake.LastJson.Contains("""Protocol"":""hls"""), fake.LastJson)
+        Assert.IsTrue(fake.LastJson.Contains("""Protocol"":""http"""), fake.LastJson)
     End Sub
 
     <TestMethod>
