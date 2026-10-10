@@ -106,4 +106,47 @@ Public Class LocalServerIntegrationTests
         Assert.IsNotNull(results.Items)
         Assert.IsTrue(results.Items.Count >= 1, "search for '" & first.Name & "' should return at least the item itself")
     End Sub
+
+    <TestMethod>
+    <TestCategory("Integration")>
+    Public Sub Playback_info_returns_a_playable_source_for_the_first_video()
+        If Not RequireConfigured() Then Return
+        Dim client = AuthenticatedClient()
+        Dim views = client.GetViewsAsync(client.UserId).GetAwaiter().GetResult()
+
+        Dim video As BaseItemDto = Nothing
+        If views IsNot Nothing Then
+            For Each library In views
+                Dim q = client.GetItemsAsync(client.UserId, library.Id, "Movie,Episode,Video", 0, 10).GetAwaiter().GetResult()
+                If q IsNot Nothing AndAlso q.Items IsNot Nothing AndAlso q.Items.Count > 0 Then
+                    video = q.Items(0)
+                    Exit For
+                End If
+            Next
+        End If
+
+        If video Is Nothing Then
+            Assert.Inconclusive("No video item available to test playback info.")
+            Return
+        End If
+
+        Dim info = client.GetPlaybackInfoAsync(client.UserId, video.Id, 0L).GetAwaiter().GetResult()
+        Assert.IsNotNull(info)
+        Assert.IsNotNull(info.MediaSources)
+        Assert.IsTrue(info.MediaSources.Count >= 1, "expected at least one media source")
+        ' The server often returns only flags; PlaybackUrlResolver must still produce a URL.
+        Dim source = info.MediaSources(0)
+        Dim resolved = PlaybackUrlResolver.Resolve(_settings.Url, client.AccessToken, video.Id, source, 8000000)
+        Assert.IsNotNull(resolved, "a playable URL should be resolvable for '" & video.Name & "'")
+        Assert.IsFalse(String.IsNullOrEmpty(resolved.Url), "resolved URL should not be empty")
+    End Sub
+
+    <TestMethod>
+    <TestCategory("Integration")>
+    Public Sub Resume_list_is_readable()
+        If Not RequireConfigured() Then Return
+        Dim client = AuthenticatedClient()
+        Dim list = client.GetResumeAsync(client.UserId, 5).GetAwaiter().GetResult()
+        Assert.IsNotNull(list)
+    End Sub
 End Class

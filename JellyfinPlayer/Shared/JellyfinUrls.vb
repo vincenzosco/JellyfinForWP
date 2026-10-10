@@ -96,6 +96,17 @@ Namespace Global.JellyfinPlayer.Shared
             Return WithKey(U("/Sessions/Playing/Stopped"))
         End Function
 
+        ' Streams the original file (used when the server reports SupportsDirectStream
+        ' but returns no DirectStreamUrl).
+        Public Function VideoStream(itemId As String, mediaSourceId As String) As String
+            Return WithKey(U("/Videos/" & itemId & "/stream?static=true&mediaSourceId=" & Uri.EscapeDataString(If(mediaSourceId, ""))))
+        End Function
+
+        ' Progressive MP4 transcode (WP8.1 has no AdaptiveMediaSource, so no HLS).
+        Public Function VideoTranscode(itemId As String, mediaSourceId As String, maxBitrate As Integer) As String
+            Return WithKey(U("/Videos/" & itemId & "/stream.mp4?VideoCodec=h264&AudioCodec=aac&MaxStreamingBitrate=" & maxBitrate.ToString() & "&mediaSourceId=" & Uri.EscapeDataString(If(mediaSourceId, ""))))
+        End Function
+
         Public Function PrimaryImage(itemId As String, maxHeight As Integer) As String
             Return WithKey(U("/Items/" & itemId & "/Images/Primary?maxHeight=" & maxHeight.ToString() & "&quality=90"))
         End Function

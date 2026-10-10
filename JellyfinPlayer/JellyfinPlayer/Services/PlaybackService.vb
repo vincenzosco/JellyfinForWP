@@ -24,38 +24,33 @@ Namespace Services
             plan.PlaySessionId = info.PlaySessionId
             plan.StartPosition = Ticks.ToTimeSpan(startTicks)
 
+            ' A directly playable source is preferred. The server often returns only
+            ' flags and no URL, so PlaybackUrlResolver builds one when needed.
             For Each s In info.MediaSources
-                If s.SupportsDirectPlay AndAlso Not String.IsNullOrEmpty(s.DirectStreamUrl) Then
-                    plan.DirectFallbackUri = New Uri(WithKey(s.DirectStreamUrl, session.AccessToken))
-                    Exit For
+                If s.SupportsDirectStream OrElse s.SupportsDirectPlay Then
+                    Dim direct = PlaybackUrlResolver.Resolve(session.BaseUrl, session.AccessToken, item.Id, s, session.PreferredBitrate)
+                    If direct IsNot Nothing Then
+                        plan.Uri = New Uri(direct.Url)
+                        plan.IsTranscode = False
+                        plan.MediaSourceId = direct.MediaSourceId
+                        plan.DirectFallbackUri = New Uri(direct.Url)
+                        Return plan
+                    End If
                 End If
             Next
 
+            ' Otherwise any source the server is willing to transcode.
             For Each s In info.MediaSources
-                If s.SupportsDirectPlay AndAlso Not String.IsNullOrEmpty(s.DirectStreamUrl) Then
-                    plan.Uri = New Uri(WithKey(s.DirectStreamUrl, session.AccessToken))
-                    plan.IsTranscode = False
-                    plan.MediaSourceId = s.Id
+                Dim resolved = PlaybackUrlResolver.Resolve(session.BaseUrl, session.AccessToken, item.Id, s, session.PreferredBitrate)
+                If resolved IsNot Nothing Then
+                    plan.Uri = New Uri(resolved.Url)
+                    plan.IsTranscode = resolved.IsTranscode
+                    plan.MediaSourceId = resolved.MediaSourceId
                     Return plan
                 End If
             Next
 
-            For Each s In info.MediaSources
-                If s.SupportsTranscoding AndAlso Not String.IsNullOrEmpty(s.TranscodingUrl) Then
-                    plan.Uri = New Uri(WithKey(s.TranscodingUrl, session.AccessToken))
-                    plan.IsTranscode = True
-                    plan.MediaSourceId = s.Id
-                    Return plan
-                End If
-            Next
-
-            Throw New JellyfinException("This video cannot be played on this device (transcoding is unavailable).", 0)
-        End Function
-
-        Private Function WithKey(url As String, token As String) As String
-            If String.IsNullOrEmpty(url) Then Return url
-            If url.Contains("api_key=") Then Return url
-            Return url & If(url.Contains("?"), "&", "?") & "api_key=" & token
+            Throw New JellyfinException("This video cannot be played on this device (no playable or transcodable source).", 0)
         End Function
     End Module
 End Namespace

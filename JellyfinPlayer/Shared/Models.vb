@@ -80,6 +80,7 @@ Namespace Global.JellyfinPlayer.Shared
         <DataMember> Public Property Container As String
         <DataMember> Public Property Protocol As String
         <DataMember> Public Property SupportsDirectPlay As Boolean
+        <DataMember> Public Property SupportsDirectStream As Boolean
         <DataMember> Public Property SupportsTranscoding As Boolean
         <DataMember> Public Property DirectStreamUrl As String
         <DataMember> Public Property TranscodingUrl As String
