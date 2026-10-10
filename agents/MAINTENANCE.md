@@ -20,6 +20,13 @@
 4. Set `ScrollViewer.HorizontalScrollMode`/vertical as needed; remember WinRT
    `StackPanel` has **no `Padding`** — use child margins or a `Border`.
 
+## Tests
+
+See [`TESTING.md`](TESTING.md). Add a unit test for any pure logic in `Shared/`
+(the test project links it automatically via `*.vb`); add an integration test only
+for behaviour that needs a real server, with `<TestCategory("Integration")>` on the
+method.
+
 ## Regenerate logo/splash
 
 ```bash
@@ -59,3 +66,5 @@ Edit both:
   valid certificate.
 - WP8.1 only; not portable to UWP without reworking `LocalSettings`, navigation
   and playback.
+- Autodiscovery relies on UDP broadcast, which does not cross subnets/VLANs; VPN
+  and guest Wi-Fi often block it. Manual entry always remains available.

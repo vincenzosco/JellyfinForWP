@@ -9,6 +9,7 @@ Windows Phone 8.1 (WinRT XAML) Jellyfin client, written in **VB.NET**, built wit
 - [`JELLYFIN_API.md`](JELLYFIN_API.md) — endpoints, auth, ticks, device profile.
 - [`MAINTENANCE.md`](MAINTENANCE.md) — how to add a page/endpoint, regenerate assets.
 - [`README.md`](README.md) — what the app does.
+- [`TESTING.md`](TESTING.md) — unit vs. integration tests, and the manual checklist.
 
 Quick reference:
 
@@ -17,9 +18,13 @@ Quick reference:
 "/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.sln \
   -p:Configuration=Debug -p:Platform=x86 -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 
-# Test the shared logic
+# Test the shared logic (and the integration tests, when configured)
 "/c/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/mstest.exe" \
-  /testcontainer:JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.dll
+  /testcontainer:JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.dll \
+  /testsettings:JellyfinPlayer/JellyfinPlayer.Core.Tests/run.testsettings
+
+# Only the tests that talk to a real server:
+... /category:Integration
 ```
 
 Rules of the road:
