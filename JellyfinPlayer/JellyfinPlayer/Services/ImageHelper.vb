@@ -15,5 +15,9 @@ Namespace Services
         Public Function HasPrimaryImage(item As BaseItemDto) As Boolean
             Return item IsNot Nothing AndAlso item.ImageTags IsNot Nothing AndAlso Not String.IsNullOrEmpty(item.ImageTags.Primary)
         End Function
+
+        Public Function HasBackdropImage(item As BaseItemDto) As Boolean
+            Return item IsNot Nothing AndAlso item.BackdropImageTags IsNot Nothing AndAlso item.BackdropImageTags.Count > 0
+        End Function
     End Module
 End Namespace
