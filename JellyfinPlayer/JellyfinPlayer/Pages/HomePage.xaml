@@ -14,7 +14,10 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="#101517">
-            <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" Margin="16,10,0,10"/>
+            <StackPanel Orientation="Horizontal" Margin="16,10,0,10">
+                <Image Source="ms-appx:///Assets/BrandMark.png" Width="34" Height="34" Margin="0,0,10,0"/>
+                <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button Content="Search" Click="Search_Click"/>
                 <Button Content="Settings" Click="Settings_Click"/>
