@@ -1,3 +1,0 @@
-MainPackage=C:\Users\Vincenzo\Documents\JellyfinForWP81\JellyfinPlayer\JellyfinPlayer\bin\x86\Debug\JellyfinPlayer_1.0.0.0_Bundle\JellyfinPlayer_1.0.0.0_x86_Debug.appx
-SymbolPackage=C:\Users\Vincenzo\Documents\JellyfinForWP81\JellyfinPlayer\JellyfinPlayer\AppPackages\JellyfinPlayer_1.0.0.0_Debug_Test\JellyfinPlayer_1.0.0.0_x86_Debug.appxsym
-ResourcePack=C:\Users\Vincenzo\Documents\JellyfinForWP81\JellyfinPlayer\JellyfinPlayer\bin\x86\Debug\JellyfinPlayer_1.0.0.0_Bundle\JellyfinPlayer_1.0.0.0_language-it.appx
