@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="77560c8b-a7da-4ba9-a607-34fe7b707a3d" name="Vincenzo@DESKTOP-9ATV1GG 2026-10-10 20:35:41" runUser="DESKTOP-9ATV1GG\Vincenzo" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Default Test Settings" id="1f126cb6-629c-443e-960f-dc158e442a47">
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+    <Deployment runDeploymentRoot="Vincenzo_DESKTOP-9ATV1GG 2026-10-10 20_35_41" />
+    <Properties />
+  </TestSettings>
+  <Times creation="2026-10-10T20:35:41.4991308+02:00" queuing="2026-10-10T20:35:41.9246396+02:00" start="2026-10-10T20:35:41.9831537+02:00" finish="2026-10-10T20:35:42.3618670+02:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="12" executed="12" passed="12" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Add_sums_two_integers" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="1c023cad-69b5-bbab-0c4e-81d5faff042f">
+      <Execution id="394ee9f2-c5f1-42c3-91a7-dbb85862d8be" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.PlaceholderTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Add_sums_two_integers" />
+    </UnitTest>
+    <UnitTest name="Format_null_is_empty" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="0f0d490d-dd83-69b4-4e80-361569b516f6">
+      <Execution id="29242b3a-53ba-4c86-8ed7-d1f8c95082fd" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Format_null_is_empty" />
+    </UnitTest>
+    <UnitTest name="Format_minutes_seconds" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="cb438991-8f7c-7a41-3a97-74924da99e79">
+      <Execution id="8a61f654-5bd5-4bfe-a5c4-1a08ad63e224" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Format_minutes_seconds" />
+    </UnitTest>
+    <UnitTest name="Format_hours_minutes_seconds" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="d2c5227e-6eb6-00ec-8090-1bef33322044">
+      <Execution id="82518b13-1a16-4bdc-b63e-025442d61b09" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Format_hours_minutes_seconds" />
+    </UnitTest>
+    <UnitTest name="ToTimeSpan_one_second" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="6ff323a7-6de0-e259-bd58-da5c96fdc857">
+      <Execution id="a895b56f-be6b-4f81-8d8a-f0f0c570386b" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="ToTimeSpan_one_second" />
+    </UnitTest>
+    <UnitTest name="Round_trip_preserves_ticks" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="92013955-1189-8f8b-cbfb-3ac2901a64b0">
+      <Execution id="993c8f80-4e81-417a-85f3-eca4f1099316" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Round_trip_preserves_ticks" />
+    </UnitTest>
+    <UnitTest name="Serialize_progress_contains_ticks" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="55a953d5-6d5e-b0f5-1b23-868f3a412bde">
+      <Execution id="cec8e8e6-0c51-4de6-b408-046b15e14e65" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.JsonTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Serialize_progress_contains_ticks" />
+    </UnitTest>
+    <UnitTest name="Deserialize_query_result_empty" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="70f2366b-0915-a083-7720-70e0452c5fd3">
+      <Execution id="681c5f42-3827-4b98-beaf-67fe9535b7c7" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.JsonTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Deserialize_query_result_empty" />
+    </UnitTest>
+    <UnitTest name="FormatDuration_uses_same_rules" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="f3ea3638-bf51-d69b-4c03-33830a69c70d">
+      <Execution id="bcbaeb16-71fe-41da-8e1a-68e290c53728" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.TicksTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="FormatDuration_uses_same_rules" />
+    </UnitTest>
+    <UnitTest name="Deserialize_server_info" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="fec80812-a580-1a16-aeeb-71d0b8d2d60c">
+      <Execution id="a3929e60-646f-42e6-9211-4989a98ec73b" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.JsonTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Deserialize_server_info" />
+    </UnitTest>
+    <UnitTest name="Deserialize_ignores_unknown_fields" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="aebff149-9d60-0824-dcd6-b5f531e6f46d">
+      <Execution id="2fbee03b-9fb8-49d7-b874-a7b98dea7ca6" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.JsonTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Deserialize_ignores_unknown_fields" />
+    </UnitTest>
+    <UnitTest name="Deserialize_image_tags_object" storage="jellyfinplayer/jellyfinplayer.core.tests/bin/debug/jellyfinplayer.core.tests.dll" id="d82dfb80-0d45-2272-3893-321359c815d7">
+      <Execution id="0052f7b2-9d32-4093-a359-2112337b74d9" />
+      <TestMethod codeBase="C:/Users/Vincenzo/Documents/JellyfinForWP81/JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JellyfinPlayer.Core.Tests.JsonTests, JellyfinPlayer.Core.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" name="Deserialize_image_tags_object" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="aebff149-9d60-0824-dcd6-b5f531e6f46d" executionId="2fbee03b-9fb8-49d7-b874-a7b98dea7ca6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d82dfb80-0d45-2272-3893-321359c815d7" executionId="0052f7b2-9d32-4093-a359-2112337b74d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70f2366b-0915-a083-7720-70e0452c5fd3" executionId="681c5f42-3827-4b98-beaf-67fe9535b7c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fec80812-a580-1a16-aeeb-71d0b8d2d60c" executionId="a3929e60-646f-42e6-9211-4989a98ec73b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55a953d5-6d5e-b0f5-1b23-868f3a412bde" executionId="cec8e8e6-0c51-4de6-b408-046b15e14e65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c023cad-69b5-bbab-0c4e-81d5faff042f" executionId="394ee9f2-c5f1-42c3-91a7-dbb85862d8be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d2c5227e-6eb6-00ec-8090-1bef33322044" executionId="82518b13-1a16-4bdc-b63e-025442d61b09" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb438991-8f7c-7a41-3a97-74924da99e79" executionId="8a61f654-5bd5-4bfe-a5c4-1a08ad63e224" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0f0d490d-dd83-69b4-4e80-361569b516f6" executionId="29242b3a-53ba-4c86-8ed7-d1f8c95082fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f3ea3638-bf51-d69b-4c03-33830a69c70d" executionId="bcbaeb16-71fe-41da-8e1a-68e290c53728" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="92013955-1189-8f8b-cbfb-3ac2901a64b0" executionId="993c8f80-4e81-417a-85f3-eca4f1099316" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ff323a7-6de0-e259-bd58-da5c96fdc857" executionId="a895b56f-be6b-4f81-8d8a-f0f0c570386b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="2fbee03b-9fb8-49d7-b874-a7b98dea7ca6" testId="aebff149-9d60-0824-dcd6-b5f531e6f46d" testName="Deserialize_ignores_unknown_fields" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0128257" startTime="2026-10-10T20:35:42.0061590+02:00" endTime="2026-10-10T20:35:42.2832015+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2fbee03b-9fb8-49d7-b874-a7b98dea7ca6">
+    </UnitTestResult>
+    <UnitTestResult executionId="0052f7b2-9d32-4093-a359-2112337b74d9" testId="d82dfb80-0d45-2272-3893-321359c815d7" testName="Deserialize_image_tags_object" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0088406" startTime="2026-10-10T20:35:42.2842033+02:00" endTime="2026-10-10T20:35:42.2952122+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0052f7b2-9d32-4093-a359-2112337b74d9">
+    </UnitTestResult>
+    <UnitTestResult executionId="681c5f42-3827-4b98-beaf-67fe9535b7c7" testId="70f2366b-0915-a083-7720-70e0452c5fd3" testName="Deserialize_query_result_empty" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0038902" startTime="2026-10-10T20:35:42.2965017+02:00" endTime="2026-10-10T20:35:42.3030171+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="681c5f42-3827-4b98-beaf-67fe9535b7c7">
+    </UnitTestResult>
+    <UnitTestResult executionId="a3929e60-646f-42e6-9211-4989a98ec73b" testId="fec80812-a580-1a16-aeeb-71d0b8d2d60c" testName="Deserialize_server_info" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0002910" startTime="2026-10-10T20:35:42.3040252+02:00" endTime="2026-10-10T20:35:42.3060320+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3929e60-646f-42e6-9211-4989a98ec73b">
+    </UnitTestResult>
+    <UnitTestResult executionId="cec8e8e6-0c51-4de6-b408-046b15e14e65" testId="55a953d5-6d5e-b0f5-1b23-868f3a412bde" testName="Serialize_progress_contains_ticks" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0020312" startTime="2026-10-10T20:35:42.3060320+02:00" endTime="2026-10-10T20:35:42.3100343+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cec8e8e6-0c51-4de6-b408-046b15e14e65">
+    </UnitTestResult>
+    <UnitTestResult executionId="394ee9f2-c5f1-42c3-91a7-dbb85862d8be" testId="1c023cad-69b5-bbab-0c4e-81d5faff042f" testName="Add_sums_two_integers" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0001728" startTime="2026-10-10T20:35:42.3110320+02:00" endTime="2026-10-10T20:35:42.3130260+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="394ee9f2-c5f1-42c3-91a7-dbb85862d8be">
+    </UnitTestResult>
+    <UnitTestResult executionId="82518b13-1a16-4bdc-b63e-025442d61b09" testId="d2c5227e-6eb6-00ec-8090-1bef33322044" testName="Format_hours_minutes_seconds" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0004740" startTime="2026-10-10T20:35:42.3140252+02:00" endTime="2026-10-10T20:35:42.3160338+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82518b13-1a16-4bdc-b63e-025442d61b09">
+    </UnitTestResult>
+    <UnitTestResult executionId="8a61f654-5bd5-4bfe-a5c4-1a08ad63e224" testId="cb438991-8f7c-7a41-3a97-74924da99e79" testName="Format_minutes_seconds" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0001347" startTime="2026-10-10T20:35:42.3170321+02:00" endTime="2026-10-10T20:35:42.3190387+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a61f654-5bd5-4bfe-a5c4-1a08ad63e224">
+    </UnitTestResult>
+    <UnitTestResult executionId="29242b3a-53ba-4c86-8ed7-d1f8c95082fd" testId="0f0d490d-dd83-69b4-4e80-361569b516f6" testName="Format_null_is_empty" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0001278" startTime="2026-10-10T20:35:42.3200321+02:00" endTime="2026-10-10T20:35:42.3220324+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29242b3a-53ba-4c86-8ed7-d1f8c95082fd">
+    </UnitTestResult>
+    <UnitTestResult executionId="bcbaeb16-71fe-41da-8e1a-68e290c53728" testId="f3ea3638-bf51-d69b-4c03-33830a69c70d" testName="FormatDuration_uses_same_rules" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0002241" startTime="2026-10-10T20:35:42.3230314+02:00" endTime="2026-10-10T20:35:42.3260335+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bcbaeb16-71fe-41da-8e1a-68e290c53728">
+    </UnitTestResult>
+    <UnitTestResult executionId="993c8f80-4e81-417a-85f3-eca4f1099316" testId="92013955-1189-8f8b-cbfb-3ac2901a64b0" testName="Round_trip_preserves_ticks" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0006323" startTime="2026-10-10T20:35:42.3270332+02:00" endTime="2026-10-10T20:35:42.3290350+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="993c8f80-4e81-417a-85f3-eca4f1099316">
+    </UnitTestResult>
+    <UnitTestResult executionId="a895b56f-be6b-4f81-8d8a-f0f0c570386b" testId="6ff323a7-6de0-e259-bd58-da5c96fdc857" testName="ToTimeSpan_one_second" computerName="DESKTOP-9ATV1GG" duration="00:00:00.0008378" startTime="2026-10-10T20:35:42.3300355+02:00" endTime="2026-10-10T20:35:42.3325145+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a895b56f-be6b-4f81-8d8a-f0f0c570386b">
+    </UnitTestResult>
+  </Results>
+</TestRun>
