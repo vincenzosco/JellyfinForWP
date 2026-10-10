@@ -13,10 +13,21 @@
         <Geometry x:Key="IconPlay">M 6,4 L 20,12 L 6,20 Z</Geometry>
         <Geometry x:Key="IconPause">M 7,4 H 10.6 V 20 H 7 Z M 13.4,4 H 17 V 20 H 13.4 Z</Geometry>
         <Geometry x:Key="IconChevronBack">M 16,4 L 8,12 L 16,20 L 18,18 L 12,12 L 18,6 Z</Geometry>
+        <Geometry x:Key="IconSkipBack">M 10.5,5 L 4,12 L 10.5,19 L 12.5,17 L 8.2,12 L 12.5,7 Z M 19.5,5 L 13,12 L 19.5,19 L 21.5,17 L 17.2,12 L 21.5,7 Z</Geometry>
+        <Geometry x:Key="IconSkipForward">M 13.5,5 L 20,12 L 13.5,19 L 11.5,17 L 15.8,12 L 11.5,7 Z M 4.5,5 L 11,12 L 4.5,19 L 2.5,17 L 6.8,12 L 2.5,7 Z</Geometry>
+        <Geometry x:Key="IconSpeaker">M 4.5,9 H 8.5 L 13,4.5 V 19.5 L 8.5,15 H 4.5 Z M 15.4,9.3 L 17,8 L 17,16 L 15.4,14.7 Z M 18.6,7.2 L 20.4,5.8 L 20.4,18.2 L 18.6,16.8 Z</Geometry>
+        <!-- Fit: the letterbox bars. Fill: the bars the crop takes off the sides. -->
+        <Geometry x:Key="IconFit">M 3,5.5 H 21 V 8.5 H 3 Z M 3,15.5 H 21 V 18.5 H 3 Z</Geometry>
+        <Geometry x:Key="IconFill">M 5.5,3 H 8.5 V 21 H 5.5 Z M 15.5,3 H 18.5 V 21 H 15.5 Z</Geometry>
+        <Geometry x:Key="IconEnterFullScreen">M 4,4 H 10 V 6.4 H 6.4 V 10 H 4 Z M 14,4 H 20 V 10 H 17.6 V 6.4 H 14 Z M 4,14 H 6.4 V 17.6 H 10 V 20 H 4 Z M 17.6,14 H 20 V 20 H 14 V 17.6 H 17.6 Z</Geometry>
+        <!-- A hollow frame: the outer square and the inner one, even-odd filled. -->
+        <Geometry x:Key="IconExitFullScreen">M 4,4 H 20 V 20 H 4 Z M 7.5,7.5 V 16.5 H 16.5 V 7.5 Z</Geometry>
     </Page.Resources>
 
-    <Grid x:Name="RootGrid" Background="Black">
-        <MediaElement x:Name="MediaEl" Stretch="Uniform" MediaOpened="Media_Opened" MediaEnded="Media_Ended" MediaFailed="Media_Failed"/>
+    <Grid x:Name="RootGrid" Background="Black" Tapped="Root_Tapped">
+        <MediaElement x:Name="MediaEl" Stretch="Uniform"
+                      MediaOpened="Media_Opened" MediaEnded="Media_Ended" MediaFailed="Media_Failed"
+                      CurrentStateChanged="Media_StateChanged" BufferingProgressChanged="Media_BufferingChanged"/>
 
         <Grid x:Name="OverlayRoot">
             <!-- Title row: translucent, so the video still reads through it. -->
@@ -40,7 +51,9 @@
                         <Path x:Name="PauseIcon" Data="{StaticResource IconPause}" Width="34" Height="34" Fill="White" Stretch="Uniform" Visibility="Collapsed"/>
                     </Grid>
                 </Button>
-                <ProgressRing x:Name="Busy" IsActive="False" Width="32" Height="32" Margin="0,16,0,0"/>
+                <ProgressRing x:Name="BufferingRing" IsActive="False" Width="32" Height="32" Margin="0,16,0,0"/>
+                <TextBlock x:Name="BufferingText" x:Uid="BufferingText" Foreground="White" FontSize="13"
+                           Margin="0,8,0,0" Visibility="Collapsed"/>
             </StackPanel>
 
             <!-- Bottom row: position, seek, duration, then the actions. -->
@@ -61,10 +74,66 @@
                                    VerticalAlignment="Center" MinWidth="42" TextAlignment="Right"/>
                     </Grid>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                        <Button x:Name="DirectButton" x:Uid="DirectButton" Click="Direct_Click"
-                                Visibility="Collapsed" Padding="12,6" Margin="0,0,8,0"/>
-                    </StackPanel>
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="SkipBackButton" Grid.Column="0" Click="SkipBack_Click" Width="48" Height="48"
+                                Margin="0,0,4,0" Padding="0" BorderThickness="0" Background="Transparent">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconSkipBack}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                                <TextBlock Text="10" Foreground="White" FontSize="9" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="SkipForwardButton" Grid.Column="1" Click="SkipForward_Click" Width="48" Height="48"
+                                Margin="0,0,4,0" Padding="0" BorderThickness="0" Background="Transparent">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconSkipForward}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                                <TextBlock Text="30" Foreground="White" FontSize="9" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Kept with visible text: the one action that is not obvious from a glyph. -->
+                        <Button x:Name="DirectButton" x:Uid="DirectButton" Grid.Column="2" Click="Direct_Click"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="Collapsed" Padding="12,6"/>
+
+                        <Button x:Name="MuteButton" Grid.Column="3" Click="Mute_Click" Width="48" Height="48"
+                                Margin="4,0,0,0" Padding="0" BorderThickness="0" Background="Transparent">
+                            <Grid>
+                                <Path Data="{StaticResource IconSpeaker}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                                <Rectangle x:Name="MuteSlash" Width="26" Height="2" Fill="White" Visibility="Collapsed"
+                                           RenderTransformOrigin="0.5,0.5">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="-45"/>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                            </Grid>
+                        </Button>
+
+                        <Button x:Name="FitButton" Grid.Column="4" Click="Fit_Click" Width="48" Height="48"
+                                Margin="4,0,0,0" Padding="0" BorderThickness="0" Background="Transparent">
+                            <Grid>
+                                <Path x:Name="IconFit" Data="{StaticResource IconFit}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                                <Path x:Name="IconFill" Data="{StaticResource IconFill}" Width="22" Height="22" Fill="White" Stretch="Uniform" Visibility="Collapsed"/>
+                            </Grid>
+                        </Button>
+
+                        <Button x:Name="FullScreenButton" Grid.Column="5" Click="FullScreen_Click" Width="48" Height="48"
+                                Margin="4,0,0,0" Padding="0" BorderThickness="0" Background="Transparent">
+                            <Grid>
+                                <Path x:Name="IconEnterFullScreen" Data="{StaticResource IconEnterFullScreen}" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                                <Path x:Name="IconExitFullScreen" Data="{StaticResource IconExitFullScreen}" Width="22" Height="22" Fill="White" Stretch="Uniform" Visibility="Collapsed"/>
+                            </Grid>
+                        </Button>
+                    </Grid>
 
                     <TextBlock x:Name="ErrorText" Foreground="#FF8A80" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,0"/>
                 </StackPanel>

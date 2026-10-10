@@ -18,6 +18,12 @@ Read this in [Italian](README.it.md).
 - Search across movies, series and episodes.
 - Playback: direct play when the server says the file is directly playable, otherwise a
   progressive HTTP MP4 transcode. Progress is reported back so resume works.
+- Fullscreen player: one button hides the status bar and the player's own bars, the video
+  fills the screen, rotation follows the phone and the screen stays awake; the hardware back
+  button leaves fullscreen first and only then leaves the screen.
+- Player controls: back 10 s / forward 30 s, mute, fill/fit, elapsed and total time, a
+  buffering indicator, and controls that hide themselves only while the video plays (a tap
+  brings them back).
 - Settings: maximum streaming bitrate, sign out.
 - English and Italian UI selected by the device language, English by default.
 
@@ -72,7 +78,7 @@ server those integration tests report `Inconclusive`.
 - [`agents/README.md`](agents/README.md) — what the app does and how it is laid out.
 - [`agents/BUILD.md`](agents/BUILD.md) — every build and test command.
 - [`agents/TESTING.md`](agents/TESTING.md) — unit vs. integration tests, and the manual
-  on-device checklist (language switch, logo, autodiscovery).
+  on-device checklist (language switch, logo, autodiscovery, player controls).
 - [`agents/ARCHITECTURE.md`](agents/ARCHITECTURE.md),
   [`agents/CONVENTIONS.md`](agents/CONVENTIONS.md),
   [`agents/JELLYFIN_API.md`](agents/JELLYFIN_API.md),

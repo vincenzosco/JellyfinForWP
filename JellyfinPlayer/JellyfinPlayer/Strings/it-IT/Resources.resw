@@ -196,6 +196,36 @@
   <data name="ActionClose" xml:space="preserve">
     <value>Chiudi il lettore</value>
   </data>
+  <data name="ActionFullScreen" xml:space="preserve">
+    <value>Schermo intero</value>
+  </data>
+  <data name="ActionExitFullScreen" xml:space="preserve">
+    <value>Esci da schermo intero</value>
+  </data>
+  <data name="ActionMute" xml:space="preserve">
+    <value>Disattiva l'audio</value>
+  </data>
+  <data name="ActionUnmute" xml:space="preserve">
+    <value>Riattiva l'audio</value>
+  </data>
+  <data name="ActionStretchFill" xml:space="preserve">
+    <value>Riempi lo schermo (taglia i bordi)</value>
+  </data>
+  <data name="ActionStretchFit" xml:space="preserve">
+    <value>Mostra tutto il video</value>
+  </data>
+  <data name="ActionSkipBack" xml:space="preserve">
+    <value>Indietro di 10 secondi</value>
+  </data>
+  <data name="ActionSkipForward" xml:space="preserve">
+    <value>Avanti di 30 secondi</value>
+  </data>
+  <data name="ActionSeek" xml:space="preserve">
+    <value>Posizione di riproduzione</value>
+  </data>
+  <data name="BufferingText.Text" xml:space="preserve">
+    <value>Caricamento...</value>
+  </data>
   <data name="PlaybackFailed" xml:space="preserve">
     <value>Riproduzione non riuscita: {0}</value>
   </data>

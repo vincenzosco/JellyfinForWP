@@ -58,6 +58,17 @@ should expect `Inconclusive`, not a green run.
 | `Playback_info_returns_a_playable_source_for_the_first_video` | PlaybackInfo + `PlaybackUrlResolver` produce a URL |
 | `Resume_list_is_readable` | continue-watching list |
 
+## What the unit tests cover for the player
+
+No UI automation exists on WP8.1, so the player's *decisions* live in `Shared/` and are
+covered by MSTest: `SeekTargetTests` (a seek never leaves the video, an unknown duration
+never produces one), `TicksTests.FormatSpan*` (the elapsed/total clock), and
+`PlayerSurfaceTests` (entering and leaving fullscreen, the screen staying awake while
+playing and not while paused, and `RestoreAll` putting the status bar, portrait rotation
+and the screen timeout back however the screen was left). `Services.WinRtPlayerShell` is
+the WP8.1 binding of the same interface and is verified by the build plus the checklist
+above.
+
 ## Localization consistency tests
 
 `LocalizationTests` read the real files — copied next to the test assembly by
@@ -84,7 +95,20 @@ or a device:
 - **Series**: season picker switches the episode list.
 - **Detail**: Play/Resume opens the player; Favorite and Watched toggles persist.
 - **Playback**: direct-play a compatible MP4; play a file the server must transcode;
-  Stop returns and the position is saved.
+  the close button returns and the position is saved.
+- **Player fullscreen**: tap the fullscreen button → the status bar and both bars disappear
+  and the video fills the screen; turn the phone → the video follows it into landscape; tap
+  the video → the bars come back; press the hardware back button → it leaves fullscreen and
+  only the next press leaves the screen; leave the screen while fullscreen → the status bar
+  and portrait rotation are back on the next screen and the screen timeout works again.
+- **Player controls**: pause → the controls stay on screen; play → they hide after ~4 s and
+  a tap brings them back; skip back/forward → the position moves by 10 s/30 s and never
+  leaves the video; mute → the sound stops and the speaker icon is slashed; fit/fill → the
+  video letterboxes or crops; the elapsed time and the total match the video; a video still
+  loading shows the ring and "Buffering..."; a failed stream shows a short sentence and the
+  "Play direct" fallback, with the controls still reachable.
+- **Unknown duration**: open a transcode right after it starts → the total time is never
+  wrong and skipping cannot move past the end.
 - **Settings**: bitrate persists; Sign out returns to login.
 - **Language**: set the emulator/device language to Italian → every screen and every
   runtime message (discovery status, errors, search, settings) is Italian; set it to a

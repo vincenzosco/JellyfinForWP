@@ -14,6 +14,10 @@ VS2013 / MSBuild 12.
 - Playback: direct play when the server says the file is directly playable,
   otherwise a progressive HTTP MP4 transcode. Progress is reported back to the
   server (`/Sessions/Playing*`) so resume works.
+- Player screen: fullscreen (status bar hidden, screen kept awake, rotation
+  allowed, the back button leaves fullscreen first), skip -10 s/+30 s, mute,
+  fit/fill, elapsed and total time, a buffering indicator and controls that hide
+  themselves while the video plays.
 - Settings: max streaming bitrate, sign out.
 - Logo and splash taken from the remove.bg Jellyfin logo.
 

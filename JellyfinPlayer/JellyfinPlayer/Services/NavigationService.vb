@@ -4,6 +4,11 @@ Imports Windows.UI.Xaml.Controls
 
 Namespace Services
     Public Module NavigationService
+        ' Set by a page that wants the hardware back button for itself before the
+        ' frame handles it - the player uses it to leave fullscreen first.
+        ' True means the page consumed the press.
+        Public BackInterceptor As Func(Of Boolean)
+
         Public ReadOnly Property RootFrame As Frame
             Get
                 Return TryCast(Window.Current.Content, Frame)
