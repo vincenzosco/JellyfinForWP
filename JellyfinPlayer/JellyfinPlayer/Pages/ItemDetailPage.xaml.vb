@@ -25,7 +25,7 @@ Public NotInheritable Class ItemDetailPage
             Dim full = Await session.CreateClient().GetItemAsync(session.UserId, _item.Id)
             If full IsNot Nothing Then _item = full
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
         ApplyItem()
@@ -47,7 +47,7 @@ Public NotInheritable Class ItemDetailPage
         End If
 
         Dim resuming = _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue AndAlso _item.UserData.PlaybackPositionTicks.Value > 0
-        PlayButton.Content = If(resuming, "Resume", "Play")
+        PlayButton.Content = If(resuming, Localized.Text("ResumeAction"), Localized.Text("PlayAction"))
 
         _suppressToggle = True
         FavoriteToggle.IsChecked = _item.UserData IsNot Nothing AndAlso _item.UserData.IsFavorite
@@ -66,7 +66,7 @@ Public NotInheritable Class ItemDetailPage
         Try
             Await session.CreateClient().SetFavoriteAsync(session.UserId, _item.Id, value)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
     End Sub
 
@@ -77,7 +77,7 @@ Public NotInheritable Class ItemDetailPage
         Try
             Await session.CreateClient().SetPlayedAsync(session.UserId, _item.Id, value)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
     End Sub
 End Class

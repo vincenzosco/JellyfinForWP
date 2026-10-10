@@ -32,6 +32,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
       <HintPath>$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
     </Reference>
@@ -44,6 +46,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="test.settings.local" Condition="Exists('test.settings.local')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <!-- Copied, never compiled: the localisation tests read the real resource files,
+       the real XAML and the real app sources instead of a hand-made copy. -->
+  <ItemGroup>
+    <None Include="..\JellyfinPlayer\Strings\en-US\Resources.resw">
+      <Link>Localization\en-US\Resources.resw</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\Strings\it-IT\Resources.resw">
+      <Link>Localization\it-IT\Resources.resw</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\MainPage.xaml">
+      <Link>Xaml\MainPage.xaml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\Pages\*.xaml">
+      <Link>Xaml\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\Package.appxmanifest">
+      <Link>Manifest\Package.appxmanifest</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\MainPage.xaml.vb">
+      <Link>App\MainPage.xaml.vb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\Pages\*.xaml.vb">
+      <Link>App\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\Services\*.vb">
+      <Link>App\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

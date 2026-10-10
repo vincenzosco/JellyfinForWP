@@ -24,19 +24,19 @@ Public NotInheritable Class SearchPage
 
         Dim session = AppSession.Current
         ErrorText.Text = ""
-        EmptyText.Text = "Searching..."
+        EmptyText.Text = Localized.Text("Searching")
         EmptyText.Visibility = Visibility.Visible
 
         Try
             Dim q = Await session.CreateClient().SearchAsync(session.UserId, term)
             ResultsList.ItemsSource = PosterItem.Build(q.Items, session.BaseUrl, session.AccessToken)
             If q.Items.Count = 0 Then
-                EmptyText.Text = "No results."
+                EmptyText.Text = Localized.Text("NoResults")
             Else
                 EmptyText.Visibility = Visibility.Collapsed
             End If
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
             EmptyText.Visibility = Visibility.Collapsed
         End Try
     End Function

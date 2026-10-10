@@ -24,7 +24,7 @@ Public NotInheritable Class LibraryPage
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
         _view = TryCast(e.Parameter, BaseItemDto)
-        TitleText.Text = If(_view IsNot Nothing, _view.Name, "Library")
+        TitleText.Text = If(_view IsNot Nothing, _view.Name, Localized.Text("LibraryTitle"))
         Await LoadNextPageAsync()
     End Sub
 
@@ -42,7 +42,7 @@ Public NotInheritable Class LibraryPage
             ItemsGrid.ItemsSource = _items
             LoadMoreButton.Visibility = If(_items.Count < q.TotalRecordCount, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         Finally
             Busy.IsActive = False
         End Try

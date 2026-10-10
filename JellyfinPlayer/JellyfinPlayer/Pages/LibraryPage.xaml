@@ -37,7 +37,7 @@
             </GridView>
 
             <ProgressRing x:Name="Busy" IsActive="False" Height="40" Width="40"/>
-            <Button x:Name="LoadMoreButton" Content="Load more" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10" Visibility="Collapsed" Click="LoadMore_Click"/>
+            <Button x:Name="LoadMoreButton" x:Uid="LoadMoreButton" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10" Visibility="Collapsed" Click="LoadMore_Click"/>
         </Grid>
     </Grid>
 </Page>

@@ -14,14 +14,14 @@
                 <Image Source="ms-appx:///Assets/BrandMark.png" Width="44" Height="44" Margin="0,0,12,0"/>
                 <TextBlock Text="Jellyfin" FontSize="34" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
             </StackPanel>
-            <TextBlock Text="Server address" Margin="0,20,0,4"/>
+            <TextBlock x:Uid="ServerAddressLabel" Margin="0,20,0,4"/>
             <TextBox x:Name="ServerBox" PlaceholderText="http://192.168.1.10:8096"/>
             <TextBlock x:Name="DiscoveryStatus" TextWrapping="Wrap" Opacity="0.7" Margin="0,4,0,0"/>
-            <TextBlock Text="Username" Margin="0,12,0,4"/>
+            <TextBlock x:Uid="UsernameLabel" Margin="0,12,0,4"/>
             <TextBox x:Name="UserBox"/>
-            <TextBlock Text="Password" Margin="0,12,0,4"/>
+            <TextBlock x:Uid="PasswordLabel" Margin="0,12,0,4"/>
             <PasswordBox x:Name="PassBox"/>
-            <Button x:Name="ConnectButton" Content="Connect" Margin="0,20,0,0" Click="ConnectButton_Click"/>
+            <Button x:Name="ConnectButton" x:Uid="ConnectButton" Margin="0,20,0,0" Click="ConnectButton_Click"/>
             <ProgressRing x:Name="Busy" IsActive="False" Height="32" Width="32" Margin="0,12,0,0"/>
             <TextBlock x:Name="StatusText" TextWrapping="Wrap" Margin="0,12,0,0" Foreground="#D9534F"/>
         </StackPanel>

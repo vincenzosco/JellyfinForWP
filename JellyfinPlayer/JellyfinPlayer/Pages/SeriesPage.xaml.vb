@@ -37,7 +37,7 @@ Public NotInheritable Class SeriesPage
             SeasonBox.ItemsSource = _seasons
             If _seasons IsNot Nothing AndAlso _seasons.Count > 0 Then SeasonBox.SelectedIndex = 0
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
     End Sub
 
@@ -49,7 +49,7 @@ Public NotInheritable Class SeriesPage
             Dim eps = Await session.CreateClient().GetEpisodesAsync(_series.Id, session.UserId, season.Id)
             EpisodeList.ItemsSource = PosterItem.Build(eps, session.BaseUrl, session.AccessToken)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
     End Sub
 

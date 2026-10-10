@@ -19,8 +19,8 @@
                 <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
-                <Button Content="Search" Click="Search_Click"/>
-                <Button Content="Settings" Click="Settings_Click"/>
+                <Button x:Uid="SearchButton" Click="Search_Click"/>
+                <Button x:Uid="SettingsButton" Click="Settings_Click"/>
             </StackPanel>
         </Grid>
 
@@ -28,7 +28,7 @@
             <StackPanel>
                 <TextBlock x:Name="ErrorText" Foreground="#D9534F" TextWrapping="Wrap" Margin="16,8,16,0"/>
 
-                <TextBlock x:Name="ResumeHeader" Text="Continue watching" FontSize="20" Margin="16,12,0,4"/>
+                <TextBlock x:Name="ResumeHeader" x:Uid="ResumeHeader" FontSize="20" Margin="16,12,0,4"/>
                 <GridView x:Name="ResumeList" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Item_Click" Height="220" Margin="8,0">
                     <GridView.ItemTemplate>
                         <DataTemplate>
@@ -46,7 +46,7 @@
                     </GridView.ItemTemplate>
                 </GridView>
 
-                <TextBlock x:Name="NextUpHeader" Text="Next up" FontSize="20" Margin="16,12,0,4"/>
+                <TextBlock x:Name="NextUpHeader" x:Uid="NextUpHeader" FontSize="20" Margin="16,12,0,4"/>
                 <GridView x:Name="NextUpList" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Item_Click" Height="220" Margin="8,0">
                     <GridView.ItemTemplate>
                         <DataTemplate>
@@ -64,7 +64,7 @@
                     </GridView.ItemTemplate>
                 </GridView>
 
-                <TextBlock Text="Libraries" FontSize="20" Margin="16,12,0,4"/>
+                <TextBlock x:Uid="LibrariesHeader" FontSize="20" Margin="16,12,0,4"/>
                 <GridView x:Name="ViewsGrid" IsItemClickEnabled="True" SelectionMode="None" ItemClick="View_Click" Margin="8,0">
                     <GridView.ItemTemplate>
                         <DataTemplate>
