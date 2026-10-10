@@ -12,3 +12,6 @@ JellyfinPlayer/JellyfinPlayer/AppPackages/
 
 # local integration-test credentials (never commit)
 test.settings.local
+
+# MSTest result files
+TestResults/
