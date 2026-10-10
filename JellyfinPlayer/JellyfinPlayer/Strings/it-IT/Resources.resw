@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ServerAddressLabel.Text" xml:space="preserve">
+    <value>Indirizzo del server</value>
+  </data>
+  <data name="UsernameLabel.Text" xml:space="preserve">
+    <value>Nome utente</value>
+  </data>
+  <data name="PasswordLabel.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ConnectButton.Content" xml:space="preserve">
+    <value>Connetti</value>
+  </data>
+  <data name="SearchButton.Content" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="SettingsButton.Content" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+  <data name="ResumeHeader.Text" xml:space="preserve">
+    <value>Continua a guardare</value>
+  </data>
+  <data name="NextUpHeader.Text" xml:space="preserve">
+    <value>Prossimi episodi</value>
+  </data>
+  <data name="LibrariesHeader.Text" xml:space="preserve">
+    <value>Librerie</value>
+  </data>
+  <data name="LoadMoreButton.Content" xml:space="preserve">
+    <value>Carica altri</value>
+  </data>
+  <data name="PlayButton.Content" xml:space="preserve">
+    <value>Riproduci</value>
+  </data>
+  <data name="FavoriteToggle.Content" xml:space="preserve">
+    <value>Preferito</value>
+  </data>
+  <data name="PlayedToggle.Content" xml:space="preserve">
+    <value>Visto</value>
+  </data>
+  <data name="PlayPauseButton.Content" xml:space="preserve">
+    <value>Pausa</value>
+  </data>
+  <data name="DirectButton.Content" xml:space="preserve">
+    <value>Riproduci diretto</value>
+  </data>
+  <data name="StopButton.Content" xml:space="preserve">
+    <value>Interrompi</value>
+  </data>
+  <data name="QueryBox.PlaceholderText" xml:space="preserve">
+    <value>Cerca film, serie, episodi</value>
+  </data>
+  <data name="EmptyText.Text" xml:space="preserve">
+    <value>Digita e premi Invio per cercare.</value>
+  </data>
+  <data name="SettingsHeader.Text" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+  <data name="ServerLabel.Text" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="AccountLabel.Text" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="BitrateLabel.Text" xml:space="preserve">
+    <value>Bitrate massimo in streaming</value>
+  </data>
+  <data name="SignOutButton.Content" xml:space="preserve">
+    <value>Esci</value>
+  </data>
+  <data name="StatusUsingSavedServer" xml:space="preserve">
+    <value>Uso il server salvato.</value>
+  </data>
+  <data name="StatusEnterAddress" xml:space="preserve">
+    <value>Inserisci l'indirizzo del server.</value>
+  </data>
+  <data name="StatusWrongCredentials" xml:space="preserve">
+    <value>Nome utente o password errati.</value>
+  </data>
+  <data name="StatusNotJellyfin" xml:space="preserve">
+    <value>Quell'indirizzo non è un server Jellyfin.</value>
+  </data>
+  <data name="DiscoverySearching" xml:space="preserve">
+    <value>Ricerca di un server Jellyfin...</value>
+  </data>
+  <data name="DiscoveryNone" xml:space="preserve">
+    <value>Nessun server trovato automaticamente. Inserisci l'indirizzo.</value>
+  </data>
+  <data name="DiscoveryFound" xml:space="preserve">
+    <value>Trovato {0}.</value>
+  </data>
+  <data name="DiscoveryFoundMany" xml:space="preserve">
+    <value>Trovati {0} server; uso {1}.</value>
+  </data>
+  <data name="DiscoveryRejected" xml:space="preserve">
+    <value>L'indirizzo trovato non è un server Jellyfin. Inserisci l'indirizzo.</value>
+  </data>
+  <data name="DiscoveryFailed" xml:space="preserve">
+    <value>Rilevamento automatico non riuscito: {0}</value>
+  </data>
+  <data name="ErrorHttp" xml:space="preserve">
+    <value>Il server ha risposto HTTP {0}.</value>
+  </data>
+  <data name="ErrorNotJson" xml:space="preserve">
+    <value>L'indirizzo ha risposto con una pagina web invece dell'API Jellyfin. Controlla indirizzo e porta (di solito 8096).</value>
+  </data>
+  <data name="ErrorTimeout" xml:space="preserve">
+    <value>Il server non ha risposto in tempo. Controlla l'indirizzo e che il telefono sia sulla stessa rete.</value>
+  </data>
+  <data name="ErrorUnreachable" xml:space="preserve">
+    <value>Impossibile raggiungere il server. Controlla l'indirizzo e che il telefono sia sulla stessa Wi-Fi.</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Errore imprevisto: {0}</value>
+  </data>
+  <data name="Searching" xml:space="preserve">
+    <value>Ricerca...</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>Nessun risultato.</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Salvato.</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>(accesso non effettuato)</value>
+  </data>
+  <data name="MbpsSuffix" xml:space="preserve">
+    <value>Mbps</value>
+  </data>
+  <data name="LibraryTitle" xml:space="preserve">
+    <value>Libreria</value>
+  </data>
+  <data name="ResumeAction" xml:space="preserve">
+    <value>Riprendi</value>
+  </data>
+  <data name="PlayAction" xml:space="preserve">
+    <value>Riproduci</value>
+  </data>
+  <data name="PauseAction" xml:space="preserve">
+    <value>Pausa</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Riproduzione non riuscita: {0}</value>
+  </data>
+  <data name="UnknownError" xml:space="preserve">
+    <value>errore sconosciuto</value>
+  </data>
+  <data name="PlaybackNoDirectStream" xml:space="preserve">
+    <value>Nessuno stream diretto disponibile.</value>
+  </data>
+  <data name="PlaybackUnavailable" xml:space="preserve">
+    <value>Questo video non può essere riprodotto su questo dispositivo.</value>
+  </data>
+  <data name="PlaybackNoSource" xml:space="preserve">
+    <value>Questo video non può essere riprodotto su questo dispositivo (nessuna sorgente riproducibile o transcodificabile).</value>
+  </data>
+</root>

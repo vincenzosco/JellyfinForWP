@@ -8,18 +8,18 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel Margin="20,16">
-        <TextBlock Text="Settings" FontSize="26" FontWeight="Bold" Foreground="#00A4DC"/>
+        <TextBlock x:Uid="SettingsHeader" FontSize="26" FontWeight="Bold" Foreground="#00A4DC"/>
 
-        <TextBlock Text="Server" Margin="0,16,0,2" FontWeight="Bold"/>
+        <TextBlock x:Uid="ServerLabel" Margin="0,16,0,2" FontWeight="Bold"/>
         <TextBlock x:Name="ServerText" TextWrapping="Wrap" Opacity="0.8"/>
 
-        <TextBlock Text="Account" Margin="0,12,0,2" FontWeight="Bold"/>
+        <TextBlock x:Uid="AccountLabel" Margin="0,12,0,2" FontWeight="Bold"/>
         <TextBlock x:Name="AccountText" TextWrapping="Wrap" Opacity="0.8"/>
 
-        <TextBlock Text="Max streaming bitrate" Margin="0,16,0,2" FontWeight="Bold"/>
+        <TextBlock x:Uid="BitrateLabel" Margin="0,16,0,2" FontWeight="Bold"/>
         <ComboBox x:Name="BitrateBox" Width="240" HorizontalAlignment="Left" SelectionChanged="Bitrate_Changed"/>
 
-        <Button Content="Sign out" Margin="0,24,0,0" Click="SignOut_Click"/>
+        <Button x:Uid="SignOutButton" Margin="0,24,0,0" Click="SignOut_Click"/>
         <TextBlock x:Name="StatusText" Margin="0,12,0,0" Opacity="0.8"/>
     </StackPanel>
 </Page>

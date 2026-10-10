@@ -20,12 +20,12 @@ Public NotInheritable Class SettingsPage
         MyBase.OnNavigatedTo(e)
         Dim session = AppSession.Current
         ServerText.Text = session.BaseUrl
-        AccountText.Text = If(String.IsNullOrEmpty(session.UserId), "(not signed in)", session.UserId)
+        AccountText.Text = If(String.IsNullOrEmpty(session.UserId), Localized.Text("NotSignedIn"), session.UserId)
 
         _suppress = True
         Dim labels As New List(Of String)()
         For Each b In _bitrates
-            labels.Add((b \ 1000000).ToString() & " Mbps")
+            labels.Add((b \ 1000000).ToString() & " " & Localized.Text("MbpsSuffix"))
         Next
         BitrateBox.ItemsSource = labels
         Dim index = Array.IndexOf(_bitrates, session.PreferredBitrate)
@@ -38,7 +38,7 @@ Public NotInheritable Class SettingsPage
         If BitrateBox.SelectedIndex < 0 Then Return
         AppSession.Current.PreferredBitrate = _bitrates(BitrateBox.SelectedIndex)
         AppSession.Current.Save()
-        StatusText.Text = "Saved."
+        StatusText.Text = Localized.Text("Saved")
     End Sub
 
     Private Sub SignOut_Click(sender As Object, e As RoutedEventArgs)

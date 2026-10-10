@@ -42,7 +42,7 @@ Public NotInheritable Class PlayerPage
         Try
             _plan = Await PlaybackService.PrepareAsync(_item, startTicks)
             If forceDirect Then
-                If _plan.DirectFallbackUri Is Nothing Then Throw New JellyfinException("No direct stream is available.", 0)
+                If _plan.DirectFallbackUri Is Nothing Then Throw New JellyfinException(Localized.Text("PlaybackNoDirectStream"), 0)
                 _plan.IsTranscode = False
                 _plan.Uri = _plan.DirectFallbackUri
             End If
@@ -54,7 +54,7 @@ Public NotInheritable Class PlayerPage
             StartTimer()
             Await ReportStartAsync()
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
             DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
         Finally
             Busy.IsActive = False
@@ -67,7 +67,7 @@ Public NotInheritable Class PlayerPage
     End Sub
 
     Private Async Sub Media_Failed(sender As Object, e As ExceptionRoutedEventArgs)
-        ErrorText.Text = "Playback failed: " & If(e.ErrorMessage, "unknown error")
+        ErrorText.Text = Localized.Format("PlaybackFailed", If(e.ErrorMessage, Localized.Text("UnknownError")))
         DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
         Await SafeReportStoppedAsync()
     End Sub
@@ -81,10 +81,10 @@ Public NotInheritable Class PlayerPage
     Private Sub PlayPause_Click(sender As Object, e As RoutedEventArgs)
         If MediaEl.CurrentState = MediaElementState.Playing Then
             MediaEl.Pause()
-            PlayPauseButton.Content = "Play"
+            PlayPauseButton.Content = Localized.Text("PlayAction")
         Else
             MediaEl.Play()
-            PlayPauseButton.Content = "Pause"
+            PlayPauseButton.Content = Localized.Text("PauseAction")
         End If
     End Sub
 

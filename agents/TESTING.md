@@ -58,6 +58,17 @@ should expect `Inconclusive`, not a green run.
 | `Playback_info_returns_a_playable_source_for_the_first_video` | PlaybackInfo + `PlaybackUrlResolver` produce a URL |
 | `Resume_list_is_readable` | continue-watching list |
 
+## Localization consistency tests
+
+`LocalizationTests` read the real files — copied next to the test assembly by
+`JellyfinPlayer.Core.Tests.vbproj` — instead of a hand-made fixture: the two `.resw`
+files, every XAML page, the manifest and the app sources. They fail when English and
+Italian drift apart (missing key, empty value, different `{n}` placeholders), when an
+`x:Uid` has no resource, when a key used from code does not exist, when the manifest
+stops declaring `en-US`/`it-IT`, when a page prints a raw `ex.Message` instead of
+`Localized.DescribeError(ex)`, or when a user-visible XAML literal is left untranslated
+(only the brand name and the example URL are allowed literals).
+
 ## Verification the automated tests cannot do
 
 WP8.1 has no UI automation, so the app itself is verified manually on the emulator
@@ -75,3 +86,11 @@ or a device:
 - **Playback**: direct-play a compatible MP4; play a file the server must transcode;
   Stop returns and the position is saved.
 - **Settings**: bitrate persists; Sign out returns to login.
+- **Language**: set the emulator/device language to Italian → every screen and every
+  runtime message (discovery status, errors, search, settings) is Italian; set it to a
+  language that is neither EN nor IT (e.g. French) → everything is English.
+- **Logo**: the login page and the home header show `Assets/BrandMark.png` immediately
+  left of the "Jellyfin" wordmark.
+- **An address that answers with a web page**: point the app at an address whose port
+  serves a web page (e.g. `http://192.168.0.108:80`) → a short sentence saying the
+  address answered with a web page instead of the Jellyfin API, **not** HTML on screen.

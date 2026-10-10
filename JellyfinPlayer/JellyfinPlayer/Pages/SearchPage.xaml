@@ -14,9 +14,9 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Background="#101517">
-            <TextBox x:Name="QueryBox" PlaceholderText="Search movies, series, episodes" KeyDown="QueryBox_KeyDown" Margin="16,10,16,0"/>
+            <TextBox x:Name="QueryBox" x:Uid="QueryBox" KeyDown="QueryBox_KeyDown" Margin="16,10,16,0"/>
             <TextBlock x:Name="ErrorText" Foreground="#FF8A80" TextWrapping="Wrap" Margin="16,4,16,0"/>
-            <TextBlock x:Name="EmptyText" Text="Type and press Enter to search." Opacity="0.7" Margin="16,4,16,10"/>
+            <TextBlock x:Name="EmptyText" x:Uid="EmptyText" Opacity="0.7" Margin="16,4,16,10"/>
         </StackPanel>
 
         <ListView x:Name="ResultsList" Grid.Row="1" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Result_Click">

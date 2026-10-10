@@ -36,3 +36,8 @@ Rules of the road:
    WinRT-only types so the desktop tests keep compiling.
 3. `Shared/*.vb` uses `Namespace Global.JellyfinPlayer.Shared` on purpose; VB would
    otherwise prepend each project's `RootNamespace`.
+4. **User-visible strings are never literals in code.** XAML uses `x:Uid` with an entry
+   in `Strings/<lang>/Resources.resw`; code-behind uses `Localized.Text` / `Localized.Format`
+   and `Localized.DescribeError(ex)` for failures. Supported languages are `en-US`
+   (default) and `it-IT`, declared in `Package.appxmanifest`; keep both files in sync —
+   `LocalizationTests` fails otherwise. Brand names and example URLs stay literal.

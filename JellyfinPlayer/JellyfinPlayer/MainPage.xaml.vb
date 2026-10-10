@@ -23,7 +23,7 @@ Public NotInheritable Class MainPage
         Dim session = AppSession.Current
         If Not String.IsNullOrEmpty(session.BaseUrl) Then
             ServerBox.Text = session.BaseUrl
-            DiscoveryStatus.Text = "Using saved server."
+            DiscoveryStatus.Text = Localized.Text("StatusUsingSavedServer")
             Return
         End If
 
@@ -34,34 +34,30 @@ Public NotInheritable Class MainPage
     ' Fills the address field from the first UDP reply. When nothing answers, or
     ' several servers do, the user keeps (or still has) manual control.
     Private Async Function DiscoverAsync() As Task
-        DiscoveryStatus.Text = "Looking for a Jellyfin server..."
+        DiscoveryStatus.Text = Localized.Text("DiscoverySearching")
         Try
             Dim found = Await UdpServerDiscovery.DiscoverAsync(2500)
 
             If found Is Nothing OrElse found.Count = 0 Then
-                DiscoveryStatus.Text = "No server found automatically. Enter the address."
+                DiscoveryStatus.Text = Localized.Text("DiscoveryNone")
                 Return
             End If
 
             ServerBox.Text = found(0).Address
             If found.Count = 1 Then
-                DiscoveryStatus.Text = "Found " & found(0).Name & "."
+                DiscoveryStatus.Text = Localized.Format("DiscoveryFound", found(0).Name)
             Else
-                Dim names As New List(Of String)()
-                For Each server In found
-                    names.Add(server.Name & " (" & server.Address & ")")
-                Next
-                DiscoveryStatus.Text = found.Count.ToString() & " servers found, using " & found(0).Name & ". Also: " & String.Join(", ", names.ToArray())
+                DiscoveryStatus.Text = Localized.Format("DiscoveryFoundMany", found.Count, found(0).Name)
             End If
         Catch ex As Exception
-            DiscoveryStatus.Text = "Automatic detection failed: " & ex.Message
+            DiscoveryStatus.Text = Localized.Format("DiscoveryFailed", ex.Message)
         End Try
     End Function
 
     Private Async Sub ConnectButton_Click(sender As Object, e As RoutedEventArgs)
         Dim baseUrl = ServerBox.Text.Trim()
         If String.IsNullOrEmpty(baseUrl) Then
-            StatusText.Text = "Enter the server address."
+            StatusText.Text = Localized.Text("StatusEnterAddress")
             Return
         End If
         If Not baseUrl.StartsWith("http") Then baseUrl = "http://" & baseUrl
@@ -76,11 +72,11 @@ Public NotInheritable Class MainPage
             Dim client As New JellyfinApiClient(New HttpTransport(), urls, session.DeviceId)
 
             Dim info = Await client.GetServerInfoAsync()
-            If info Is Nothing Then Throw New JellyfinException("That address is not a Jellyfin server.", 0)
+            If info Is Nothing Then Throw New JellyfinException(Localized.Text("StatusNotJellyfin"), 0)
 
             Dim result = Await client.AuthenticateAsync(UserBox.Text.Trim(), PassBox.Password)
             If result Is Nothing OrElse String.IsNullOrEmpty(result.AccessToken) Then
-                StatusText.Text = "Wrong username or password."
+                StatusText.Text = Localized.Text("StatusWrongCredentials")
                 Return
             End If
 
@@ -92,9 +88,9 @@ Public NotInheritable Class MainPage
 
             NavigationService.Navigate(GetType(HomePage), Nothing)
         Catch ex As JellyfinException
-            StatusText.Text = If(ex.StatusCode = 401, "Wrong username or password.", ex.Message)
+            StatusText.Text = If(ex.StatusCode = 401, Localized.Text("StatusWrongCredentials"), Localized.DescribeError(ex))
         Catch ex As Exception
-            StatusText.Text = ex.Message
+            StatusText.Text = Localized.DescribeError(ex)
         Finally
             Busy.IsActive = False
             ConnectButton.IsEnabled = True

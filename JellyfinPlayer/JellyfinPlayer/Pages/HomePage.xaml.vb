@@ -30,7 +30,7 @@ Public NotInheritable Class HomePage
             Dim views = Await client.GetViewsAsync(session.UserId)
             ViewsGrid.ItemsSource = PosterItem.Build(views, session.BaseUrl, session.AccessToken)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
         Try
@@ -38,7 +38,7 @@ Public NotInheritable Class HomePage
             ResumeList.ItemsSource = PosterItem.Build(resumeItems, session.BaseUrl, session.AccessToken)
             ResumeHeader.Visibility = If(resumeItems.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
         Try
@@ -46,7 +46,7 @@ Public NotInheritable Class HomePage
             NextUpList.ItemsSource = PosterItem.Build(nextUp, session.BaseUrl, session.AccessToken)
             NextUpHeader.Visibility = If(nextUp.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
-            ErrorText.Text = ex.Message
+            ErrorText.Text = Localized.DescribeError(ex)
         End Try
     End Function
 

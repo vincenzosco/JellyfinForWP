@@ -17,7 +17,7 @@ Namespace Services
             Dim session = AppSession.Current
             Dim info = Await session.CreateClient().GetPlaybackInfoAsync(session.UserId, item.Id, startTicks)
             If info Is Nothing OrElse info.MediaSources Is Nothing OrElse info.MediaSources.Count = 0 Then
-                Throw New JellyfinException("This video cannot be played on this device.", 0)
+                Throw New JellyfinException(Localized.Text("PlaybackUnavailable"), 0)
             End If
 
             Dim plan As New PlaybackPlan()
@@ -50,7 +50,7 @@ Namespace Services
                 End If
             Next
 
-            Throw New JellyfinException("This video cannot be played on this device (no playable or transcodable source).", 0)
+            Throw New JellyfinException(Localized.Text("PlaybackNoSource"), 0)
         End Function
     End Module
 End Namespace
