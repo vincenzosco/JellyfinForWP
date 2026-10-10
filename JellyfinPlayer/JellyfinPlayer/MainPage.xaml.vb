@@ -1,4 +1,6 @@
 Imports System
+Imports System.Collections.Generic
+Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
 Imports Windows.UI.Xaml
@@ -6,7 +8,7 @@ Imports Windows.UI.Xaml.Controls
 Imports Windows.UI.Xaml.Navigation
 
 ''' <summary>
-''' Server connect / login page.
+''' Server connect / login page. Auto-detects the server when no address is saved.
 ''' </summary>
 Public NotInheritable Class MainPage
     Inherits Page
@@ -15,11 +17,46 @@ Public NotInheritable Class MainPage
         InitializeComponent()
     End Sub
 
-    Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
+    Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
+
         Dim session = AppSession.Current
-        ServerBox.Text = If(String.IsNullOrEmpty(session.BaseUrl), "http://", session.BaseUrl)
+        If Not String.IsNullOrEmpty(session.BaseUrl) Then
+            ServerBox.Text = session.BaseUrl
+            DiscoveryStatus.Text = "Using saved server."
+            Return
+        End If
+
+        ServerBox.Text = "http://"
+        Await DiscoverAsync()
     End Sub
+
+    ' Fills the address field from the first UDP reply. When nothing answers, or
+    ' several servers do, the user keeps (or still has) manual control.
+    Private Async Function DiscoverAsync() As Task
+        DiscoveryStatus.Text = "Looking for a Jellyfin server..."
+        Try
+            Dim found = Await UdpServerDiscovery.DiscoverAsync(2500)
+
+            If found Is Nothing OrElse found.Count = 0 Then
+                DiscoveryStatus.Text = "No server found automatically. Enter the address."
+                Return
+            End If
+
+            ServerBox.Text = found(0).Address
+            If found.Count = 1 Then
+                DiscoveryStatus.Text = "Found " & found(0).Name & "."
+            Else
+                Dim names As New List(Of String)()
+                For Each server In found
+                    names.Add(server.Name & " (" & server.Address & ")")
+                Next
+                DiscoveryStatus.Text = found.Count.ToString() & " servers found, using " & found(0).Name & ". Also: " & String.Join(", ", names.ToArray())
+            End If
+        Catch ex As Exception
+            DiscoveryStatus.Text = "Automatic detection failed: " & ex.Message
+        End Try
+    End Function
 
     Private Async Sub ConnectButton_Click(sender As Object, e As RoutedEventArgs)
         Dim baseUrl = ServerBox.Text.Trim()
