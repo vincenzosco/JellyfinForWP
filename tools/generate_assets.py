@@ -21,6 +21,10 @@ TARGETS = [
     ("WideLogo.scale-240.png", 744, 360, "transparent"),
     ("StoreLogo.scale-240.png", 120, 120, "transparent"),
     ("SplashScreen.scale-240.png", 1152, 1920, "brand"),
+    # Inline UI mark shown next to the app title. Unqualified on purpose: an
+    # unqualified asset always resolves, a .scale-* only one falls back to a
+    # missing candidate on a device with another scale factor.
+    ("BrandMark.png", 144, 144, "ui"),
 ]
 
 DEFAULT_SOURCE = os.path.expanduser("~/Downloads/images_1_-removebg-preview.png")
@@ -62,6 +66,10 @@ def main():
         if background == "brand":
             canvas = Image.new("RGBA", (w, h), BRAND_BG)
             place(canvas, fit(logo, w, h, 0.40))
+        elif background == "ui":
+            # Fill the canvas: no tile-style padding for an inline mark.
+            canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+            place(canvas, fit(logo, w, h, 0.92))
         else:
             canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
             place(canvas, fit(logo, w, h, 0.72))

@@ -10,7 +10,10 @@
 
     <Grid>
         <StackPanel VerticalAlignment="Center" Margin="24,0">
-            <TextBlock Text="Jellyfin" FontSize="34" FontWeight="Bold" Foreground="#00A4DC"/>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="ms-appx:///Assets/BrandMark.png" Width="44" Height="44" Margin="0,0,12,0"/>
+                <TextBlock Text="Jellyfin" FontSize="34" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
+            </StackPanel>
             <TextBlock Text="Server address" Margin="0,20,0,4"/>
             <TextBox x:Name="ServerBox" PlaceholderText="http://192.168.1.10:8096"/>
             <TextBlock x:Name="DiscoveryStatus" TextWrapping="Wrap" Opacity="0.7" Margin="0,4,0,0"/>
