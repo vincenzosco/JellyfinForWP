@@ -15,7 +15,7 @@ Namespace Services
     Public Module PlaybackService
         Public Async Function PrepareAsync(item As BaseItemDto, startTicks As Long) As Task(Of PlaybackPlan)
             Dim session = AppSession.Current
-            Dim info = Await session.CreateClient().GetPlaybackInfoAsync(session.UserId, item.Id, startTicks)
+            Dim info = Await session.CreateClient().GetPlaybackInfoAsync(session.UserId, item.Id, startTicks, session.PreferredBitrate)
             If info Is Nothing OrElse info.MediaSources Is Nothing OrElse info.MediaSources.Count = 0 Then
                 Throw New JellyfinException(Localized.Text("PlaybackUnavailable"), 0)
             End If
