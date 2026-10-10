@@ -31,3 +31,9 @@ tools/generate_assets.py  regenerates the .scale-240 assets from a source logo
 
 - Unit tests over `Shared/` (no server) and integration tests against a real
   server. See [`../agents/TESTING.md`](../agents/TESTING.md).
+
+## Repository readme
+
+The root readme documents the build and the test commands:
+[`../README.md`](../README.md) (English, the default) and
+[`../README.it.md`](../README.it.md) (Italian).
