@@ -15,3 +15,7 @@ test.settings.local
 
 # MSTest result files
 TestResults/
+
+# Build and tool byproducts
+JellyfinPlayer/JellyfinPlayer/BundleArtifacts/
+__pycache__/
