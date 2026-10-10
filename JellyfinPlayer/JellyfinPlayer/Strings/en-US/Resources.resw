@@ -97,14 +97,8 @@
   <data name="PlayedToggle.Content" xml:space="preserve">
     <value>Watched</value>
   </data>
-  <data name="PlayPauseButton.Content" xml:space="preserve">
-    <value>Pause</value>
-  </data>
   <data name="DirectButton.Content" xml:space="preserve">
     <value>Play direct</value>
-  </data>
-  <data name="StopButton.Content" xml:space="preserve">
-    <value>Stop</value>
   </data>
   <data name="QueryBox.PlaceholderText" xml:space="preserve">
     <value>Search movies, series, episodes</value>
@@ -198,6 +192,9 @@
   </data>
   <data name="PauseAction" xml:space="preserve">
     <value>Pause</value>
+  </data>
+  <data name="ActionClose" xml:space="preserve">
+    <value>Close the player</value>
   </data>
   <data name="PlaybackFailed" xml:space="preserve">
     <value>Playback failed: {0}</value>

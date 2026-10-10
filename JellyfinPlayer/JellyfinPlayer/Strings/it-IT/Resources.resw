@@ -97,14 +97,8 @@
   <data name="PlayedToggle.Content" xml:space="preserve">
     <value>Visto</value>
   </data>
-  <data name="PlayPauseButton.Content" xml:space="preserve">
-    <value>Pausa</value>
-  </data>
   <data name="DirectButton.Content" xml:space="preserve">
     <value>Riproduci diretto</value>
-  </data>
-  <data name="StopButton.Content" xml:space="preserve">
-    <value>Interrompi</value>
   </data>
   <data name="QueryBox.PlaceholderText" xml:space="preserve">
     <value>Cerca film, serie, episodi</value>
@@ -198,6 +192,9 @@
   </data>
   <data name="PauseAction" xml:space="preserve">
     <value>Pausa</value>
+  </data>
+  <data name="ActionClose" xml:space="preserve">
+    <value>Chiudi il lettore</value>
   </data>
   <data name="PlaybackFailed" xml:space="preserve">
     <value>Riproduzione non riuscita: {0}</value>
