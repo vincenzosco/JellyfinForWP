@@ -115,8 +115,9 @@ Public Class LocalizationTests
 
     <TestMethod>
     Public Sub No_maintained_XAML_literal_text_remains()
-        ' The brand name and the example URL are deliberately not translated.
-        Dim allowed = {"Jellyfin", "http://192.168.1.10:8096"}
+        ' The brand name and the example URL are deliberately not translated;
+        ' "10" and "30" are the numeric badges over the skip icons - digits, not prose.
+        Dim allowed = {"Jellyfin", "http://192.168.1.10:8096", "10", "30"}
         For Each xamlFile In XamlFiles()
             Dim text As String = System.IO.File.ReadAllText(xamlFile)
             For Each m In Regex.Matches(text, "\s(?:Text|Content|PlaceholderText)=""([^""{][^""]*)""").Cast(Of Match)()

@@ -20,6 +20,12 @@ Read this in [English](README.md).
 - Riproduzione: diretta quando il server dichiara il file riproducibile direttamente,
   altrimenti transcodifica in MP4 HTTP progressivo. I progressi vengono inviati al server,
   così il resume funziona.
+- Lettore a schermo intero: un pulsante nasconde la barra di stato e i comandi, il video
+  riempie lo schermo, la rotazione segue il telefono e lo schermo resta acceso; il tasto
+  Indietro esce prima da schermo intero e solo dopo dalla pagina.
+- Comandi del lettore: indietro di 10 s / avanti di 30 s, mute, riempi/mostra tutto,
+  tempo trascorso e durata totale, indicatore di caricamento, e comandi che si nascondono
+  da soli solo mentre il video va (un tocco li riporta).
 - Impostazioni: bitrate massimo in streaming, esci.
 - Interfaccia in inglese e italiano scelta dalla lingua del dispositivo, inglese come
   predefinito.
@@ -75,7 +81,7 @@ configurato quei test di integrazione riportano `Inconclusive`.
 - [`agents/README.md`](agents/README.md) — cosa fa l'app e come è organizzata.
 - [`agents/BUILD.md`](agents/BUILD.md) — tutti i comandi di build e test.
 - [`agents/TESTING.md`](agents/TESTING.md) — test unitari e di integrazione, più la
-  checklist manuale sul dispositivo (lingua, logo, autodiscovery).
+  checklist manuale sul dispositivo (lingua, logo, autodiscovery, comandi del lettore).
 - [`agents/ARCHITECTURE.md`](agents/ARCHITECTURE.md),
   [`agents/CONVENTIONS.md`](agents/CONVENTIONS.md),
   [`agents/JELLYFIN_API.md`](agents/JELLYFIN_API.md),

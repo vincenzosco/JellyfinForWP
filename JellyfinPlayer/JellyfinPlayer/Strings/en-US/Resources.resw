@@ -196,6 +196,36 @@
   <data name="ActionClose" xml:space="preserve">
     <value>Close the player</value>
   </data>
+  <data name="ActionFullScreen" xml:space="preserve">
+    <value>Full screen</value>
+  </data>
+  <data name="ActionExitFullScreen" xml:space="preserve">
+    <value>Exit full screen</value>
+  </data>
+  <data name="ActionMute" xml:space="preserve">
+    <value>Mute the sound</value>
+  </data>
+  <data name="ActionUnmute" xml:space="preserve">
+    <value>Turn the sound back on</value>
+  </data>
+  <data name="ActionStretchFill" xml:space="preserve">
+    <value>Fill the screen (crop the edges)</value>
+  </data>
+  <data name="ActionStretchFit" xml:space="preserve">
+    <value>Fit the whole video</value>
+  </data>
+  <data name="ActionSkipBack" xml:space="preserve">
+    <value>Back 10 seconds</value>
+  </data>
+  <data name="ActionSkipForward" xml:space="preserve">
+    <value>Forward 30 seconds</value>
+  </data>
+  <data name="ActionSeek" xml:space="preserve">
+    <value>Playback position</value>
+  </data>
+  <data name="BufferingText.Text" xml:space="preserve">
+    <value>Buffering...</value>
+  </data>
   <data name="PlaybackFailed" xml:space="preserve">
     <value>Playback failed: {0}</value>
   </data>

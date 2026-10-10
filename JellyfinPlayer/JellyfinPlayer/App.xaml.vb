@@ -23,6 +23,10 @@ NotInheritable Class App
     End Sub
 
     Private Sub OnBackPressed(sender As Object, e As BackPressedEventArgs)
+        If NavigationService.BackInterceptor IsNot Nothing AndAlso NavigationService.BackInterceptor() Then
+            e.Handled = True
+            Return
+        End If
         If NavigationService.CanGoBack Then
             NavigationService.GoBack()
             e.Handled = True
