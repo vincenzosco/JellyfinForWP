@@ -38,12 +38,12 @@ Namespace Global.JellyfinPlayer.Shared
 
         Public Async Function GetServerInfoAsync() As Task(Of ServerInfoDto)
             Dim body As String = Await _transport.GetStringAsync(_urls.SystemInfoPublic(), Nothing)
-            Return Json.Deserialize(Of ServerInfoDto)(body)
+            Return ResponseFailures.Parse(Of ServerInfoDto)(body)
         End Function
 
         Public Async Function GetPublicUsersAsync() As Task(Of List(Of PublicUserDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.PublicUsers(), Nothing)
-            Return Json.Deserialize(Of List(Of PublicUserDto))(body)
+            Return ResponseFailures.Parse(Of List(Of PublicUserDto))(body)
         End Function
 
         Public Async Function ValidateConnectionAsync() As Task(Of Boolean)
@@ -59,7 +59,7 @@ Namespace Global.JellyfinPlayer.Shared
         Public Async Function AuthenticateAsync(username As String, password As String) As Task(Of AuthenticateResultDto)
             Dim req As New AuthenticateRequestDto With {.Username = username, .Pw = password, .Password = password}
             Dim body As String = Await _transport.PostJsonAsync(_urls.AuthenticateByName(), Json.Serialize(req), AuthHeaders())
-            Dim result = Json.Deserialize(Of AuthenticateResultDto)(body)
+            Dim result = ResponseFailures.Parse(Of AuthenticateResultDto)(body)
             If result IsNot Nothing Then
                 AccessToken = result.AccessToken
                 If result.User IsNot Nothing Then UserId = result.User.Id
@@ -78,12 +78,12 @@ Namespace Global.JellyfinPlayer.Shared
 
         Public Async Function GetViewsAsync(userId As String) As Task(Of List(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.Views(userId), TokenHeaders())
-            Return AsList(Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body))
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         Public Async Function GetItemsAsync(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer) As Task(Of QueryResultDto(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.Items(userId, parentId, includeItemTypes, startIndex, limit, "SortName", "Ascending"), TokenHeaders())
-            Dim q = Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body)
+            Dim q = ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body)
             If q Is Nothing Then q = New QueryResultDto(Of BaseItemDto)()
             If q.Items Is Nothing Then q.Items = New List(Of BaseItemDto)()
             Return q
@@ -91,22 +91,22 @@ Namespace Global.JellyfinPlayer.Shared
 
         Public Async Function GetItemAsync(userId As String, itemId As String) As Task(Of BaseItemDto)
             Dim body As String = Await _transport.GetStringAsync(_urls.Item(userId, itemId), TokenHeaders())
-            Return Json.Deserialize(Of BaseItemDto)(body)
+            Return ResponseFailures.Parse(Of BaseItemDto)(body)
         End Function
 
         Public Async Function GetSeasonsAsync(seriesId As String, userId As String) As Task(Of List(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.Seasons(seriesId, userId), TokenHeaders())
-            Return AsList(Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body))
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         Public Async Function GetEpisodesAsync(seriesId As String, userId As String, seasonId As String) As Task(Of List(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.Episodes(seriesId, userId, seasonId), TokenHeaders())
-            Return AsList(Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body))
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         Public Async Function SearchAsync(userId As String, term As String) As Task(Of QueryResultDto(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.Search(userId, term), TokenHeaders())
-            Dim q = Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body)
+            Dim q = ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body)
             If q Is Nothing Then q = New QueryResultDto(Of BaseItemDto)()
             If q.Items Is Nothing Then q.Items = New List(Of BaseItemDto)()
             Return q
@@ -114,12 +114,12 @@ Namespace Global.JellyfinPlayer.Shared
 
         Public Async Function GetResumeAsync(userId As String, limit As Integer) As Task(Of List(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.ResumeItems(userId, limit), TokenHeaders())
-            Return AsList(Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body))
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         Public Async Function GetNextUpAsync(userId As String, limit As Integer) As Task(Of List(Of BaseItemDto))
             Dim body As String = Await _transport.GetStringAsync(_urls.NextUp(userId, limit), TokenHeaders())
-            Return AsList(Json.Deserialize(Of QueryResultDto(Of BaseItemDto))(body))
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         ' ---- playback / user data ------------------------------------------
@@ -127,7 +127,7 @@ Namespace Global.JellyfinPlayer.Shared
         Public Async Function GetPlaybackInfoAsync(userId As String, itemId As String, startTicks As Long) As Task(Of PlaybackInfoResponseDto)
             Dim req = DeviceProfileBuilder.ToRequest(userId, startTicks)
             Dim body As String = Await _transport.PostJsonAsync(_urls.PlaybackInfo(itemId, userId), Json.Serialize(req), TokenHeaders())
-            Return Json.Deserialize(Of PlaybackInfoResponseDto)(body)
+            Return ResponseFailures.Parse(Of PlaybackInfoResponseDto)(body)
         End Function
 
         Public Async Function ReportPlaybackStartAsync(progress As PlaybackProgressDto) As Task

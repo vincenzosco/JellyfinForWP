@@ -38,7 +38,9 @@ Namespace Global.JellyfinPlayer.Shared
                 Dim response As HttpResponseMessage = Await _client.SendAsync(request).ConfigureAwait(False)
                 Dim body As String = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
                 If Not response.IsSuccessStatusCode Then
-                    Throw New JellyfinException(body, CInt(response.StatusCode))
+                    Dim mediaType As String = If(response.Content.Headers.ContentType Is Nothing, "", response.Content.Headers.ContentType.MediaType)
+                    Throw New JellyfinException(ResponseFailures.DescribeHttpFailure(CInt(response.StatusCode), mediaType, body),
+                                                CInt(response.StatusCode), JellyfinErrorKind.HttpFailure)
                 End If
                 Return body
             Catch ex As Exception
@@ -50,10 +52,10 @@ Namespace Global.JellyfinPlayer.Shared
         Public Shared Function MapException(ex As Exception) As JellyfinException
             If TypeOf ex Is JellyfinException Then Return DirectCast(ex, JellyfinException)
             If TypeOf ex Is TaskCanceledException OrElse TypeOf ex Is OperationCanceledException Then
-                Return New JellyfinException("The server did not respond (timeout).", 0)
+                Return New JellyfinException("The server did not respond (timeout).", 0, JellyfinErrorKind.Timeout)
             End If
             If TypeOf ex Is HttpRequestException Then
-                Return New JellyfinException("Could not reach the server: " & ex.Message, 0)
+                Return New JellyfinException("Could not reach the server: " & ex.Message, 0, JellyfinErrorKind.Unreachable)
             End If
             Return New JellyfinException(ex.Message, 0)
         End Function
