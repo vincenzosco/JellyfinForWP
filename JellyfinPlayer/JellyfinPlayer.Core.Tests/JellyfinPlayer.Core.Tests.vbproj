@@ -40,7 +40,7 @@
     <Compile Include="..\Shared\*.vb">
       <Link>Shared\%(Filename)%(Extension)</Link>
     </Compile>
-    <Compile Include="PlaceholderTests.vb" />
+    <Compile Include="*.vb" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -50,6 +50,7 @@
     <Import Include="System.Linq" />
     <Import Include="System.Threading.Tasks" />
     <Import Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <Import Include="JellyfinPlayer.Shared" />
   </ItemGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
