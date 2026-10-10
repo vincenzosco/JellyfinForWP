@@ -24,7 +24,13 @@ Public NotInheritable Class LibraryPage
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
         _view = TryCast(e.Parameter, BaseItemDto)
+        ' The frame caches pages, so this instance can be reused for another
+        ' library, or navigated back into. Start from the first page again.
+        _startIndex = 0
+        _items.Clear()
+        ErrorText.Text = ""
         TitleText.Text = If(_view IsNot Nothing, _view.Name, Localized.Text("LibraryTitle"))
+        If _view Is Nothing Then Return
         Await LoadNextPageAsync()
     End Sub
 
