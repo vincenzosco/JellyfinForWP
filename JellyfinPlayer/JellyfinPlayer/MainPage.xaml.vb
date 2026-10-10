@@ -71,7 +71,7 @@ Public NotInheritable Class MainPage
             StatusText.Text = Localized.Text("StatusEnterAddress")
             Return
         End If
-        If Not baseUrl.StartsWith("http") Then baseUrl = "http://" & baseUrl
+        If Not baseUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) Then baseUrl = "http://" & baseUrl
 
         Busy.IsActive = True
         ConnectButton.IsEnabled = False
