@@ -20,7 +20,10 @@ Public NotInheritable Class SettingsPage
         MyBase.OnNavigatedTo(e)
         Dim session = AppSession.Current
         ServerText.Text = session.BaseUrl
-        AccountText.Text = If(String.IsNullOrEmpty(session.UserId), Localized.Text("NotSignedIn"), session.UserId)
+        ' The picker knows the person's name; the raw id is the fallback for an
+        ' account the migration could not name yet.
+        Dim name = AccountItem.DisplayName(session.ActiveAccount)
+        AccountText.Text = If(String.IsNullOrEmpty(name), Localized.Text("NotSignedIn"), name)
 
         _suppress = True
         Dim labels As New List(Of String)()
@@ -41,10 +44,15 @@ Public NotInheritable Class SettingsPage
         StatusText.Text = Localized.Text("Saved")
     End Sub
 
+    Private Sub Switch_Click(sender As Object, e As RoutedEventArgs)
+        NavigationService.Navigate(GetType(AccountsPage), Nothing)
+    End Sub
+
     Private Sub SignOut_Click(sender As Object, e As RoutedEventArgs)
         ' Leaves the account without forgetting it: its token stays, so coming
         ' back asks for no password.
         AppSession.Current.SignOut()
-        NavigationService.Navigate(GetType(MainPage), Nothing)
+        NavigationService.ClearBackStack()
+        NavigationService.Navigate(GetType(AccountsPage), Nothing)
     End Sub
 End Class

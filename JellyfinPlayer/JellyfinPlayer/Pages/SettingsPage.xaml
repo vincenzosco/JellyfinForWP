@@ -19,7 +19,8 @@
         <TextBlock x:Uid="BitrateLabel" Margin="0,16,0,2" FontWeight="Bold"/>
         <ComboBox x:Name="BitrateBox" Width="240" HorizontalAlignment="Left" SelectionChanged="Bitrate_Changed"/>
 
-        <Button x:Uid="SignOutButton" Margin="0,24,0,0" Click="SignOut_Click"/>
+        <Button x:Uid="SwitchAccountButton" Margin="0,24,0,0" Click="Switch_Click"/>
+        <Button x:Uid="SignOutButton" Margin="0,8,0,0" Click="SignOut_Click"/>
         <TextBlock x:Name="StatusText" Margin="0,12,0,0" Opacity="0.8"/>
     </StackPanel>
 </Page>
