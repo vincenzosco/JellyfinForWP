@@ -68,4 +68,15 @@ Public Class FailurePathTests
             Assert.AreEqual(JellyfinErrorKind.Unreachable, ex.Kind, ex.Message)
         End Try
     End Sub
+
+    ' A token the server no longer accepts must send the user back to the
+    ' password prompt of that one account, not print an HTTP sentence.
+    <TestMethod>
+    Public Sub IsUnauthorized_is_true_for_401_and_403()
+        Assert.IsTrue(FailureText.IsUnauthorized(New JellyfinException("nope", 401)))
+        Assert.IsTrue(FailureText.IsUnauthorized(New JellyfinException("nope", 403)))
+        Assert.IsFalse(FailureText.IsUnauthorized(New JellyfinException("nope", 500)))
+        Assert.IsFalse(FailureText.IsUnauthorized(New JellyfinException("timeout", 0, JellyfinErrorKind.Timeout)))
+        Assert.IsFalse(FailureText.IsUnauthorized(New Exception("boom")))
+    End Sub
 End Class

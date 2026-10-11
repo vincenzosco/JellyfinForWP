@@ -45,6 +45,12 @@ Namespace Global.JellyfinPlayer.Shared
             Return ResponseFailures.Parse(Of List(Of PublicUserDto))(body)
         End Function
 
+        ' Fills the name of an account the migration could not name.
+        Public Async Function GetUserAsync(userId As String) As Task(Of UserDto)
+            Dim body As String = Await _transport.GetStringAsync(_urls.User(userId), TokenHeaders())
+            Return ResponseFailures.Parse(Of UserDto)(body)
+        End Function
+
         Public Async Function ValidateConnectionAsync() As Task(Of Boolean)
             Dim info As ServerInfoDto = Nothing
             Try

@@ -59,4 +59,12 @@ Public Class AuthTests
         Dim mapped = HttpTransport.MapException(New System.Net.Http.HttpRequestException("boom"))
         Assert.IsTrue(mapped.Message.Contains("Could not reach"), mapped.Message)
     End Sub
+
+    <TestMethod>
+    Public Sub GetUser_returns_the_name()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""Id"":""u1"",""Name"":""bob""}"
+        Dim user = MakeClient(fake).GetUserAsync("u1").Result
+        Assert.AreEqual("bob", user.Name)
+    End Sub
 End Class

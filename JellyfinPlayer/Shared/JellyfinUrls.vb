@@ -29,6 +29,11 @@ Namespace Global.JellyfinPlayer.Shared
             Return U("/Users/Public")
         End Function
 
+        ' The signed-in user's own record; the picker needs User.Name from it.
+        Public Function User(userId As String) As String
+            Return WithKey(U("/Users/" & userId))
+        End Function
+
         Public Function AuthenticateByName() As String
             Return U("/Users/AuthenticateByName")
         End Function

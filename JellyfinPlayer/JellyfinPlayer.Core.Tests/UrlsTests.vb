@@ -55,4 +55,11 @@ Public Class UrlsTests
     Public Sub Missing_token_omits_api_key()
         Assert.IsFalse(New JellyfinUrls("http://h").PrimaryImage("i", 100).Contains("api_key"), "no token should mean no api_key")
     End Sub
+
+    <TestMethod>
+    Public Sub User_url_carries_the_api_key()
+        Dim u = MakeUrls().User("u1")
+        Assert.IsTrue(u.Contains("/Users/u1"), u)
+        Assert.IsTrue(u.Contains("api_key=TOK"), u)
+    End Sub
 End Class

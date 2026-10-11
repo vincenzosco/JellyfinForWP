@@ -854,7 +854,7 @@ Append to `UrlsTests`:
     <TestMethod>
     Public Sub User_url_carries_the_api_key()
         Dim u = MakeUrls().User("u1")
-        Assert.IsTrue(u.EndsWith("/Users/u1"), u)
+        Assert.IsTrue(u.Contains("/Users/u1"), u)
         Assert.IsTrue(u.Contains("api_key=TOK"), u)
     End Sub
 ```
@@ -913,11 +913,13 @@ In `FailureText`, before `Describe`:
 
 ```vb
         ' The saved token of this account is no longer accepted: the caller should
-        ' ask for the password again instead of printing an HTTP failure.
+        ' ask for the password again instead of printing an HTTP failure. The
+        ' status is the whole signal - requiring the error kind as well would tie
+        ' the re-login path to every throw site remembering to classify itself.
         Public Function IsUnauthorized(ex As Exception) As Boolean
             Dim failure = TryCast(ex, JellyfinException)
             If failure Is Nothing Then Return False
-            Return failure.Kind = JellyfinErrorKind.HttpFailure AndAlso (failure.StatusCode = 401 OrElse failure.StatusCode = 403)
+            Return failure.StatusCode = 401 OrElse failure.StatusCode = 403
         End Function
 ```
 
