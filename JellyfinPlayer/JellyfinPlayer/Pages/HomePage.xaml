@@ -19,6 +19,13 @@
                 <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                <!-- The path data lives here rather than in a Geometry resource
+                     keyed with x:Key: WinRT XAML cannot create that base type and
+                     the page would then refuse to load, with nothing on screen. -->
+                <Button x:Uid="SwitchAccountButton" Click="SwitchAccount_Click">
+                    <Path Data="M12,2 A5,5 0 1 1 11.99,2 Z M4,20 C4,16.7 7.6,14.5 12,14.5 C16.4,14.5 20,16.7 20,20 L20,22 L4,22 Z"
+                          Fill="#00A4DC" Stretch="Uniform" Width="20" Height="20"/>
+                </Button>
                 <Button x:Uid="SearchButton" Click="Search_Click"/>
                 <Button x:Uid="SettingsButton" Click="Settings_Click"/>
             </StackPanel>

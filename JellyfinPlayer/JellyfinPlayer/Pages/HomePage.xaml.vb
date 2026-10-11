@@ -30,6 +30,10 @@ Public NotInheritable Class HomePage
             Dim views = Await client.GetViewsAsync(session.UserId)
             ViewsGrid.ItemsSource = PosterItem.Build(views, session.BaseUrl, session.AccessToken)
         Catch ex As Exception
+            If FailureText.IsUnauthorized(ex) Then
+                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Return
+            End If
             ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
@@ -38,6 +42,10 @@ Public NotInheritable Class HomePage
             ResumeList.ItemsSource = PosterItem.Build(resumeItems, session.BaseUrl, session.AccessToken)
             ResumeHeader.Visibility = If(resumeItems.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
+            If FailureText.IsUnauthorized(ex) Then
+                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Return
+            End If
             ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
@@ -46,8 +54,23 @@ Public NotInheritable Class HomePage
             NextUpList.ItemsSource = PosterItem.Build(nextUp, session.BaseUrl, session.AccessToken)
             NextUpHeader.Visibility = If(nextUp.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
+            If FailureText.IsUnauthorized(ex) Then
+                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Return
+            End If
             ErrorText.Text = Localized.DescribeError(ex)
         End Try
+
+        ' A migrated account has no name in the store; fetch it once so the picker
+        ' shows a person instead of an id.
+        If String.IsNullOrEmpty(session.ActiveAccount.UserName) Then
+            Try
+                Dim user = Await client.GetUserAsync(session.UserId)
+                If user IsNot Nothing Then session.SetUserName(session.ActiveAccount.Id, user.Name)
+            Catch ex As Exception
+                ' The name is cosmetic: a failure here must not disturb Home.
+            End Try
+        End If
     End Function
 
     Private Sub View_Click(sender As Object, e As ItemClickEventArgs)
@@ -66,5 +89,9 @@ Public NotInheritable Class HomePage
 
     Private Sub Settings_Click(sender As Object, e As RoutedEventArgs)
         NavigationService.Navigate(GetType(SettingsPage), Nothing)
+    End Sub
+
+    Private Sub SwitchAccount_Click(sender As Object, e As RoutedEventArgs)
+        NavigationService.Navigate(GetType(AccountsPage), Nothing)
     End Sub
 End Class
