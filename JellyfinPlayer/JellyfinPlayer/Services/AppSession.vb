@@ -4,7 +4,9 @@ Imports Windows.Storage
 Imports JellyfinPlayer.Shared
 
 Namespace Services
-    ' Persists the server/token/user and the generated device id in LocalSettings.
+    ' What the pages see: the active account plus the device-wide settings. The
+    ' accounts themselves live in the AccountStore, so a page that only ever
+    ' calls CreateClient() does not know how many logins are saved.
     Public Class AppSession
         Private Shared _current As AppSession
 
@@ -15,19 +17,65 @@ Namespace Services
             End Get
         End Property
 
-        Private Const KBaseUrl As String = "JellyfinBaseUrl"
-        Private Const KAccessToken As String = "JellyfinAccessToken"
-        Private Const KUserId As String = "JellyfinUserId"
-        Private Const KServerId As String = "JellyfinServerId"
         Private Const KDeviceId As String = "JellyfinDeviceId"
         Private Const KBitrate As String = "JellyfinBitrate"
+        ' The single-session keys of the previous build: read once by Load() to
+        ' migrate them, then removed.
+        Private Const KLegacyBaseUrl As String = "JellyfinBaseUrl"
+        Private Const KLegacyAccessToken As String = "JellyfinAccessToken"
+        Private Const KLegacyUserId As String = "JellyfinUserId"
+        Private Const KLegacyServerId As String = "JellyfinServerId"
 
-        Public Property BaseUrl As String
-        Public Property AccessToken As String
-        Public Property UserId As String
-        Public Property ServerId As String
+        Private ReadOnly _store As AccountStore
+
+        Public Sub New()
+            _store = New AccountStore(New LocalAccountStorage())
+        End Sub
+
+        Public ReadOnly Property Store As AccountStore
+            Get
+                Return _store
+            End Get
+        End Property
+
+        Public ReadOnly Property Accounts As List(Of AccountDto)
+            Get
+                Return _store.Accounts
+            End Get
+        End Property
+
+        Public ReadOnly Property ActiveAccount As AccountDto
+            Get
+                Return _store.Active
+            End Get
+        End Property
+
         Public Property DeviceId As String
         Public Property PreferredBitrate As Integer = DeviceProfileBuilder.DefaultBitrate
+
+        Public ReadOnly Property BaseUrl As String
+            Get
+                Return If(ActiveAccount Is Nothing, Nothing, ActiveAccount.BaseUrl)
+            End Get
+        End Property
+
+        Public ReadOnly Property AccessToken As String
+            Get
+                Return If(ActiveAccount Is Nothing, Nothing, ActiveAccount.AccessToken)
+            End Get
+        End Property
+
+        Public ReadOnly Property UserId As String
+            Get
+                Return If(ActiveAccount Is Nothing, Nothing, ActiveAccount.UserId)
+            End Get
+        End Property
+
+        Public ReadOnly Property ServerId As String
+            Get
+                Return If(ActiveAccount Is Nothing, Nothing, ActiveAccount.ServerId)
+            End Get
+        End Property
 
         Public ReadOnly Property IsLoggedIn As Boolean
             Get
@@ -37,10 +85,6 @@ Namespace Services
 
         Public Sub Load()
             Dim s = ApplicationData.Current.LocalSettings.Values
-            BaseUrl = ReadString(s, KBaseUrl)
-            AccessToken = ReadString(s, KAccessToken)
-            UserId = ReadString(s, KUserId)
-            ServerId = ReadString(s, KServerId)
             DeviceId = ReadString(s, KDeviceId)
             If String.IsNullOrEmpty(DeviceId) Then
                 DeviceId = Guid.NewGuid().ToString("N")
@@ -53,36 +97,54 @@ Namespace Services
             Else
                 PreferredBitrate = DeviceProfileBuilder.DefaultBitrate
             End If
+
+            ' An upgrade arrives with four loose keys and no document.
+            _store.MigrateFromLegacy(ReadString(s, KLegacyBaseUrl), ReadString(s, KLegacyAccessToken),
+                                     ReadString(s, KLegacyUserId), ReadString(s, KLegacyServerId))
+            For Each key In New String() {KLegacyBaseUrl, KLegacyAccessToken, KLegacyUserId, KLegacyServerId}
+                If s.ContainsKey(key) Then s.Remove(key)
+            Next
         End Sub
 
         Public Sub Save()
             Dim s = ApplicationData.Current.LocalSettings.Values
-            s(KBaseUrl) = BaseUrl
-            s(KAccessToken) = AccessToken
-            s(KUserId) = UserId
-            s(KServerId) = ServerId
             s(KDeviceId) = DeviceId
             s(KBitrate) = PreferredBitrate
+            _store.Save()
         End Sub
 
-        ' Removes every credential but keeps the device id.
-        Public Sub Clear()
-            Dim s = ApplicationData.Current.LocalSettings.Values
-            For Each key In New String() {KBaseUrl, KAccessToken, KUserId, KServerId, KBitrate}
-                If s.ContainsKey(key) Then s.Remove(key)
-            Next
-            BaseUrl = Nothing
-            AccessToken = Nothing
-            UserId = Nothing
-            ServerId = Nothing
+        ' A successful login: the same server and user refreshes that entry.
+        Public Function SignIn(baseUrl As String, userId As String, userName As String, token As String, serverId As String, serverName As String) As AccountDto
+            Return _store.AddOrUpdate(baseUrl, userId, userName, token, serverId, serverName)
+        End Function
+
+        Public Sub SwitchTo(id As String)
+            _store.SetActive(id)
+        End Sub
+
+        ' Leaving an account keeps it (and its token) saved.
+        Public Sub SignOut()
+            _store.ClearActive()
+        End Sub
+
+        Public Sub RemoveAccount(id As String)
+            _store.Remove(id)
+        End Sub
+
+        Public Sub SetUserName(id As String, userName As String)
+            _store.SetUserName(id, userName)
         End Sub
 
         Public Function CreateClient() As JellyfinApiClient
-            Dim urls As New JellyfinUrls(BaseUrl, AccessToken)
+            Dim account = ActiveAccount
+            Dim urls As New JellyfinUrls(If(account Is Nothing, Nothing, account.BaseUrl),
+                                         If(account Is Nothing, Nothing, account.AccessToken))
             Dim client As New JellyfinApiClient(New HttpTransport(), urls, DeviceId)
-            client.AccessToken = AccessToken
-            client.UserId = UserId
-            client.ServerId = ServerId
+            If account IsNot Nothing Then
+                client.AccessToken = account.AccessToken
+                client.UserId = account.UserId
+                client.ServerId = account.ServerId
+            End If
             Return client
         End Function
 

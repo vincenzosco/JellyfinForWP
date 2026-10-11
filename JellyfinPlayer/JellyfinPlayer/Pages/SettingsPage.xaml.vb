@@ -42,7 +42,9 @@ Public NotInheritable Class SettingsPage
     End Sub
 
     Private Sub SignOut_Click(sender As Object, e As RoutedEventArgs)
-        AppSession.Current.Clear()
+        ' Leaves the account without forgetting it: its token stays, so coming
+        ' back asks for no password.
+        AppSession.Current.SignOut()
         NavigationService.Navigate(GetType(MainPage), Nothing)
     End Sub
 End Class

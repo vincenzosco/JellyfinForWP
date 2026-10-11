@@ -538,6 +538,8 @@ git commit -m "feat: migrate the single-session keys into the first account"
 **Files:**
 - Create: `JellyfinPlayer/JellyfinPlayer/Services/LocalAccountStorage.vb`
 - Modify: `JellyfinPlayer/JellyfinPlayer/Services/AppSession.vb` (whole file)
+- Modify: `JellyfinPlayer/JellyfinPlayer/Services/NavigationService.vb` (add `ClearBackStack`)
+- Modify: `JellyfinPlayer/JellyfinPlayer/MainPage.xaml.vb:93-99` (the login stores an account)
 - Modify: `JellyfinPlayer/JellyfinPlayer/Pages/SettingsPage.xaml.vb:44-47` (Sign out no longer clears everything)
 
 **Interfaces:**
@@ -749,32 +751,79 @@ Namespace Services
 End Namespace
 ```
 
-- [ ] **Step 3: Point Settings' Sign out at the new API so the build compiles**
+- [ ] **Step 3: Add `ClearBackStack` to the navigation service**
+
+The login and the switch both need it, and `MainPage` changes in the next step
+cannot compile without it.
+
+In `Services/NavigationService.vb`, after `GoBack()`:
+
+```vb
+        ' A switch of account must not leave the previous user's screens behind
+        ' it: going back would walk into another account's library.
+        Public Sub ClearBackStack()
+            Dim f = RootFrame
+            If f IsNot Nothing Then f.BackStack.Clear()
+        End Sub
+```
+
+- [ ] **Step 4: Point the login and Sign out at the new API**
+
+`MainPage` currently assigns the four session properties, which are now read-only
+derived values, and `SettingsPage` calls the removed `Clear()`. In
+`MainPage.xaml.vb`, replace the block
+
+```vb
+            session.BaseUrl = urls.BaseUrl
+            session.AccessToken = client.AccessToken
+            session.UserId = client.UserId
+            session.ServerId = client.ServerId
+            session.Save()
+
+            NavigationService.Navigate(GetType(HomePage), Nothing)
+```
+
+with
+
+```vb
+            ' The name is what the picker shows, so it is stored with the token.
+            session.SignIn(urls.BaseUrl, client.UserId, If(result.User Is Nothing, Nothing, result.User.Name),
+                           client.AccessToken, client.ServerId, info.ServerName)
+
+            ' Entering a different account must not leave the previous one's
+            ' screens in the back stack.
+            NavigationService.ClearBackStack()
+            NavigationService.Navigate(GetType(HomePage), Nothing)
+```
 
 In `Pages/SettingsPage.xaml.vb`, replace the body of `SignOut_Click`:
 
 ```vb
     Private Sub SignOut_Click(sender As Object, e As RoutedEventArgs)
+        ' Leaves the account without forgetting it: its token stays, so coming
+        ' back asks for no password.
         AppSession.Current.SignOut()
         NavigationService.Navigate(GetType(MainPage), Nothing)
     End Sub
 ```
 
-Task 7 replaces that navigation target with the picker. The rest of the page is
-untouched here.
+Task 9 replaces that navigation target with the picker, and Task 7 adds the
+re-login mode to `MainPage`. The rest of both pages is untouched here.
 
-- [ ] **Step 4: Build and run the whole suite**
+- [ ] **Step 5: Build and run the whole suite**
 
 Run the two commands from *Commands used by every task*.
 Expected: build ends with `Your package has been successfully created.`, tests
 `141/141 test(s) Passed`, exit 0 — the same numbers as Task 2, because no test
-input changed and `MainPage`/`HomePage` still compile against the façade.
+input changed and the pages now go through the façade.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add JellyfinPlayer/JellyfinPlayer/Services/AppSession.vb \
         JellyfinPlayer/JellyfinPlayer/Services/LocalAccountStorage.vb \
+        JellyfinPlayer/JellyfinPlayer/Services/NavigationService.vb \
+        JellyfinPlayer/JellyfinPlayer/MainPage.xaml.vb \
         JellyfinPlayer/JellyfinPlayer/Pages/SettingsPage.xaml.vb
 git commit -m "feat: make AppSession a facade over the active account"
 ```
@@ -895,7 +944,6 @@ git commit -m "feat: read a user's name and recognise a rejected token"
 - Create: `JellyfinPlayer/JellyfinPlayer/Services/AccountItem.vb`
 - Create: `JellyfinPlayer/JellyfinPlayer/Pages/AccountsPage.xaml`
 - Create: `JellyfinPlayer/JellyfinPlayer/Pages/AccountsPage.xaml.vb`
-- Modify: `JellyfinPlayer/JellyfinPlayer/Services/NavigationService.vb`
 - Modify: `JellyfinPlayer/JellyfinPlayer/JellyfinPlayer.vbproj` (page + code-behind entries)
 - Modify: `JellyfinPlayer/JellyfinPlayer/Strings/en-US/Resources.resw`
 - Modify: `JellyfinPlayer/JellyfinPlayer/Strings/it-IT/Resources.resw`
@@ -908,9 +956,8 @@ git commit -m "feat: read a user's name and recognise a rejected token"
   IList(Of AccountDto), activeId As String) As List(Of AccountItem)` and
   `AccountItem.DisplayName(account As AccountDto) As String` (used by Tasks 7 and
   9). `AccountsPage` is reachable by
-  `NavigationService.Navigate(GetType(AccountsPage), Nothing)`;
-  `NavigationService.ClearBackStack()` is added here because the switch needs it
-  before Task 6 can route the launch.
+  `NavigationService.Navigate(GetType(AccountsPage), Nothing)`, and it uses
+  `NavigationService.ClearBackStack()` from Task 3.
 
 No unit test: WP8.1 has no UI automation, and `AccountItem` lives in `Services`
 next to `PosterItem`, outside the test project's linked set. Verified by the
@@ -1126,18 +1173,7 @@ End Class
 A single tap opens an account (`ItemClick`); selection only enables **Remove
 account**, so the two gestures do not fight each other.
 
-- [ ] **Step 4: Add `ClearBackStack` and register the page in the project**
-
-In `Services/NavigationService.vb`, after `GoBack()`:
-
-```vb
-        ' A switch of account must not leave the previous user's screens behind
-        ' it: going back would walk into another account's library.
-        Public Sub ClearBackStack()
-            Dim f = RootFrame
-            If f IsNot Nothing Then f.BackStack.Clear()
-        End Sub
-```
+- [ ] **Step 4: Register the page in the project**
 
 In `JellyfinPlayer/JellyfinPlayer/JellyfinPlayer.vbproj`, add next to the other
 pages (keep the existing order: alphabetically inside `Pages\`):

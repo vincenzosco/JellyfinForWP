@@ -91,12 +91,13 @@ Public NotInheritable Class MainPage
                 Return
             End If
 
-            session.BaseUrl = urls.BaseUrl
-            session.AccessToken = client.AccessToken
-            session.UserId = client.UserId
-            session.ServerId = client.ServerId
-            session.Save()
+            ' The name is what the picker shows, so it is stored with the token.
+            session.SignIn(urls.BaseUrl, client.UserId, If(result.User Is Nothing, Nothing, result.User.Name),
+                           client.AccessToken, client.ServerId, info.ServerName)
 
+            ' Entering a different account must not leave the previous one's
+            ' screens in the back stack.
+            NavigationService.ClearBackStack()
             NavigationService.Navigate(GetType(HomePage), Nothing)
         Catch ex As JellyfinException
             StatusText.Text = If(ex.StatusCode = 401, Localized.Text("StatusWrongCredentials"), Localized.DescribeError(ex))

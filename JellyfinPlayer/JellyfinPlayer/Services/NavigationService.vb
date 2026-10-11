@@ -25,6 +25,13 @@ Namespace Services
             If f IsNot Nothing AndAlso f.CanGoBack Then f.GoBack()
         End Sub
 
+        ' A switch of account must not leave the previous user's screens behind
+        ' it: going back would walk into another account's library.
+        Public Sub ClearBackStack()
+            Dim f = RootFrame
+            If f IsNot Nothing Then f.BackStack.Clear()
+        End Sub
+
         Public ReadOnly Property CanGoBack As Boolean
             Get
                 Dim f = RootFrame
