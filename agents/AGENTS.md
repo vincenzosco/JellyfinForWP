@@ -41,3 +41,9 @@ Rules of the road:
    and `Localized.DescribeError(ex)` for failures. Supported languages are `en-US`
    (default) and `it-IT`, declared in `Package.appxmanifest`; keep both files in sync —
    `LocalizationTests` fails otherwise. Brand names and example URLs stay literal.
+5. **The agent commits and pushes — never with AI attribution.** Once a change is
+   verified, run `git add`, `git commit` and `git push` yourself; do not hand the
+   commands over. The message must carry no `Co-Authored-By:` agent trailer and no
+   "Generated with …" marker: write what the person who asked for the change would
+   have written. (Requested 2026-10-11: trailers that reached the published history
+   had to be stripped with a force-push.)
