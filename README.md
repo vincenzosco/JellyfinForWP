@@ -11,7 +11,8 @@ Read this in [Italian](README.it.md).
 
 - **Server discovery on launch**: a UDP probe on port 7359 fills in the address — and only
   after that address has answered as a Jellyfin server. Manual entry always works.
-- Sign-in against `/Users/AuthenticateByName`.
+- Sign-in against `/Users/AuthenticateByName`, with **several accounts on one phone**: the
+  app enters the last one used, and the picker switches user without retyping a password.
 - Home: Continue watching, Next up, and the library list.
 - Paged library grid, series page with season picker, item detail with Play/Resume,
   Favorite and Watched.

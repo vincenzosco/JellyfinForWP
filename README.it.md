@@ -12,7 +12,8 @@ Read this in [English](README.md).
 - **Ricerca del server all'avvio**: una sonda UDP sulla porta 7359 compila l'indirizzo — e
   solo dopo che quell'indirizzo ha risposto come server Jellyfin. L'inserimento manuale
   funziona sempre.
-- Accesso tramite `/Users/AuthenticateByName`.
+- Accesso tramite `/Users/AuthenticateByName`, con **più account sullo stesso telefono**:
+  l'app entra nell'ultimo usato e il selettore cambia utente senza ridigitare la password.
 - Home: Continua a guardare, Prossimi episodi e l'elenco delle librerie.
 - Griglia della libreria con paginazione, pagina della serie con scelta della stagione,
   dettaglio con Riproduci/Riprendi, Preferito e Visto.

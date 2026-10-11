@@ -118,7 +118,8 @@ or a device:
   "Play direct" fallback, with the controls still reachable.
 - **Unknown duration**: open a transcode right after it starts → the total time is never
   wrong and skipping cannot move past the end.
-- **Settings**: bitrate persists; Sign out returns to login.
+- **Settings**: bitrate persists; the account name is shown; Sign out returns to the
+  picker with the account still saved.
 - **Language**: set the emulator/device language to Italian → every screen and every
   runtime message (discovery status, errors, search, settings) is Italian; set it to a
   language that is neither EN nor IT (e.g. French) → everything is English.
@@ -127,3 +128,18 @@ or a device:
 - **An address that answers with a web page**: point the app at an address whose port
   serves a web page (e.g. `http://192.168.0.108:80`) → a short sentence saying the
   address answered with a web page instead of the Jellyfin API, **not** HTML on screen.
+- **Accounts**: with two logins saved (two users on the same server, or one user on each
+  of two servers), launching goes straight into the last one used. Tap the header's switch
+  button → the picker lists both, the one in use is marked; tapping the other opens *its*
+  Home, and the back button does not walk back into the first account's screens. Remove
+  account forgets only that login and leaves the other usable.
+- **Sign out keeps the account**: Settings → Sign out → the picker, where that account is
+  still listed; tapping it re-enters with **no** password prompt.
+- **Refused token**: revoke the app's device from the Jellyfin dashboard (or sign the user
+  out from another client), then launch → the app asks for that account's password only,
+  with the server and user already filled in; typing it enters Home, and the other accounts
+  were never touched.
+- **Upgrade from the previous build**: install over a version that had the single session,
+  launch → Home opens for the same user with no login (the four old keys became the first
+  account) and the picker shows that account, by user id until the first Home load has
+  fetched its name.

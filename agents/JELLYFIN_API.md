@@ -38,6 +38,7 @@ every media URL.
 | --- | --- |
 | Server info | `GET /System/Info/Public` |
 | Public users | `GET /Users/Public` |
+| Own user record | `GET /Users/{userId}` (fills `User.Name` for the account picker) |
 | Login | `POST /Users/AuthenticateByName` |
 | Libraries | `GET /Users/{userId}/Views` |
 | Items (paged) | `GET /Users/{userId}/Items?ParentId=&Recursive=true&IncludeItemTypes=&SortBy=SortName&SortOrder=Ascending&StartIndex=&Limit=&Fields=Overview,PrimaryImageAspectRatio` |
