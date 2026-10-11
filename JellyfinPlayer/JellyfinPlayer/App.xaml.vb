@@ -54,7 +54,14 @@ NotInheritable Class App
             rootFrame.ContentTransitions = Nothing
             AddHandler rootFrame.Navigated, AddressOf RootFrame_FirstNavigated
 
-            Dim target As Type = If(AppSession.Current.IsLoggedIn, GetType(HomePage), GetType(MainPage))
+            Dim session = AppSession.Current
+            Dim target As Type = GetType(MainPage)
+            If session.IsLoggedIn Then
+                target = GetType(HomePage)
+            ElseIf session.Accounts.Count > 0 Then
+                ' Accounts exist but none is in use: the picker is the way back in.
+                target = GetType(AccountsPage)
+            End If
             If Not rootFrame.Navigate(target, e.Arguments) Then
                 Throw New Exception("Failed to create initial page")
             End If
