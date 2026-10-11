@@ -1276,19 +1276,12 @@ git commit -m "feat: enter the last account and leave the picker otherwise"
 No unit test (WinRT page); verified by the build, `LocalizationTests` (the new
 `x:Uid` must resolve) and checklist items 3 and 5.
 
-- [ ] **Step 1: Give the discovery row a name so it can be hidden**
+- [ ] **Step 1: Check the markup needs nothing**
 
-In `MainPage.xaml`, wrap the discovery status in a named element and keep the
-rest of the layout identical:
-
-```xml
-            <TextBlock x:Uid="ServerAddressLabel" Margin="0,20,0,4"/>
-            <TextBox x:Name="ServerBox" PlaceholderText="http://192.168.1.10:8096" IsEnabled="True"/>
-            <TextBlock x:Name="DiscoveryStatus" TextWrapping="Wrap" Opacity="0.7" Margin="0,4,0,0"/>
-```
-
-(`ServerBox.IsEnabled` is what the re-login mode turns off, so a prefilled
-address cannot be edited into a different server while re-authenticating.)
+`MainPage.xaml` already gives both fields the names the mode needs
+(`ServerBox`, `DiscoveryStatus`), and a `TextBox` is enabled by default, so the
+re-login mode only has to set `ServerBox.IsEnabled = False` in code (next step).
+No XAML edit is required — do not add a redundant `IsEnabled="True"`.
 
 - [ ] **Step 2: Implement the two modes in the code-behind**
 
