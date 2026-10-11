@@ -94,6 +94,10 @@ or a device:
 - **Library**: scroll/paging loads further items.
 - **Series**: season picker switches the episode list.
 - **Detail**: Play/Resume opens the player; Favorite and Watched toggles persist.
+  A page whose markup cannot load shows **nothing at all** - no screen, no error,
+  no crash - because `Frame.Navigate` returns `False` and `NavigationFailed` is
+  not handled. Treat "the button did nothing" as a page-load failure first, and
+  run `XamlResourceTests` to find it without a deploy.
 - **Playback**: direct-play a compatible MP4; play a file the server must transcode;
   the close button returns and the position is saved.
 - **Player fullscreen**: tap the fullscreen button → the status bar and both bars disappear
