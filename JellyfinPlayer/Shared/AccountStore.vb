@@ -95,6 +95,15 @@ Namespace Global.JellyfinPlayer.Shared
             Return Nothing
         End Function
 
+        ' An app upgraded from the single-session build still has its four loose
+        ' keys: they become the first account, active, so the upgrade keeps the
+        ' session. Only ever runs when there are no accounts yet.
+        Public Function MigrateFromLegacy(baseUrl As String, token As String, userId As String, serverId As String) As AccountDto
+            If String.IsNullOrEmpty(baseUrl) OrElse String.IsNullOrEmpty(token) Then Return Nothing
+            If _accounts.Count > 0 Then Return Nothing
+            Return AddOrUpdate(baseUrl, userId, Nothing, token, serverId, Nothing)
+        End Function
+
         ' ---- persistence ----
 
         Public Sub Load()

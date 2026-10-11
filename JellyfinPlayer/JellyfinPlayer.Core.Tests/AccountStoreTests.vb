@@ -108,4 +108,36 @@ Public Class AccountStoreTests
         Dim store = NewStore(storage)
         Assert.IsNull(store.ActiveId)
     End Sub
+
+    <TestMethod>
+    Public Sub Migrates_the_single_session_keys_into_the_first_account()
+        Dim store = NewStore()
+        Dim a = store.MigrateFromLegacy("http://host:8096", "T", "u1", "s1")
+        Assert.IsNotNull(a)
+        Assert.AreEqual(1, store.Accounts.Count)
+        Assert.AreEqual(a.Id, store.ActiveId)
+        Assert.AreEqual("http://host:8096", a.BaseUrl)
+        Assert.AreEqual("T", a.AccessToken)
+        Assert.AreEqual("u1", a.UserId)
+        ' The name is unknown at migration time: no network call can happen here.
+        Assert.IsNull(a.UserName)
+    End Sub
+
+    <TestMethod>
+    Public Sub Migration_never_overwrites_existing_accounts()
+        Dim store = NewStore()
+        store.AddOrUpdate("http://host:8096", "u1", "bob", "T", "s1", "NAS")
+        Dim migrated = store.MigrateFromLegacy("http://old:8096", "OLD", "u9", "s9")
+        Assert.IsNull(migrated)
+        Assert.AreEqual(1, store.Accounts.Count)
+        Assert.AreEqual("bob", store.Active.UserName)
+    End Sub
+
+    <TestMethod>
+    Public Sub Migration_does_nothing_without_a_saved_session()
+        Dim store = NewStore()
+        Assert.IsNull(store.MigrateFromLegacy(Nothing, Nothing, Nothing, Nothing))
+        Assert.IsNull(store.MigrateFromLegacy("http://host:8096", Nothing, "u1", "s1"))
+        Assert.AreEqual(0, store.Accounts.Count)
+    End Sub
 End Class
