@@ -9,16 +9,28 @@ Login sends:
 
 ```
 POST /Users/AuthenticateByName
-X-Emby-Authorization: MediaBrowser Client="JellyfinPlayer", Device="WindowsPhone", DeviceId="<guid>", Version="1.0.0"
+Authorization: MediaBrowser Client="JellyfinPlayer", Device="WindowsPhone", DeviceId="<guid>", Version="1.0.0"
 { "Username": "<user>", "Pw": "<password>" }
 ```
 
 The response gives `AccessToken`, `User.Id` and `ServerId`. Every later request
-carries `X-Emby-Token: <AccessToken>`. The device id is generated once and stored
-in `LocalSettings`.
+carries `Authorization: MediaBrowser Token="<AccessToken>", Client="...",
+Device="...", DeviceId="...", Version="..."` — all built by
+`Shared/JellyfinAuthHeader.vb`. The device id is generated once and stored in
+`LocalSettings`.
+
+> **Why not `X-Emby-Authorization` / `X-Emby-Token`?** Jellyfin 12 ships with
+> `ServerConfiguration.EnableLegacyAuthorization` **off** (and force-disables it
+> on upgrade), so those two headers are rejected by default: the server never
+> learns the client name, and login fails with
+> `ArgumentNullException (Parameter 'request.App')` → HTTP 400 while every later
+> call answers 401. The `Authorization: MediaBrowser ...` scheme is not gated by
+> that setting and works on 10.x **and** 12.x, so it is the only form this client
+> sends — no server-version detection.
 
 **Image URLs** instead append `?api_key=<token>` (a `BitmapImage` cannot set
-headers), so `JellyfinUrls` adds `api_key` to every media URL.
+headers, and `MediaElement` cannot either), so `JellyfinUrls` adds `api_key` to
+every media URL.
 
 ## Endpoints used
 

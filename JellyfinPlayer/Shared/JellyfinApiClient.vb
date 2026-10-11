@@ -18,19 +18,18 @@ Namespace Global.JellyfinPlayer.Shared
             _deviceId = deviceId
         End Sub
 
-        Private Function AuthHeader() As String
-            Return "MediaBrowser Client=""JellyfinPlayer"", Device=""WindowsPhone"", DeviceId=""" & _deviceId & """, Version=""1.0.0"""
-        End Function
-
+        ' Both go out as "Authorization: MediaBrowser ...", the one header name Jellyfin
+        ' 12 still reads (see JellyfinAuthHeader). The legacy X-Emby-* pair is gone:
+        ' sending it is what made login fail with "request.App is null" on 12.x.
         Private Function TokenHeaders() As IDictionary(Of String, String)
             Dim h As New Dictionary(Of String, String)()
-            If Not String.IsNullOrEmpty(AccessToken) Then h("X-Emby-Token") = AccessToken
+            If Not String.IsNullOrEmpty(AccessToken) Then h("Authorization") = JellyfinAuthHeader.WithToken(AccessToken, _deviceId)
             Return h
         End Function
 
         Private Function AuthHeaders() As IDictionary(Of String, String)
             Dim h As New Dictionary(Of String, String)()
-            h("X-Emby-Authorization") = AuthHeader()
+            h("Authorization") = JellyfinAuthHeader.Identify(_deviceId)
             Return h
         End Function
 

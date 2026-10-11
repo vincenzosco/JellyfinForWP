@@ -21,7 +21,8 @@ Public Class AuthTests
         Assert.AreEqual("T", client.AccessToken)
         Assert.AreEqual("u1", client.UserId)
         Assert.AreEqual("s1", client.ServerId)
-        Assert.IsTrue(fake.LastHeaders("X-Emby-Authorization").Contains("DeviceId=""dev1"""), fake.LastHeaders("X-Emby-Authorization"))
+        Assert.IsTrue(fake.LastHeaders("Authorization").Contains("DeviceId=""dev1"""), fake.LastHeaders("Authorization"))
+        Assert.IsFalse(fake.LastHeaders.ContainsKey("X-Emby-Authorization"), "the legacy header must not be sent: Jellyfin 12 rejects it")
         Assert.IsTrue(fake.LastJson.Contains("""Pw"":""pw"""), fake.LastJson)
     End Sub
 

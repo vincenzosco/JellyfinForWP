@@ -46,11 +46,12 @@ Public Class BrowseTests
     End Sub
 
     <TestMethod>
-    Public Sub Token_header_is_sent()
+    Public Sub Token_is_sent_in_the_standard_authorization_header()
         Dim fake = New FakeTransport()
         fake.Handler = Function(u) "{""Items"":[],""TotalRecordCount"":0}"
         MakeClient(fake).GetViewsAsync("user1").Wait()
-        Assert.AreEqual("T", fake.LastHeaders("X-Emby-Token"))
+        Assert.IsTrue(fake.LastHeaders("Authorization").Contains("Token=""T"""), fake.LastHeaders("Authorization"))
+        Assert.IsFalse(fake.LastHeaders.ContainsKey("X-Emby-Token"), "the legacy header must not be sent: Jellyfin 12 rejects it")
     End Sub
 
     <TestMethod>
