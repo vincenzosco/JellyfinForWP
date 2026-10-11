@@ -17,8 +17,22 @@ Public NotInheritable Class MainPage
         InitializeComponent()
     End Sub
 
+    ' Set when the page was opened to sign in again for one saved account.
+    Private _reLogin As AccountDto
+
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
+
+        _reLogin = TryCast(e.Parameter, AccountDto)
+        If _reLogin IsNot Nothing Then
+            ' Signing in again for one saved account: the address and the user are
+            ' known, only the password is missing, and nothing is discovered.
+            ServerBox.Text = _reLogin.BaseUrl
+            ServerBox.IsEnabled = False
+            UserBox.Text = AccountItem.DisplayName(_reLogin)
+            DiscoveryStatus.Text = Localized.Format("PasswordRequiredStatus", AccountItem.DisplayName(_reLogin))
+            Return
+        End If
 
         Dim session = AppSession.Current
         If Not String.IsNullOrEmpty(session.BaseUrl) Then
