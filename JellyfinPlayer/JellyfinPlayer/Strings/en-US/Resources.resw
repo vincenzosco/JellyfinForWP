@@ -241,4 +241,22 @@
   <data name="PlaybackNoSource" xml:space="preserve">
     <value>This video cannot be played on this device (no playable or transcodable source).</value>
   </data>
+  <data name="AccountsHeader.Text" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
+  <data name="AddAccountButton.Content" xml:space="preserve">
+    <value>Add account</value>
+  </data>
+  <data name="RemoveAccountButton.Content" xml:space="preserve">
+    <value>Remove account</value>
+  </data>
+  <data name="SwitchAccountButton.Content" xml:space="preserve">
+    <value>Switch account</value>
+  </data>
+  <data name="CurrentAccountMarker" xml:space="preserve">
+    <value>In use</value>
+  </data>
+  <data name="PasswordRequiredStatus" xml:space="preserve">
+    <value>Enter the password for {0}.</value>
+  </data>
 </root>

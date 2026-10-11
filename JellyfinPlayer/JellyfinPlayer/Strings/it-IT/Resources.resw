@@ -241,4 +241,22 @@
   <data name="PlaybackNoSource" xml:space="preserve">
     <value>Questo video non può essere riprodotto su questo dispositivo (nessuna sorgente riproducibile o transcodificabile).</value>
   </data>
+  <data name="AccountsHeader.Text" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="AddAccountButton.Content" xml:space="preserve">
+    <value>Aggiungi account</value>
+  </data>
+  <data name="RemoveAccountButton.Content" xml:space="preserve">
+    <value>Rimuovi account</value>
+  </data>
+  <data name="SwitchAccountButton.Content" xml:space="preserve">
+    <value>Cambia account</value>
+  </data>
+  <data name="CurrentAccountMarker" xml:space="preserve">
+    <value>In uso</value>
+  </data>
+  <data name="PasswordRequiredStatus" xml:space="preserve">
+    <value>Inserisci la password di {0}.</value>
+  </data>
 </root>

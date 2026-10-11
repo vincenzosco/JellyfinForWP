@@ -1,0 +1,38 @@
+<Page
+    x:Class="JellyfinPlayer.AccountsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Uid="AccountsHeader" Grid.Row="0" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" Margin="20,16,0,0"/>
+
+        <ListView x:Name="AccountsList" Grid.Row="1" Margin="8,8,8,0"
+                  SelectionMode="Single" IsItemClickEnabled="True"
+                  SelectionChanged="Account_SelectionChanged" ItemClick="Account_Click">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="12,8">
+                        <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Subtitle}" FontSize="13" Opacity="0.7" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Marker}" FontSize="13" Foreground="#00A4DC"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,12,0,16">
+            <Button x:Name="AddButton" x:Uid="AddAccountButton" Click="Add_Click"/>
+            <Button x:Name="RemoveButton" x:Uid="RemoveAccountButton" IsEnabled="False" Click="Remove_Click" Margin="8,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>
