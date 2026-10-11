@@ -100,6 +100,11 @@ or a device:
   run `XamlResourceTests` to find it without a deploy.
 - **Playback**: direct-play a compatible MP4; play a file the server must transcode;
   the close button returns and the position is saved.
+- **Playback fallback**: a direct stream that fails (a file this phone cannot open, or a
+  stream cut off) retries once through the transcode **on its own** and keeps playing; if
+  the transcode fails too, the failure sentence appears together with "Play direct", and
+  tapping it plays the original file. A second failure must show the sentence - the player
+  never loops between the two URLs.
 - **Player fullscreen**: tap the fullscreen button → the status bar and both bars disappear
   and the video fills the screen; turn the phone → the video follows it into landscape; tap
   the video → the bars come back; press the hardware back button → it leaves fullscreen and

@@ -19,7 +19,8 @@ Read this in [English](README.md).
 - Ricerca tra film, serie ed episodi.
 - Riproduzione: diretta quando il server dichiara il file riproducibile direttamente,
   altrimenti transcodifica in MP4 HTTP progressivo. I progressi vengono inviati al server,
-  così il resume funziona.
+  così il resume funziona. Se lo stream diretto fallisce il player riprova una volta da solo
+  via transcodifica; se fallisce la transcodifica, "Play direct" offre il file originale.
 - Lettore a schermo intero: un pulsante nasconde la barra di stato e i comandi, il video
   riempie lo schermo, la rotazione segue il telefono e lo schermo resta acceso; il tasto
   Indietro esce prima da schermo intero e solo dopo dalla pagina.

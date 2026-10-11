@@ -9,7 +9,12 @@ Namespace Services
         Public Property MediaSourceId As String
         Public Property PlaySessionId As String
         Public Property StartPosition As TimeSpan
+
+        ' The other way round, tried when what we are playing fails: the original
+        ' file (offered by the "Play direct" button) or the transcode of the same
+        ' source (retried automatically, once).
         Public Property DirectFallbackUri As Uri
+        Public Property TranscodeFallbackUri As Uri
     End Class
 
     Public Module PlaybackService
@@ -33,7 +38,7 @@ Namespace Services
                         plan.Uri = New Uri(direct.Url)
                         plan.IsTranscode = False
                         plan.MediaSourceId = direct.MediaSourceId
-                        plan.DirectFallbackUri = New Uri(direct.Url)
+                        FillFallback(plan, session, item.Id, s)
                         Return plan
                     End If
                 End If
@@ -46,11 +51,27 @@ Namespace Services
                     plan.Uri = New Uri(resolved.Url)
                     plan.IsTranscode = resolved.IsTranscode
                     plan.MediaSourceId = resolved.MediaSourceId
+                    FillFallback(plan, session, item.Id, s)
                     Return plan
                 End If
             Next
 
             Throw New JellyfinException(Localized.Text("PlaybackNoSource"), 0)
         End Function
+
+        ' A plan carries the URL of the other way round, so a failure has somewhere
+        ' to go: the transcode of the same source when the original file is playing,
+        ' the original file itself when a transcode is playing. What the player does
+        ' with it - retry once on its own, or offer it behind a button - is the
+        ' player's decision.
+        Private Sub FillFallback(plan As PlaybackPlan, session As AppSession, itemId As String, source As MediaSourceInfoDto)
+            If plan.IsTranscode Then
+                Dim direct = PlaybackUrlResolver.DirectUrl(session.BaseUrl, session.AccessToken, itemId, source)
+                If Not String.IsNullOrEmpty(direct) Then plan.DirectFallbackUri = New Uri(direct)
+            Else
+                Dim transcode = PlaybackUrlResolver.TranscodeUrl(session.BaseUrl, session.AccessToken, itemId, source, session.PreferredBitrate)
+                If Not String.IsNullOrEmpty(transcode) Then plan.TranscodeFallbackUri = New Uri(transcode)
+            End If
+        End Sub
     End Module
 End Namespace

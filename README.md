@@ -17,7 +17,9 @@ Read this in [Italian](README.it.md).
   Favorite and Watched.
 - Search across movies, series and episodes.
 - Playback: direct play when the server says the file is directly playable, otherwise a
-  progressive HTTP MP4 transcode. Progress is reported back so resume works.
+  progressive HTTP MP4 transcode. Progress is reported back so resume works. When the
+  direct stream fails the player retries once through the transcode on its own, and when
+  the transcode fails "Play direct" offers the original file.
 - Fullscreen player: one button hides the status bar and the player's own bars, the video
   fills the screen, rotation follows the phone and the screen stays awake; the hardware back
   button leaves fullscreen first and only then leaves the screen.

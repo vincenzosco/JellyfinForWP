@@ -22,6 +22,11 @@ Public NotInheritable Class PlayerPage
 
     Private _item As BaseItemDto
     Private _plan As PlaybackPlan
+    ' The URL that is playing right now, and whether the automatic fallback to the
+    ' transcode has already been spent for this attempt. The rule itself lives in
+    ' Shared (StreamFallback), so it is covered by the desktop tests.
+    Private _playingUri As Uri
+    Private _retriedTranscode As Boolean
     Private _client As JellyfinApiClient
     Private _uiTimer As DispatcherTimer
     Private _beats As Integer
@@ -74,7 +79,9 @@ Public NotInheritable Class PlayerPage
 
             ' WP8.1 MediaElement plays both a direct stream and the progressive
             ' HTTP MP4 that Jellyfin produces for a transcode.
+            _retriedTranscode = False
             MediaEl.Source = _plan.Uri
+            _playingUri = _plan.Uri
             MediaEl.Play()
             StartUiTimer()
             Await ReportStartAsync()
@@ -118,6 +125,28 @@ Public NotInheritable Class PlayerPage
         ShowPlayingState()
         ' The controls stay on screen: the way out must never be hidden by a failure.
         ShowControls()
+
+        ' A direct stream that failed is worth retrying through the transcode, on
+        ' its own: the file may simply be one this phone cannot open. Exactly once,
+        ' and never on the URL that just failed, so a second failure still reaches
+        ' the user as a sentence instead of bouncing between two broken URLs.
+        Dim alternative = StreamFallback.Alternative(_playingUri,
+                                                    If(_plan IsNot Nothing, _plan.TranscodeFallbackUri, Nothing),
+                                                    _retriedTranscode)
+        If alternative IsNot Nothing Then
+            _retriedTranscode = True
+            _plan.IsTranscode = True
+            ErrorText.Text = ""
+            SetBuffering(True)
+            MediaEl.Source = alternative
+            _playingUri = alternative
+            MediaEl.Play()
+            ' The same PlaySessionId, so this updates the session the server already
+            ' knows about with the play method that is now actually running.
+            Await ReportStartAsync()
+            Return
+        End If
+
         ErrorText.Text = Localized.Format("PlaybackFailed", If(e.ErrorMessage, Localized.Text("UnknownError")))
         DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
         Await SafeReportStoppedAsync()
