@@ -1,4 +1,7 @@
 Imports System
+Imports System.Collections.Generic
+Imports System.IO
+Imports System.IO.IsolatedStorage
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
@@ -40,6 +43,15 @@ Partial Public Class PlayerPage
     Private _audioIndex As Integer?
     Private _subtitleIndex As Integer?
     Private _suppressTracks As Boolean
+    Private _suppressQuality As Boolean
+    ' A playlist: the item being played, the entries, and which one it is. Empty
+    ' for a plain item, which then follows the next-episode rule.
+    Private _queue As List(Of BaseItemDto)
+    Private _queueIndex As Integer = -1
+    ' Set when this item was opened from the downloads list: its stream is local
+    ' and no report ever leaves the phone.
+    Private _download As DownloadRecordDto
+    Private _localStream As IsolatedStorageFileStream
 
     Public Sub New()
         InitializeComponent()
@@ -48,12 +60,33 @@ Partial Public Class PlayerPage
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
         _surface = New PlayerSurfaceController(New SilverlightPlayerShell(Me))
-        _item = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
+        ' The frame caches this page. Nothing that described the previous item may
+        ' survive: an offline flag or a playlist here would make a normal item
+        ' unplayable or start the wrong entry.
+        _download = Nothing
+        _queue = New List(Of BaseItemDto)()
+        _queueIndex = -1
+        CloseLocalStream()
+        Dim pending = Services.NavigationService.ConsumePending()
+        Dim request = TryCast(pending, PlayRequest)
+        If request IsNot Nothing Then
+            _item = request.Item
+            _queue = request.Queue
+            _queueIndex = request.Index
+        Else
+            _download = TryCast(pending, DownloadRecordDto)
+            If _download IsNot Nothing Then
+                _item = New BaseItemDto With {.Id = _download.ItemId, .Name = _download.Name, .RunTimeTicks = _download.RunTimeTicks}
+            Else
+                _item = TryCast(pending, BaseItemDto)
+            End If
+        End If
         If _item Is Nothing Then Return
-        ' The frame caches this page: a track chosen for the previous item must not
-        ' leak into the next one.
+        ' The frame caches this page: a track or queue chosen for the previous item
+        ' must not leak into the next one.
         _audioIndex = Nothing
         _subtitleIndex = Nothing
+        If _queue.Count = 0 Then _queueIndex = -1
         TitleText.Text = _item.Name
         _client = AppSession.Current.CreateClient()
         BufferingText.Text = Localized.Text("BufferingText.Text")
@@ -61,6 +94,7 @@ Partial Public Class PlayerPage
         TracksTitle.Text = Localized.Text("TracksTitle")
         AudioTracksLabel.Text = Localized.Text("AudioTracksLabel")
         SubtitleTracksLabel.Text = Localized.Text("SubtitleTracksLabel")
+        QualityLabel.Text = Localized.Text("QualityLabel")
         CloseTracksButton.Content = Localized.Text("ActionClose")
         NameActions()
         ShowControls()
@@ -69,7 +103,10 @@ Partial Public Class PlayerPage
         Services.NavigationService.BackInterceptor = AddressOf OnBackPressed
 
         Dim startTicks As Long = 0
-        If _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue Then
+        If _download IsNot Nothing Then
+            ' The stored position is the only resume point an offline file has.
+            If _download.PositionTicks.HasValue Then startTicks = _download.PositionTicks.Value
+        ElseIf _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue Then
             startTicks = _item.UserData.PlaybackPositionTicks.Value
         End If
         Await StartAsync(startTicks, False)
@@ -92,6 +129,10 @@ Partial Public Class PlayerPage
         ' the file, with its own default audio and no burned-in subtitle.
         _audioIndex = If(forceDirect, Nothing, audioIndex)
         _subtitleIndex = If(forceDirect, Nothing, subtitleIndex)
+        If _download IsNot Nothing Then
+            StartOffline(startTicks)
+            Return
+        End If
         Try
             _plan = Await PlaybackService.PrepareAsync(_item, startTicks, _audioIndex, _subtitleIndex)
             If forceDirect Then
@@ -115,6 +156,32 @@ Partial Public Class PlayerPage
             DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
         End Try
     End Function
+
+    ' An offline file: the stream comes from isolated storage, the resume position
+    ' from the download record, and nothing is reported. No tracks or bitrate can
+    ' be chosen for a file that is already on the phone.
+    Private Sub StartOffline(startTicks As Long)
+        SetBuffering(True)
+        ErrorText.Text = ""
+        DirectButton.Visibility = Visibility.Collapsed
+        Try
+            CloseLocalStream()
+            _localStream = DownloadStore.Current.OpenFile(_download)
+            _plan = New PlaybackPlan With {.StartPosition = Ticks.ToTimeSpan(startTicks),
+                                           .Tracks = New List(Of MediaStreamDto)()}
+            _playingUri = Nothing
+            ' Nothing to fall back to off the network.
+            _retriedTranscode = True
+            TitleText.Text = _download.Name
+            MediaEl.SetSource(_localStream)
+            MediaEl.Play()
+            StartUiTimer()
+            BuildTracks()
+        Catch ex As Exception
+            SetBuffering(False)
+            ErrorText.Text = Localized.DescribeError(ex)
+        End Try
+    End Sub
 
     ' The duration is unknown until the media opens, and it stays unknown while a
     ' transcode is still starting - reading NaturalDuration then returns false.
@@ -186,9 +253,15 @@ Partial Public Class PlayerPage
         End If
         ShowPlayingState()
         ShowControls()
+        If _download IsNot Nothing Then
+            ' Finished offline: the next play starts from the beginning again.
+            SaveOfflinePosition(0)
+            SetBuffering(False)
+            Return
+        End If
         Await ReportProgressAsync()
         Await SafeReportStoppedAsync()
-        Await PlayNextEpisodeAsync()
+        Await PlayNextAsync()
     End Sub
 
     Private Sub PlayPause_Click(sender As Object, e As RoutedEventArgs)
@@ -256,8 +329,36 @@ Partial Public Class PlayerPage
         SubtitleList.SelectedIndex = IndexOfOption(subtitles, _subtitleIndex)
         _suppressTracks = False
 
-        ' One audio track and no subtitles is nothing to choose from.
-        TracksButton.Visibility = If(audio.Count > 1 OrElse subtitles.Count > 1, Visibility.Visible, Visibility.Collapsed)
+        ' A bitrate is only meaningful while the server produces the stream.
+        QualitySection.Visibility = If(_download Is Nothing, Visibility.Visible, Visibility.Collapsed)
+        If _download Is Nothing Then BuildQuality()
+
+        ' While streaming there is always a bitrate to choose, so the panel opens
+        ' even for a file with one audio track and no subtitles. An offline file
+        ' has nothing to choose at all.
+        TracksButton.Visibility = If(_download Is Nothing OrElse audio.Count > 1 OrElse subtitles.Count > 1,
+                                     Visibility.Visible, Visibility.Collapsed)
+    End Sub
+
+    Private Sub BuildQuality()
+        Dim choices = QualityOptions.Choices(Localized.Text("MbpsSuffix"))
+        _suppressQuality = True
+        QualityList.ItemsSource = choices
+        Dim index = QualityOptions.IndexOf(AppSession.Current.PreferredBitrate)
+        QualityList.SelectedIndex = If(index >= 0, index, 2)
+        _suppressQuality = False
+    End Sub
+
+    ' The preference is device-wide, like the same picker on the settings screen;
+    ' the film restarts because the server is asked for a new transcode.
+    Private Async Sub Quality_Changed(sender As Object, e As SelectionChangedEventArgs)
+        If _suppressQuality Then Return
+        Dim chosen = TryCast(QualityList.SelectedItem, QualityOption)
+        If chosen Is Nothing OrElse _plan Is Nothing OrElse _download IsNot Nothing Then Return
+        If chosen.Bitrate = AppSession.Current.PreferredBitrate Then Return
+        AppSession.Current.PreferredBitrate = chosen.Bitrate
+        AppSession.Current.Save()
+        Await RestartForTracksAsync(_audioIndex, _subtitleIndex)
     End Sub
 
     Private Shared Function IndexOfOption(options As List(Of TrackOption), index As Integer?) As Integer
@@ -302,6 +403,23 @@ Partial Public Class PlayerPage
 
     ' An episode that ends moves on to the next one in place, so Back still leaves
     ' the player instead of walking into a finished episode.
+    ' A playlist continues with its next entry; only after its last one does the
+    ' episode rule apply.
+    Private Async Function PlayNextAsync() As Task
+        Dim nextIndex = PlayQueue.NextIndex(_queue, _queueIndex)
+        If nextIndex >= 0 Then
+            _queueIndex = nextIndex
+            _item = PlayQueue.At(_queue, nextIndex)
+            If _item Is Nothing Then Return
+            TitleText.Text = _item.Name
+            ErrorText.Text = ""
+            TracksPanel.Visibility = Visibility.Collapsed
+            Await StartAsync(0, False)
+            Return
+        End If
+        Await PlayNextEpisodeAsync()
+    End Function
+
     Private Async Function PlayNextEpisodeAsync() As Task
         If _item Is Nothing OrElse Not String.Equals(_item.Type, "Episode", StringComparison.OrdinalIgnoreCase) Then Return
         Dim nextEpisode = Await PlaybackService.NextEpisodeAsync(_client, AppSession.Current.UserId, _item)
@@ -314,6 +432,7 @@ Partial Public Class PlayerPage
     End Function
 
     Private Async Sub Stop_Click(sender As Object, e As RoutedEventArgs)
+        SaveOfflinePosition(Ticks.FromTimeSpan(MediaEl.Position))
         Await SafeReportStoppedAsync()
         MediaEl.Stop()
         Services.NavigationService.GoBack()
@@ -467,7 +586,10 @@ Partial Public Class PlayerPage
         }
     End Function
 
+    ' An offline file has no session on the server: it was never started there,
+    ' so reporting a position would only invent one.
     Private Async Function ReportStartAsync() As Task
+        If _download IsNot Nothing Then Return
         Try
             Await _client.ReportPlaybackStartAsync(BuildProgress())
         Catch
@@ -475,6 +597,7 @@ Partial Public Class PlayerPage
     End Function
 
     Private Async Function ReportProgressAsync() As Task
+        If _download IsNot Nothing Then Return
         Try
             Await _client.ReportPlaybackProgressAsync(BuildProgress())
         Catch
@@ -482,6 +605,7 @@ Partial Public Class PlayerPage
     End Function
 
     Private Async Function SafeReportStoppedAsync() As Task
+        If _download IsNot Nothing Then Return
         Try
             Await _client.ReportPlaybackStoppedAsync(BuildProgress())
         Catch
@@ -496,9 +620,30 @@ Partial Public Class PlayerPage
         If _uiTimer IsNot Nothing Then _uiTimer.Stop()
         Services.NavigationService.BackInterceptor = Nothing
         _surface.RestoreAll()
+        SaveOfflinePosition(Ticks.FromTimeSpan(MediaEl.Position))
         If MediaEl.CurrentState <> MediaElementState.Stopped Then
             Await SafeReportStoppedAsync()
             MediaEl.Stop()
         End If
+        CloseLocalStream()
+    End Sub
+
+    Private Sub SaveOfflinePosition(ticks As Long)
+        If _download Is Nothing Then Return
+        Try
+            DownloadStore.Current.UpdatePosition(_download.ItemId, ticks)
+            _download.PositionTicks = ticks
+        Catch
+            ' The position is a courtesy; a read-only store must not break leaving.
+        End Try
+    End Sub
+
+    Private Sub CloseLocalStream()
+        If _localStream Is Nothing Then Return
+        Try
+            _localStream.Dispose()
+        Catch
+        End Try
+        _localStream = Nothing
     End Sub
 End Class

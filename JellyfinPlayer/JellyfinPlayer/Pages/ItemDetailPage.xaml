@@ -28,6 +28,11 @@
                 <ToggleButton x:Name="PlayedToggle" Click="Played_Click" Margin="8,0,0,0"/>
             </StackPanel>
 
+            <!-- Offline copy: one button that shows what the tap will do. -->
+            <Button x:Name="DownloadButton" Click="Download_Click" Margin="0,8,0,0" HorizontalAlignment="Left"/>
+            <ProgressBar x:Name="DownloadProgress" IsIndeterminate="False" Minimum="0" Maximum="100"
+                         Height="6" Visibility="Collapsed" Margin="0,4,0,0"/>
+
             <TextBlock x:Name="ErrorText" Foreground="#D9534F" TextWrapping="Wrap" Margin="0,8,0,0"/>
             <TextBlock x:Name="OverviewText" TextWrapping="Wrap" Margin="0,12,0,0"/>
         </StackPanel>

@@ -152,6 +152,14 @@
                     <TextBlock x:Name="SubtitleTracksLabel" Foreground="#B3FFFFFF" FontSize="13" Margin="0,10,0,2"/>
                     <ListBox x:Name="SubtitleList" DisplayMemberPath="Label" MaxHeight="120"
                              SelectionChanged="Subtitle_Changed"/>
+                    <!-- A bitrate is a new request to the server, so it restarts the
+                         item at the same position like a track change does. Hidden
+                         for an offline file, which has no bitrate to choose. -->
+                    <StackPanel x:Name="QualitySection">
+                        <TextBlock x:Name="QualityLabel" Foreground="#B3FFFFFF" FontSize="13" Margin="0,10,0,2"/>
+                        <ListBox x:Name="QualityList" DisplayMemberPath="Label" MaxHeight="120"
+                                 SelectionChanged="Quality_Changed"/>
+                    </StackPanel>
                     <Button x:Name="CloseTracksButton" Click="CloseTracks_Click"
                             HorizontalAlignment="Right" Margin="0,12,0,0"/>
                 </StackPanel>

@@ -1,5 +1,6 @@
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
+Imports Microsoft.Phone
 Imports Microsoft.Phone.Controls
 Imports System.Windows
 Imports System.Windows.Media.Imaging
@@ -9,6 +10,8 @@ Partial Public Class ItemDetailPage
 
     Private _item As BaseItemDto
     Private _suppressToggle As Boolean
+    Private _download As DownloadRecordDto
+    Private _downloading As Boolean
 
     Public Sub New()
         InitializeComponent()
@@ -28,6 +31,54 @@ Partial Public Class ItemDetailPage
         End Try
 
         ApplyItem()
+        _download = DownloadStore.Current.Find(_item.Id)
+        UpdateDownloadButton()
+    End Sub
+
+    Private Sub UpdateDownloadButton()
+        DownloadButton.IsEnabled = Not _downloading
+        DownloadButton.Content = Localized.Text(If(_download IsNot Nothing, "RemoveDownload", "DownloadAction"))
+    End Sub
+
+    ' The button is a toggle: download, or remove the copy that is already there.
+    ' The tap runs the copy; the download finishes even if the page scrolls, but
+    ' leaving the app stops it (there is no background agent on this platform).
+    Private Async Sub Download_Click(sender As Object, e As RoutedEventArgs)
+        If _downloading OrElse _item Is Nothing Then Return
+        If _download IsNot Nothing Then
+            DownloadStore.Current.Remove(_item.Id)
+            _download = Nothing
+            DownloadProgress.Visibility = Visibility.Collapsed
+            UpdateDownloadButton()
+            Return
+        End If
+
+        _downloading = True
+        ErrorText.Text = ""
+        DownloadProgress.Value = 0
+        DownloadProgress.Visibility = Visibility.Visible
+        UpdateDownloadButton()
+        ' The frame caches this page: a download finishes against the item it was
+        ' started for, even if the user has opened another one meanwhile.
+        Dim downloadingItemId = _item.Id
+        Try
+            Dim record = Await DownloadService.DownloadAsync(_item, Sub(percent)
+                                                                       Deployment.Current.Dispatcher.BeginInvoke(Sub() ShowPercent(percent))
+                                                                   End Sub)
+            If _item IsNot Nothing AndAlso _item.Id = downloadingItemId Then _download = record
+        Catch ex As Exception
+            If _item IsNot Nothing AndAlso _item.Id = downloadingItemId Then ErrorText.Text = Localized.DescribeError(ex)
+        Finally
+            _downloading = False
+            DownloadProgress.Visibility = Visibility.Collapsed
+            UpdateDownloadButton()
+        End Try
+    End Sub
+
+    Private Sub ShowPercent(percent As Integer)
+        If Not _downloading Then Return
+        DownloadProgress.Value = percent
+        DownloadButton.Content = Localized.Format("Downloading", percent)
     End Sub
 
     Private Sub ApplyItem()

@@ -16,7 +16,14 @@ Partial Public Class HomePage
         SettingsButton.Content = Localized.Text("SettingsButton.Content")
         ResumeHeader.Text = Localized.Text("ResumeHeader.Text")
         NextUpHeader.Text = Localized.Text("NextUpHeader.Text")
+        PlaylistsHeader.Text = Localized.Text("PlaylistsHeader")
+        DownloadsHeader.Text = Localized.Text("DownloadsHeader")
+        ManageDownloadsButton.Content = Localized.Text("ManageDownloads")
         LibrariesHeader.Text = Localized.Text("LibrariesHeader.Text")
+        ' Both sections appear only when they have something to show.
+        PlaylistsHeader.Visibility = Visibility.Collapsed
+        DownloadsHeader.Visibility = Visibility.Collapsed
+        ManageDownloadsButton.Visibility = Visibility.Collapsed
     End Sub
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
@@ -67,6 +74,20 @@ Partial Public Class HomePage
             ErrorText.Text = Localized.DescribeError(ex)
         End Try
 
+        Try
+            Dim playlists = Await client.GetPlaylistsAsync(session.UserId)
+            PlaylistsList.ItemsSource = PosterItem.Build(playlists, session.BaseUrl, session.AccessToken)
+            PlaylistsHeader.Visibility = If(playlists.Count > 0, Visibility.Visible, Visibility.Collapsed)
+        Catch ex As Exception
+            If FailureText.IsUnauthorized(ex) Then
+                Services.NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Return
+            End If
+            ErrorText.Text = Localized.DescribeError(ex)
+        End Try
+
+        ShowDownloads()
+
         ' A migrated account has no name in the store; fetch it once so the picker
         ' shows a person instead of an id.
         If String.IsNullOrEmpty(session.ActiveAccount.UserName) Then
@@ -89,6 +110,31 @@ Partial Public Class HomePage
         Dim row = TryCast(sender, FrameworkElement)
         Dim item = TryCast(row.DataContext, PosterItem)
         If item IsNot Nothing Then ItemNavigator.Open(item.Raw)
+    End Sub
+
+    ' Downloads are local: they show even with no server in reach.
+    Private Sub ShowDownloads()
+        Dim rows = DownloadRow.Build(DownloadStore.Current.Records())
+        DownloadsList.ItemsSource = rows
+        Dim any = rows.Count > 0
+        DownloadsHeader.Visibility = If(any, Visibility.Visible, Visibility.Collapsed)
+        ManageDownloadsButton.Visibility = If(any, Visibility.Visible, Visibility.Collapsed)
+    End Sub
+
+    Private Sub Playlist_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
+        If item IsNot Nothing Then Services.NavigationService.Navigate(GetType(PlaylistPage), item.Raw)
+    End Sub
+
+    Private Sub Download_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, DownloadRow)
+        If item IsNot Nothing Then Services.NavigationService.Navigate(GetType(PlayerPage), item.Record)
+    End Sub
+
+    Private Sub ManageDownloads_Click(sender As Object, e As RoutedEventArgs)
+        Services.NavigationService.Navigate(GetType(DownloadsPage), Nothing)
     End Sub
 
     Private Sub Search_Click(sender As Object, e As RoutedEventArgs)

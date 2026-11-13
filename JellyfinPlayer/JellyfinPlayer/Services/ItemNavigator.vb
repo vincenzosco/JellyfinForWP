@@ -6,6 +6,8 @@ Namespace Services
             If item Is Nothing Then Return
             If item.Type = "Series" Then
                 Services.NavigationService.Navigate(GetType(SeriesPage), item)
+            ElseIf item.Type = "Playlist" Then
+                Services.NavigationService.Navigate(GetType(PlaylistPage), item)
             Else
                 Services.NavigationService.Navigate(GetType(ItemDetailPage), item)
             End If

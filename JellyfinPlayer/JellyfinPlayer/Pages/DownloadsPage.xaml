@@ -1,0 +1,47 @@
+<phone:PhoneApplicationPage
+    x:Class="JellyfinPlayer.DownloadsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    Background="Transparent">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="#101517">
+            <TextBlock x:Name="TitleText" FontSize="24" Foreground="White" Margin="16,10,0,10"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <ListBox x:Name="DownloadList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,4" Tap="Row_Tap">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="12,0,0,0">
+                                <TextBlock Text="{Binding Title}" FontWeight="Bold" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding Subtitle}" FontSize="13" Opacity="0.7"/>
+                                <TextBlock Text="{Binding Size}" FontSize="13" Opacity="0.7"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Click="Delete_Click" Margin="8,0,12,0"
+                                    Padding="10,4" VerticalAlignment="Center" Content="{Binding DeleteLabel}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock x:Name="EmptyText" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

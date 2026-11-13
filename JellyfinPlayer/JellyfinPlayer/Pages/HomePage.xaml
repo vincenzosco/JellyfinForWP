@@ -79,6 +79,50 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
+                <TextBlock x:Name="PlaylistsHeader" FontSize="20" Margin="16,12,0,4"/>
+                <ListBox x:Name="PlaylistsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="150" Height="205" Margin="6" Tap="Playlist_Tap">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="150"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Background="#20262B">
+                                    <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+                                </Border>
+                                <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock x:Name="DownloadsHeader" FontSize="20" Margin="16,12,0,4"/>
+                <Button x:Name="ManageDownloadsButton" Click="ManageDownloads_Click"
+                        HorizontalAlignment="Left" Margin="10,0,0,4" Padding="10,4"/>
+                <ListBox x:Name="DownloadsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="150" Height="90" Margin="6" Background="#20262B" Padding="8" Tap="Download_Tap">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="13"/>
+                                    <TextBlock Text="{Binding Size}" FontSize="12" Opacity="0.7" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
                 <TextBlock x:Name="LibrariesHeader" FontSize="20" Margin="16,12,0,4"/>
                 <ListBox x:Name="ViewsList" Margin="8,0">
                     <ListBox.ItemTemplate>
