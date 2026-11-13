@@ -13,6 +13,9 @@ namespace JellyfinPlayer
         public App()
         {
             InitializeComponent();
+            // The saved logins, the device id and the bitrate are read once, before
+            // any page asks the session for them.
+            Services.AppSession.Current.Load();
             InitializePhoneApplication();
             // A crash with a debugger detached leaves no trace otherwise; the
             // stack written here is what the next run can be diagnosed from.

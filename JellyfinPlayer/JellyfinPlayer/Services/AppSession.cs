@@ -35,6 +35,7 @@ namespace JellyfinPlayer.Services
 
         private readonly AccountStore _store;
         private string _deviceId;
+        private bool _loaded;
 
         public AppSession()
         {
@@ -56,9 +57,16 @@ namespace JellyfinPlayer.Services
             get { return _store.Active; }
         }
 
+        // Every request identifies the device, and the server refuses a login that
+        // does not (400 "Error processing request"). One is made on demand so a page
+        // that was reached before Load() cannot send an empty id.
         public string DeviceId
         {
-            get { return _deviceId; }
+            get
+            {
+                if (string.IsNullOrEmpty(_deviceId)) _deviceId = Guid.NewGuid().ToString("N");
+                return _deviceId;
+            }
             set { _deviceId = value; }
         }
 
@@ -91,6 +99,8 @@ namespace JellyfinPlayer.Services
 
         public void Load()
         {
+            if (_loaded) return;
+            _loaded = true;
             var s = IsolatedStorageSettings.ApplicationSettings;
             lock (Sync)
             {
