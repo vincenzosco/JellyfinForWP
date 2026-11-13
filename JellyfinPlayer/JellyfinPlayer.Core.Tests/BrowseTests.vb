@@ -38,6 +38,26 @@ Public Class BrowseTests
     End Sub
 
     <TestMethod>
+    Public Sub GetGenres_parses_the_genre_list()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""Items"":[{""Id"":""g1"",""Name"":""Drama""}],""TotalRecordCount"":1}"
+        Dim genres = MakeClient(fake).GetGenresAsync("user1", "view1").Result
+        Assert.AreEqual(1, genres.Count)
+        Assert.AreEqual("Drama", genres(0).Name)
+        Assert.IsTrue(fake.LastUrl.Contains("ParentId=view1"), fake.LastUrl)
+    End Sub
+
+    <TestMethod>
+    Public Sub A_playlist_returns_its_entries_in_order()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""Items"":[{""Id"":""a"",""Name"":""First""},{""Id"":""b"",""Name"":""Second""}],""TotalRecordCount"":2}"
+        Dim entries = MakeClient(fake).GetPlaylistItemsAsync("list1", "user1").Result
+        Assert.AreEqual(2, entries.Count)
+        Assert.AreEqual("First", entries(0).Name)
+        Assert.AreEqual("Second", entries(1).Name)
+    End Sub
+
+    <TestMethod>
     Public Sub Search_encodes_term()
         Dim fake = New FakeTransport()
         fake.Handler = Function(u) "{""Items"":[],""TotalRecordCount"":0}"

@@ -87,8 +87,9 @@ Namespace Global.JellyfinPlayer.Shared
         End Function
 
         Public Async Function GetItemsAsync(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer,
-                                            Optional sortBy As String = "SortName", Optional sortOrder As String = "Ascending") As Task(Of QueryResultDto(Of BaseItemDto))
-            Dim body As String = Await _transport.GetStringAsync(_urls.Items(userId, parentId, includeItemTypes, startIndex, limit, sortBy, sortOrder), TokenHeaders())
+                                            Optional sortBy As String = "SortName", Optional sortOrder As String = "Ascending",
+                                            Optional genreIds As String = Nothing) As Task(Of QueryResultDto(Of BaseItemDto))
+            Dim body As String = Await _transport.GetStringAsync(_urls.Items(userId, parentId, includeItemTypes, startIndex, limit, sortBy, sortOrder, genreIds), TokenHeaders())
             Dim q = ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body)
             If q Is Nothing Then q = New QueryResultDto(Of BaseItemDto)()
             If q.Items Is Nothing Then q.Items = New List(Of BaseItemDto)()
@@ -116,6 +117,22 @@ Namespace Global.JellyfinPlayer.Shared
             If q Is Nothing Then q = New QueryResultDto(Of BaseItemDto)()
             If q.Items Is Nothing Then q.Items = New List(Of BaseItemDto)()
             Return q
+        End Function
+
+        Public Async Function GetGenresAsync(userId As String, parentId As String) As Task(Of List(Of BaseItemDto))
+            Dim body As String = Await _transport.GetStringAsync(_urls.Genres(userId, parentId), TokenHeaders())
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
+        End Function
+
+        Public Async Function GetPlaylistsAsync(userId As String) As Task(Of List(Of BaseItemDto))
+            Dim body As String = Await _transport.GetStringAsync(_urls.Playlists(userId), TokenHeaders())
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
+        End Function
+
+        ' Playlist entries are ordinary items; their order is the playlist's order.
+        Public Async Function GetPlaylistItemsAsync(playlistId As String, userId As String) As Task(Of List(Of BaseItemDto))
+            Dim body As String = Await _transport.GetStringAsync(_urls.PlaylistItems(playlistId, userId), TokenHeaders())
+            Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
         Public Async Function GetResumeAsync(userId As String, limit As Integer) As Task(Of List(Of BaseItemDto))

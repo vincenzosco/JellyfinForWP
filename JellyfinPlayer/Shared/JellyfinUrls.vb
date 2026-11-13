@@ -46,15 +46,33 @@ Namespace Global.JellyfinPlayer.Shared
             Return WithKey(U("/Users/" & userId & "/Views"))
         End Function
 
-        Public Function Items(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer, sortBy As String, sortOrder As String) As String
+        Public Function Items(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer, sortBy As String, sortOrder As String,
+                              Optional genreIds As String = Nothing) As String
             Dim q As String = "/Users/" & userId & "/Items?Recursive=true"
             If Not String.IsNullOrEmpty(parentId) Then q &= "&ParentId=" & Uri.EscapeDataString(parentId)
             If Not String.IsNullOrEmpty(includeItemTypes) Then q &= "&IncludeItemTypes=" & Uri.EscapeDataString(includeItemTypes)
             If Not String.IsNullOrEmpty(sortBy) Then q &= "&SortBy=" & Uri.EscapeDataString(sortBy)
             If Not String.IsNullOrEmpty(sortOrder) Then q &= "&SortOrder=" & Uri.EscapeDataString(sortOrder)
+            If Not String.IsNullOrEmpty(genreIds) Then q &= "&GenreIds=" & Uri.EscapeDataString(genreIds)
             q &= "&StartIndex=" & startIndex.ToString() & "&Limit=" & limit.ToString()
             q &= "&Fields=Overview,PrimaryImageAspectRatio"
             Return WithKey(U(q))
+        End Function
+
+        ' The genres a library actually contains; the id is what the item query
+        ' filters on.
+        Public Function Genres(userId As String, parentId As String) As String
+            Dim q As String = "/Genres?UserId=" & Uri.EscapeDataString(userId)
+            If Not String.IsNullOrEmpty(parentId) Then q &= "&ParentId=" & Uri.EscapeDataString(parentId)
+            Return WithKey(U(q))
+        End Function
+
+        Public Function Playlists(userId As String) As String
+            Return WithKey(U("/Users/" & Uri.EscapeDataString(userId) & "/Items?Recursive=true&IncludeItemTypes=Playlist&SortBy=SortName&Fields=ChildCount,PrimaryImageAspectRatio"))
+        End Function
+
+        Public Function PlaylistItems(playlistId As String, userId As String) As String
+            Return WithKey(U("/Playlists/" & Uri.EscapeDataString(playlistId) & "/Items?UserId=" & Uri.EscapeDataString(userId) & "&Fields=PrimaryImageAspectRatio,Overview,UserData"))
         End Function
 
         Public Function Item(userId As String, itemId As String) As String

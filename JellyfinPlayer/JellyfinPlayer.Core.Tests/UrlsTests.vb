@@ -100,6 +100,28 @@ Public Class UrlsTests
     End Sub
 
     <TestMethod>
+    Public Sub Genres_url_is_scoped_to_the_library()
+        Dim u = MakeUrls().Genres("user1", "view1")
+        Assert.IsTrue(u.Contains("/Genres?"), u)
+        Assert.IsTrue(u.Contains("UserId=user1"), u)
+        Assert.IsTrue(u.Contains("ParentId=view1"), u)
+    End Sub
+
+    <TestMethod>
+    Public Sub Items_url_carries_the_genre_filter()
+        Dim u = MakeUrls().Items("user1", "view1", "Movie", 0, 50, "SortName", "Ascending", "genre1")
+        Assert.IsTrue(u.Contains("GenreIds=genre1"), u)
+    End Sub
+
+    <TestMethod>
+    Public Sub Playlist_urls_name_the_user_and_the_playlist()
+        Assert.IsTrue(MakeUrls().Playlists("user1").Contains("IncludeItemTypes=Playlist"), MakeUrls().Playlists("user1"))
+        Dim entries = MakeUrls().PlaylistItems("list1", "user1")
+        Assert.IsTrue(entries.Contains("/Playlists/list1/Items"), entries)
+        Assert.IsTrue(entries.Contains("UserId=user1"), entries)
+    End Sub
+
+    <TestMethod>
     Public Sub Missing_token_omits_api_key()
         Assert.IsFalse(New JellyfinUrls("http://h").PrimaryImage("i", 100).Contains("ApiKey"), "no token should mean no ApiKey")
     End Sub
