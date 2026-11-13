@@ -44,6 +44,7 @@ namespace JellyfinPlayer
             var session = AppSession.Current;
             if (!string.IsNullOrEmpty(session.BaseUrl))
             {
+                AppLog.Info("Discovery skipped: saved server " + session.BaseUrl);
                 ServerBox.Text = session.BaseUrl;
                 DiscoveryStatus.Text = Localized.Text("StatusUsingSavedServer");
                 return;
