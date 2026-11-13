@@ -1,91 +1,46 @@
-' The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
-
+Imports Microsoft.Phone.Controls
+Imports Microsoft.Phone.Shell
 Imports System
-Imports JellyfinPlayer.Services
-Imports Windows.Phone.UI.Input
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Media.Animation
-Imports Windows.UI.Xaml.Navigation
+Imports System.Windows
+Imports System.Windows.Navigation
 
-''' <summary>
-''' Provides application-specific behavior to supplement the default Application class.
-''' </summary>
-NotInheritable Class App
-    Inherits Application
+Partial Public Class App
+        Inherits Application
 
-    Private _transitions As TransitionCollection
+        Public Shared Property RootFrame As PhoneApplicationFrame
 
-    Public Sub New()
-        InitializeComponent()
-        AppSession.Current.Load()
-        AddHandler HardwareButtons.BackPressed, AddressOf OnBackPressed
-    End Sub
+        Public Sub New()
+            InitializeComponent()
+            InitializePhoneApplication()
+        End Sub
 
-    Private Sub OnBackPressed(sender As Object, e As BackPressedEventArgs)
-        If NavigationService.BackInterceptor IsNot Nothing AndAlso NavigationService.BackInterceptor() Then
-            e.Handled = True
-            Return
-        End If
-        If NavigationService.CanGoBack Then
-            NavigationService.GoBack()
-            e.Handled = True
-        End If
-    End Sub
+        Private Sub InitializePhoneApplication()
+            If RootFrame IsNot Nothing Then Return
 
-    Protected Overrides Sub OnLaunched(e As LaunchActivatedEventArgs)
-        Dim rootFrame As Frame = TryCast(Window.Current.Content, Frame)
+            RootFrame = New PhoneApplicationFrame()
+            AddHandler RootFrame.Navigated, AddressOf CompleteInitializePhoneApplication
+            AddHandler RootFrame.NavigationFailed, AddressOf RootFrame_NavigationFailed
+            RootFrame.Navigate(New Uri("/MainPage.xaml", UriKind.Relative))
+        End Sub
 
-        If rootFrame Is Nothing Then
-            rootFrame = New Frame()
-            rootFrame.CacheSize = 2
+        Private Sub CompleteInitializePhoneApplication(sender As Object, e As NavigationEventArgs)
+            If RootVisual IsNot RootFrame Then RootVisual = RootFrame
+            RemoveHandler RootFrame.Navigated, AddressOf CompleteInitializePhoneApplication
+        End Sub
 
-            Window.Current.Content = rootFrame
-        End If
+        Private Sub RootFrame_NavigationFailed(sender As Object, e As NavigationFailedEventArgs)
+            Throw New InvalidOperationException("Failed to navigate to " & e.Uri.ToString())
+        End Sub
 
-        If rootFrame.Content Is Nothing Then
-            If rootFrame.ContentTransitions IsNot Nothing Then
-                _transitions = New TransitionCollection()
-                For Each transition As Transition In rootFrame.ContentTransitions
-                    _transitions.Add(transition)
-                Next
-            End If
+        Private Sub Application_Launching(sender As Object, e As LaunchingEventArgs)
+        End Sub
 
-            rootFrame.ContentTransitions = Nothing
-            AddHandler rootFrame.Navigated, AddressOf RootFrame_FirstNavigated
+        Private Sub Application_Closing(sender As Object, e As ClosingEventArgs)
+        End Sub
 
-            Dim session = AppSession.Current
-            Dim target As Type = GetType(MainPage)
-            If session.IsLoggedIn Then
-                target = GetType(HomePage)
-            ElseIf session.Accounts.Count > 0 Then
-                ' Accounts exist but none is in use: the picker is the way back in.
-                target = GetType(AccountsPage)
-            End If
-            If Not rootFrame.Navigate(target, e.Arguments) Then
-                Throw New Exception("Failed to create initial page")
-            End If
-        End If
+        Private Sub Application_Activated(sender As Object, e As ActivatedEventArgs)
+        End Sub
 
-        Window.Current.Activate()
-    End Sub
-
-    Private Sub RootFrame_FirstNavigated(sender As Object, e As NavigationEventArgs)
-        Dim newTransitions As TransitionCollection
-        If _transitions Is Nothing Then
-            newTransitions = New TransitionCollection()
-            newTransitions.Add(New NavigationThemeTransition())
-        Else
-            newTransitions = _transitions
-        End If
-
-        Dim rootFrame As Frame = DirectCast(sender, Frame)
-        rootFrame.ContentTransitions = newTransitions
-        RemoveHandler rootFrame.Navigated, AddressOf RootFrame_FirstNavigated
-    End Sub
-
-    Private Sub OnSuspending(sender As Object, e As SuspendingEventArgs) Handles Me.Suspending
-        Dim deferral As SuspendingDeferral = e.SuspendingOperation.GetDeferral()
-        deferral.Complete()
-    End Sub
+        Private Sub Application_Deactivated(sender As Object, e As DeactivatedEventArgs)
+        End Sub
 End Class
