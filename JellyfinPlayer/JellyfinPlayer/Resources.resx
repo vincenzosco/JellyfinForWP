@@ -301,6 +301,9 @@
   <data name="DownloadsTitle" xml:space="preserve">
     <value>Downloads</value>
   </data>
+  <data name="NothingToShow" xml:space="preserve">
+    <value>Nothing to show here yet.</value>
+  </data>
   <data name="DownloadEmpty" xml:space="preserve">
     <value>No downloads yet.</value>
   </data>

@@ -11,136 +11,175 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     Background="Transparent">
 
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Minimized">
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="SearchMenuItem" Click="Search_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="AccountsMenuItem" Click="SwitchAccount_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="SettingsMenuItem" Click="Settings_Click"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="#101517">
-            <StackPanel Orientation="Horizontal" Margin="16,10,0,10">
-                <Image Source="/Assets/BrandMark.png" Width="34" Height="34" Margin="0,0,10,0"/>
-                <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="0" Background="#101517">
+            <StackPanel Orientation="Horizontal" Margin="12,6,0,6">
+                <Image Source="/Assets/BrandMark.png" Width="26" Height="26" Margin="0,0,8,0"/>
+                <TextBlock Text="Jellyfin" FontSize="20" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
-                <Button x:Name="SwitchAccountButton" Click="SwitchAccount_Click"/>
-                <Button x:Name="SearchButton" Click="Search_Click"/>
-                <Button x:Name="SettingsButton" Click="Settings_Click"/>
-            </StackPanel>
-        </Grid>
+        </StackPanel>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel>
-                <TextBlock x:Name="ErrorText" Foreground="#D9534F" TextWrapping="Wrap" Margin="16,8,16,0"/>
+        <TextBlock x:Name="ErrorText" Grid.Row="1" Foreground="#D9534F" TextWrapping="Wrap"
+                   Margin="16,6,16,0" Visibility="Collapsed"/>
 
-                <TextBlock x:Name="ResumeHeader" FontSize="20" Margin="16,12,0,4"/>
-                <ListBox x:Name="ResumeList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6" Tap="Item_Tap">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="150"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Border Background="#20262B">
-                                    <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
-                                </Border>
-                                <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+        <phone:Pivot x:Name="Sections" Grid.Row="2" SelectionChanged="Sections_SelectionChanged"
+                     Margin="0,2,0,0">
 
-                <TextBlock x:Name="NextUpHeader" FontSize="20" Margin="16,12,0,4"/>
-                <ListBox x:Name="NextUpList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6" Tap="Item_Tap">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="150"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Border Background="#20262B">
-                                    <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
-                                </Border>
-                                <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <phone:PivotItem x:Name="ResumeSection">
+                <ScrollViewer>
+                    <StackPanel x:Name="ResumePanel">
+                        <ListBox x:Name="ResumeList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="130" Height="185" Margin="6" Tap="Item_Tap">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="130"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Background="#20262B">
+                                            <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="ResumeEmpty" TextWrapping="Wrap" Opacity="0.6" Margin="16,16" Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </phone:PivotItem>
 
-                <TextBlock x:Name="PlaylistsHeader" FontSize="20" Margin="16,12,0,4"/>
-                <ListBox x:Name="PlaylistsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6" Tap="Playlist_Tap">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="150"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Border Background="#20262B">
-                                    <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
-                                </Border>
-                                <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <phone:PivotItem x:Name="NextUpSection">
+                <ScrollViewer>
+                    <StackPanel x:Name="NextUpPanel">
+                        <ListBox x:Name="NextUpList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="130" Height="185" Margin="6" Tap="Item_Tap">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="130"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Background="#20262B">
+                                            <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="NextUpEmpty" TextWrapping="Wrap" Opacity="0.6" Margin="16,16" Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </phone:PivotItem>
 
-                <TextBlock x:Name="DownloadsHeader" FontSize="20" Margin="16,12,0,4"/>
-                <Button x:Name="ManageDownloadsButton" Click="ManageDownloads_Click"
-                        HorizontalAlignment="Left" Margin="10,0,0,4" Padding="10,4"/>
-                <ListBox x:Name="DownloadsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Width="150" Height="90" Margin="6" Background="#20262B" Padding="8" Tap="Download_Tap">
-                                <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="13"/>
-                                    <TextBlock Text="{Binding Size}" FontSize="12" Opacity="0.7" Margin="0,2,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <phone:PivotItem x:Name="LibrariesSection">
+                <ScrollViewer>
+                    <StackPanel x:Name="LibrariesPanel">
+                        <ListBox x:Name="ViewsList" Margin="8,0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="76" Margin="6,4" Tap="View_Tap">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="76"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Background="#20262B" Width="66" Height="66" HorizontalAlignment="Left">
+                                            <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="17" FontWeight="Bold"
+                                                   VerticalAlignment="Center" TextWrapping="Wrap" Margin="10,0,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="LibrariesEmpty" TextWrapping="Wrap" Opacity="0.6" Margin="16,16" Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </phone:PivotItem>
 
-                <TextBlock x:Name="LibrariesHeader" FontSize="20" Margin="16,12,0,4"/>
-                <ListBox x:Name="ViewsList" Margin="8,0">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6" Tap="View_Tap">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="150"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Border Background="#20262B">
-                                    <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
-                                </Border>
-                                <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" Margin="0,4,0,0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-        </ScrollViewer>
+            <phone:PivotItem x:Name="PlaylistsSection">
+                <ScrollViewer>
+                    <StackPanel x:Name="PlaylistsPanel">
+                        <ListBox x:Name="PlaylistsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="130" Height="185" Margin="6" Tap="Playlist_Tap">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="130"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Background="#20262B">
+                                            <Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="PlaylistsEmpty" TextWrapping="Wrap" Opacity="0.6" Margin="16,16" Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </phone:PivotItem>
+
+            <phone:PivotItem x:Name="DownloadsSection">
+                <ScrollViewer>
+                    <StackPanel x:Name="DownloadsPanel">
+                        <ListBox x:Name="DownloadsList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="140" Height="80" Margin="6" Background="#20262B" Padding="8" Tap="Download_Tap">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="13"/>
+                                            <TextBlock Text="{Binding Size}" FontSize="12" Opacity="0.7" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="DownloadsEmpty" TextWrapping="Wrap" Opacity="0.6" Margin="16,16" Visibility="Collapsed"/>
+                        <Button x:Name="ManageDownloadsButton" Click="ManageDownloads_Click"
+                                HorizontalAlignment="Left" Margin="10,8,0,0" Padding="10,4" FontSize="14"
+                                Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </phone:PivotItem>
+        </phone:Pivot>
     </Grid>
 </phone:PhoneApplicationPage>
