@@ -19,11 +19,17 @@ Partial Public Class LibraryPage
     Private _startIndex As Integer = 0
     Private _items As New List(Of PosterItem)()
     Private _sortBy As String = SortByName
+    Private _genre As GenreChoice
+    Private _genreChoices As List(Of GenreChoice)
+    Private _suppressGenre As Boolean
 
     Public Sub New()
         InitializeComponent()
         LoadMoreButton.Content = Localized.Text("LoadMoreButton.Content")
+        GenrePanelTitle.Text = Localized.Text("GenrePanelTitle")
+        CloseGenreButton.Content = Localized.Text("ActionClose")
         UpdateSortLabel()
+        UpdateGenreLabel()
     End Sub
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
@@ -34,18 +40,40 @@ Partial Public Class LibraryPage
         _startIndex = 0
         _items.Clear()
         _sortBy = SortByName
+        _genre = Nothing
+        _genreChoices = Nothing
+        GenrePanel.Visibility = Visibility.Collapsed
         UpdateSortLabel()
+        UpdateGenreLabel()
         ErrorText.Text = ""
         TitleText.Text = If(_view IsNot Nothing, _view.Name, Localized.Text("LibraryTitle"))
         If _view Is Nothing Then Return
+        Await LoadGenresAsync()
         Await LoadNextPageAsync()
     End Sub
+
+    ' A genre filter is a convenience: a failure leaves the list with "all" and
+    ' the library still opens.
+    Private Async Function LoadGenresAsync() As Task
+        Try
+            Dim session = AppSession.Current
+            Dim genres = Await session.CreateClient().GetGenresAsync(session.UserId, _view.Id)
+            _genreChoices = LibraryFilters.GenreChoices(genres, Localized.Text("AllGenres"))
+        Catch
+            _genreChoices = LibraryFilters.GenreChoices(Nothing, Localized.Text("AllGenres"))
+        End Try
+        _suppressGenre = True
+        GenreList.ItemsSource = _genreChoices
+        GenreList.SelectedIndex = 0
+        _suppressGenre = False
+    End Function
 
     Private Async Function LoadNextPageAsync() As Task
         Dim session = AppSession.Current
         Busy.Visibility = Visibility.Visible
         Try
-            Dim q = Await session.CreateClient().GetItemsAsync(session.UserId, _view.Id, IncludeTypes, _startIndex, PageSize, _sortBy, "Ascending")
+            Dim genreIds = If(_genre IsNot Nothing AndAlso Not _genre.IsAll, _genre.Id, Nothing)
+            Dim q = Await session.CreateClient().GetItemsAsync(session.UserId, _view.Id, IncludeTypes, _startIndex, PageSize, _sortBy, "Ascending", genreIds)
             For Each poster In PosterItem.Build(q.Items, session.BaseUrl, session.AccessToken)
                 _items.Add(poster)
             Next
@@ -67,6 +95,37 @@ Partial Public Class LibraryPage
 
     Private Sub UpdateSortLabel()
         SortButton.Content = Localized.Text(If(_sortBy = SortByName, "SortByName", "SortByDateAdded"))
+    End Sub
+
+    Private Sub UpdateGenreLabel()
+        ' The button states the filter it is applying: the genre's own name, or
+        ' "Genre" while every genre is shown.
+        Dim name = If(_genre IsNot Nothing AndAlso Not _genre.IsAll, _genre.Name, Localized.Text("GenreFilter"))
+        GenreButton.Content = name
+    End Sub
+
+    Private Sub Genre_Click(sender As Object, e As RoutedEventArgs)
+        GenrePanel.Visibility = If(GenrePanel.Visibility = Visibility.Visible, Visibility.Collapsed, Visibility.Visible)
+    End Sub
+
+    Private Sub CloseGenre_Click(sender As Object, e As RoutedEventArgs)
+        GenrePanel.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Async Sub Genre_Changed(sender As Object, e As SelectionChangedEventArgs)
+        If _suppressGenre Then Return
+        Dim chosen = TryCast(GenreList.SelectedItem, GenreChoice)
+        If chosen Is Nothing Then Return
+        GenrePanel.Visibility = Visibility.Collapsed
+        If _genre IsNot Nothing AndAlso _genre.Id = chosen.Id Then Return
+        _genre = chosen
+        UpdateGenreLabel()
+        ' A different filter means a different first page.
+        _startIndex = 0
+        _items.Clear()
+        ItemsList.ItemsSource = Nothing
+        LoadMoreButton.Visibility = Visibility.Collapsed
+        If _view IsNot Nothing Then Await LoadNextPageAsync()
     End Sub
 
     Private Async Sub Sort_Click(sender As Object, e As RoutedEventArgs)
