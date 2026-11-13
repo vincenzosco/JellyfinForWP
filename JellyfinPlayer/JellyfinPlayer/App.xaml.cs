@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
@@ -30,6 +31,7 @@ namespace JellyfinPlayer
             RootFrame = new PhoneApplicationFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
             RootFrame.NavigationFailed += RootFrame_NavigationFailed;
+            RootFrame.BackKeyPress += RootFrame_BackKeyPress;
             RootFrame.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
 
@@ -45,6 +47,14 @@ namespace JellyfinPlayer
             // XAML parse error and a throwing constructor all end up here.
             Services.AppLog.Error("Navigation failed: " + e.Uri, e.Exception);
             throw new InvalidOperationException("Failed to navigate to " + e.Uri.ToString(), e.Exception);
+        }
+
+        // The player wants the back press for itself while it is fullscreen: it leaves
+        // fullscreen instead of the page. Anywhere else the frame navigates as usual.
+        private void RootFrame_BackKeyPress(object sender, CancelEventArgs e)
+        {
+            var interceptor = Services.NavigationService.BackInterceptor;
+            if (interceptor != null && interceptor()) e.Cancel = true;
         }
 
         private void Application_Launching(object sender, LaunchingEventArgs e)
