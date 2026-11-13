@@ -10,14 +10,6 @@ namespace JellyfinPlayer
     {
         public static PhoneApplicationFrame RootFrame { get; set; }
 
-        // The phone starts the app through SilverlightAppEntry, not through this
-        // method; it exists because the project is an application (winexe) and the
-        // C# compiler requires an entry point for that output type.
-        [STAThread]
-        public static void Main()
-        {
-        }
-
         public App()
         {
             InitializeComponent();
