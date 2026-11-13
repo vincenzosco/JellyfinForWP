@@ -1,20 +1,21 @@
-Imports System
+Imports System.Globalization
+Imports System.Resources
 Imports JellyfinPlayer.Shared
-Imports Windows.ApplicationModel.Resources
 
 Namespace Services
-    ' Every user-visible string the code builds at run time. Strings that live
-    ' in XAML use x:Uid instead. English (en-US) is the default and the
-    ' fallback; the device language picks the resource file.
+    ' Every user-visible string the code builds at run time. English (en-US) is the
+    ' neutral resource and the fallback; the device UI culture selects the it-IT
+    ' satellite when present. The strings live in Resources.resx / Resources.it-IT.resx.
     Public Module Localized
-        Private ReadOnly _loader As ResourceLoader = ResourceLoader.GetForViewIndependentUse()
+        Private ReadOnly _manager As New ResourceManager("JellyfinPlayer.Resources", GetType(Localized).Assembly)
 
         Public Function Text(key As String) As String
-            Return _loader.GetString(key)
+            Dim value = _manager.GetString(key, CultureInfo.CurrentUICulture)
+            Return If(String.IsNullOrEmpty(value), key, value)
         End Function
 
         Public Function Format(key As String, ParamArray args As Object()) As String
-            Return String.Format(Text(key), args)
+            Return String.Format(CultureInfo.CurrentCulture, Text(key), args)
         End Function
 
         ' The user-facing sentence for a failed request, chosen from the

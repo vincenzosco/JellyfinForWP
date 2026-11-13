@@ -15,7 +15,7 @@ Public Class LocalizationTests
     Private Shared ReadOnly BaseDir As String = AppDomain.CurrentDomain.BaseDirectory
 
     Private Shared Function Resources(language As String) As Dictionary(Of String, String)
-        Dim doc = XDocument.Load(System.IO.Path.Combine(BaseDir, "Localization", language, "Resources.resw"))
+        Dim doc = XDocument.Load(System.IO.Path.Combine(BaseDir, "Localization", language, "Resources.resx"))
         Return doc.Descendants("data").ToDictionary(
             Function(d) d.Attribute("name").Value,
             Function(d) d.Element("value").Value)
@@ -63,17 +63,27 @@ Public Class LocalizationTests
     End Sub
 
     <TestMethod>
-    Public Sub Every_xUid_in_XAML_has_a_resource_in_both_languages()
+    Public Sub Every_key_referenced_from_XAML_or_code_has_a_resource_in_both_languages()
         Dim allXaml = XamlFiles()
         Assert.IsTrue(allXaml.Length >= 6, "expected the page XAML files, found " & allXaml.Length.ToString())
+        Dim referenced As New HashSet(Of String)()
         For Each xamlFile In allXaml
             Dim text As String = System.IO.File.ReadAllText(xamlFile)
-            For Each uid In Regex.Matches(text, "x:Uid=""([^""]+)""").Cast(Of Match)().Select(Function(m) m.Groups(1).Value)
-                Dim matching = English.Keys.Where(Function(k) k.StartsWith(uid & ".", StringComparison.Ordinal)).ToArray()
-                Assert.AreEqual(1, matching.Length,
-                    System.IO.Path.GetFileName(xamlFile) & ": x:Uid=""" & uid & """ needs exactly one of " & uid & ".Text/.Content/.PlaceholderText, found " & matching.Length.ToString())
-                Assert.IsTrue(Italian.ContainsKey(matching(0)), "missing it-IT translation for " & matching(0))
+            ' Silverlight resolves labels from code via Localized.Text("key"); a
+            ' {StaticResource} is a theme brush, never a string key.
+            For Each m In Regex.Matches(text, "Localized\.Text\(\s*""([^""]+)""").Cast(Of Match)()
+                referenced.Add(m.Groups(1).Value)
             Next
+        Next
+        For Each sourceFile In AppSources()
+            Dim text As String = System.IO.File.ReadAllText(sourceFile)
+            For Each m In Regex.Matches(text, "Localized\.(?:Text|Format)\(\s*""([^""]+)""").Cast(Of Match)()
+                referenced.Add(m.Groups(1).Value)
+            Next
+        Next
+        For Each key In referenced
+            Assert.IsTrue(English.ContainsKey(key), "en-US is missing " & key)
+            Assert.IsTrue(Italian.ContainsKey(key), "it-IT is missing " & key)
         Next
     End Sub
 
