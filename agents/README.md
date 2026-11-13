@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Build and maintain the Windows Phone 8.1 Jellyfin client.</strong><br>
-  The app uses VB.NET, Windows Phone Silverlight XAML, Visual Studio 2013, and MSBuild 12.
+  The app uses C#, Windows Phone Silverlight XAML, Visual Studio 2013, and MSBuild 12.
 </p>
 
 <p align="center">
@@ -50,9 +50,9 @@ agents/                      Build, design, testing, API, and maintenance notes
 ## Working rules
 
 - Do not add NuGet packages. Builds must work without package restore.
-- `Shared/*.vb` is linked into the app and test project, rather than referenced as a library. Keep it limited to APIs supported by both .NET 4.5 and Windows Phone 8.1.
+- `Shared/*.cs` is linked into the app and test project, rather than referenced as a library. Keep it limited to APIs supported by both .NET 4.5 and Windows Phone 8.1.
 - Shared files use `Namespace Global.JellyfinPlayer.Shared`; the `Global.` prefix prevents each project's `RootNamespace` from changing the namespace.
-- Use VB 12 syntax. Avoid VB14 features such as string interpolation and `NameOf`.
+- Use C# 5 syntax. Avoid later features such as `?.`, string interpolation and `nameof`.
 - Keep user-facing text in both `Resources.resx` and `Resources.it-IT.resx`. Set labels from code with `Localized.Text` / `Localized.Format`: Silverlight has no `x:Uid` resource lookup.
 - Add tests for platform-independent API and playback decisions. Windows Phone UI behavior requires the manual device/emulator checklist because this project has no UI automation.
 

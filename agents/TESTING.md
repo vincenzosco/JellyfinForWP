@@ -19,7 +19,7 @@ assembly to `TestResults/<run>/Out` and the local config file is not found:
 ... /category:Integration
 ```
 
-Build the test project first (`msbuild ... JellyfinPlayer.Core.Tests.vbproj`), or
+Build the test project first (`msbuild ... JellyfinPlayer.Core.Tests.csproj`), or
 build the whole solution.
 
 ## Configuring the integration tests
@@ -66,13 +66,13 @@ never produces one), `TicksTests.FormatSpan*` (the elapsed/total clock), and
 `PlayerSurfaceTests` (entering and leaving the full-page player, the screen staying awake
 while playing and not while paused, and `RestoreAll` putting the system tray, portrait
 rotation and the screen timeout back however the screen was left).
-`Services/SilverlightPlayerShell.vb` is the Windows Phone binding of the same interface and
+`Services/SilverlightPlayerShell.cs` is the Windows Phone binding of the same interface and
 is verified by the build plus the checklist below.
 
 ## Localization consistency tests
 
 `LocalizationTests` read the real files — copied next to the test assembly by
-`JellyfinPlayer.Core.Tests.vbproj` — instead of a hand-made fixture: the two `.resx`
+`JellyfinPlayer.Core.Tests.csproj` — instead of a hand-made fixture: the two `.resx`
 files, every XAML page, the manifest and the app sources. They fail when English and
 Italian drift apart (missing key, empty value, different `{n}` placeholders), when a
 `Localized.Text` key has no resource, when a key used from code does not exist, when the manifest

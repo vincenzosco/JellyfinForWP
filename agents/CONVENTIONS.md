@@ -2,42 +2,39 @@
 
 ## Language and options
 
-- **VB.NET**, matching the project options: `Option Explicit On`, `Option Infer On`,
-  `Option Strict Off`. Write explicit types anyway (`Dim x As List(Of Foo) = ...`).
-- Target is **VB 12** (VS2013). No VB14 features: no readonly auto-properties
-  (use a backing field + `Get`), no string interpolation, no `NameOf`.
+- **C# 5** (`<LangVersion>5</LangVersion>`), because VS2013 ships the C# 5 compiler.
+  No null-conditional operator (`?.`), `nameof`, string interpolation,
+  expression-bodied members or auto-property initializers.
+- Use explicit types where the intent is not obvious; `var` is fine for a local
+  whose type is spelled out on the right.
 
 ## Namespaces
 
-- `Shared/` files declare `Namespace Global.JellyfinPlayer.Shared`. The `Global.`
-  prefix is required: VB otherwise prepends each project's `RootNamespace`, which
-  would give the app and the test project two different namespaces.
-- App code declares `Namespace Services` (which becomes `JellyfinPlayer.Services`).
-  Pages live in the app root namespace (no `Namespace` block) so their `x:Class`
-  is exactly `JellyfinPlayer.<PageName>`.
-- **VB `Imports` are absolute**, not relative to the root namespace. Import
-  `JellyfinPlayer.Services`, not `Services`.
-- Watch for VB keywords used as identifiers: `Default`, `Resume`. Prefer renaming
-  (`DefaultProfile`, `ResumeItems`) over bracketing.
+- `Shared/` files declare `namespace JellyfinPlayer.Shared`.
+- App services declare `namespace JellyfinPlayer.Services`; pages and `App` live in
+  `JellyfinPlayer` so their `x:Class` is exactly `JellyfinPlayer.<PageName>`.
+- Inside a page, `NavigationService` is the framework property; the app's helper is
+  `Services.NavigationService` (`using JellyfinPlayer.Services;` alone does not win
+  over the inherited member).
 
 ## Dependencies
 
 - **No NuGet packages, no restore.** Only `System.*` and `Microsoft.Phone`
   framework assemblies. JSON goes through `System.Runtime.Serialization.Json`.
 - `DataContractJsonSerializer` cannot map a JSON object onto
-  `Dictionary(Of String, String)`. Model fixed-key objects as a class with
+  `Dictionary<string, string>`. Model fixed-key objects as a class with
   `[DataMember]` properties instead (see `ImageTagsDto`).
 
 ## Pages
 
-- One page per file pair `Pages/<Name>.xaml` + `Pages/<Name>.xaml.vb`, with a
-  `phone:PhoneApplicationPage` root; add the `<Page>` entry in `JellyfinPlayer.vbproj`
-  (the code-behind is picked up by the `Pages\*.xaml.vb` wildcard).
-- Navigate through `NavigationService.Navigate(GetType(Page), parameter)`; pass a
-  `BaseItemDto` (or `Nothing`) as the parameter.
+- One page per file pair `Pages/<Name>.xaml` + `Pages/<Name>.xaml.cs`, with a
+  `phone:PhoneApplicationPage` root; add the `<Page>` entry in `JellyfinPlayer.csproj`
+  (the code-behind is picked up by the `Pages\*.xaml.cs` wildcard).
+- Navigate through `Services.NavigationService.Navigate(typeof(Page), parameter)`; pass a
+  `BaseItemDto` (or `null`) as the parameter.
 - Data binding uses plain `{Binding}` on `PosterItem` properties. No converters.
 - Show errors in a page-local `TextBlock`; never let an exception escape an
-  `Async Sub` handler (wrap in `Try/Catch`).
+  `async void` handler (wrap in `try`/`catch`).
 
 ## Errors
 

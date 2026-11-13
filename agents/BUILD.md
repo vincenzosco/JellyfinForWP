@@ -40,12 +40,12 @@ platform name; `AnyCPU` is rejected). Add `-t:Rebuild` for a clean build.
 ```
 
 A passing run prints `N/N test(s) Passed`. The test project targets .NET 4.5 and
-links `Shared/*.vb`; it needs no package restore.
+links `Shared/*.cs`; it needs no package restore.
 
 ## Requirements (already present on the reference machine)
 
 - Visual Studio 2013 (MSBuild 12.0.40629.0) and the Windows Phone 8.1 SDK.
-- The Windows Phone 8.1 Silverlight targets (`Microsoft.WindowsPhone.VisualBasic.targets`).
+- The Windows Phone 8.1 Silverlight targets (`Microsoft.WindowsPhone.CSharp.targets`).
 - `Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll` in the VS2013
   `Common7/IDE/PublicAssemblies` folder (referenced via `$(MSBuildProgramFiles32)`).
 
@@ -53,4 +53,4 @@ links `Shared/*.vb`; it needs no package restore.
 
 Use VS2013 (**Deploy**) or a XAP deployer (for example the Windows Phone
 Application Deployment tool) with the generated `.xap`. The app requires the
-`ID_CAP_NETWORKING` capability, already set in `My Project/WMAppManifest.xml`.
+`ID_CAP_NETWORKING` capability, already set in `Properties/WMAppManifest.xml`.

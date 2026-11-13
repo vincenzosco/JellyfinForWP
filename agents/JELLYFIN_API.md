@@ -16,7 +16,7 @@ Authorization: MediaBrowser Client="JellyfinPlayer", Device="WindowsPhone", Devi
 The response gives `AccessToken`, `User.Id` and `ServerId`. Every later request
 carries `Authorization: MediaBrowser Token="<AccessToken>", Client="...",
 Device="...", DeviceId="...", Version="..."` — all built by
-`Shared/JellyfinAuthHeader.vb`. The device id is generated once and stored in
+`Shared/JellyfinAuthHeader.cs`. The device id is generated once and stored in
 `IsolatedStorageSettings`.
 
 > **Why not `X-Emby-Authorization` / `X-Emby-Token`?** Jellyfin 12 ships with

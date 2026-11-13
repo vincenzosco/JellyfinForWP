@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Esplora e riproduci la tua libreria Jellyfin su un dispositivo Windows Phone 8.1.</strong><br>
-  L'app è scritta in VB.NET e usa XAML e il lettore multimediale integrato nel telefono.
+  L'app è scritta in C# e usa XAML e il lettore multimediale integrato nel telefono.
 </p>
 
 <p align="center">
@@ -123,7 +123,7 @@ Usa `-p:Configuration=Debug`, non `/p:Configuration=Debug`. Git Bash può riscri
 Compila il progetto di test della logica condivisa con la toolchain VS2013, poi avvia i test unitari con MSTest v1:
 
 ```bash
-"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.Core.Tests/JellyfinPlayer.Core.Tests.vbproj \
+"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.Core.Tests/JellyfinPlayer.Core.Tests.csproj \
   -p:Configuration=Debug -p:Platform=AnyCPU -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 
 MSYS_NO_PATHCONV=1 "/c/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/mstest.exe" \

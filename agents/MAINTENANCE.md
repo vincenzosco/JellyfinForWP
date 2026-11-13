@@ -2,22 +2,22 @@
 
 ## Add an API endpoint
 
-1. Add the URL to `Shared/JellyfinUrls.vb` (append `ApiKey` via `WithKey` if a
+1. Add the URL to `Shared/JellyfinUrls.cs` (append `ApiKey` via `WithKey` if a
    `BitmapImage` or `MediaElement` will fetch it — never the removed `api_key`).
-2. Add the DTO to `Shared/Models.vb` (`<DataContract>` + `<DataMember>` on every
+2. Add the DTO to `Shared/Models.cs` (`[DataContract]` + `[DataMember]` on every
    field to read).
-3. Add a method to `Shared/JellyfinApiClient.vb` that calls
+3. Add a method to `Shared/JellyfinApiClient.cs` that calls
    `_transport.GetStringAsync`/`PostJsonAsync` and `Json.Deserialize`.
 4. Add a test in `JellyfinPlayer.Core.Tests/` using `FakeTransport`; verify the
    recorded URL and the parsed result.
 
 ## Add a page
 
-1. Create `Pages/<Name>.xaml` (+ `.xaml.vb`), `x:Class="JellyfinPlayer.<Name>"`.
-2. Register it in `JellyfinPlayer.vbproj`: a `<Page>` entry under the app-definition
-   `ItemGroup` and the `.xaml.vb` is picked up by `<Compile Include="Pages\*.xaml.vb">`.
+1. Create `Pages/<Name>.xaml` (+ `.xaml.cs`), `x:Class="JellyfinPlayer.<Name>"`.
+2. Register it in `JellyfinPlayer.csproj`: a `<Page>` entry under the app-definition
+   `ItemGroup` and the `.xaml.cs` is picked up by `<Compile Include="Pages\*.xaml.cs">`.
 3. Derive from `phone:PhoneApplicationPage` and navigate with
-   `NavigationService.Navigate(GetType(<Name>), parameter)`; handle the Back key with
+   `NavigationService.Navigate(typeof(<Name>), parameter)`; handle the Back key with
    `BackKeyPress`.
 4. Remember Silverlight `StackPanel` has **no `Padding`** — use child margins or a
    `Border`; a poster grid is a `LongListSelector` or `ListBox`, not a WinRT `GridView`.
@@ -25,7 +25,7 @@
 ## Tests
 
 See [`TESTING.md`](TESTING.md). Add a unit test for any pure logic in `Shared/`
-(the test project links it automatically via `*.vb`); add an integration test only
+(the test project links it automatically via `*.cs`); add an integration test only
 for behaviour that needs a real server, with `<TestCategory("Integration")>` on the
 method.
 
@@ -46,20 +46,22 @@ references the un-suffixed names (`Assets\Logo.png`); the build resolves the
 ## Bump the version
 
 Edit all three, keeping the numbers identical:
-- `JellyfinPlayer/JellyfinPlayer/My Project/AssemblyInfo.vb`
+- `JellyfinPlayer/JellyfinPlayer/Properties/AssemblyInfo.cs`
   (`AssemblyVersion`, `AssemblyFileVersion`),
-- `JellyfinPlayer/JellyfinPlayer/My Project/WMAppManifest.xml`
+- `JellyfinPlayer/JellyfinPlayer/Properties/WMAppManifest.xml`
   (`<App ... Version="…">`),
 - `JellyfinPlayer/JellyfinPlayer/Package.appxmanifest`
   (`<Identity ... Version="…">`).
 
 ## Gotchas
 
-- `Resume` and `Default` are VB keywords — avoid them as member names.
-- VB auto-property `ReadOnly` needs VB14; use a backing field + `Get`.
+- Only C# 5 syntax: no null-conditional operator, `nameof`, string interpolation,
+  expression-bodied members or auto-property initializers (`LangVersion 5`).
+- Inside a page, `NavigationService` resolves to the framework property; the app's
+  own helper is `Services.NavigationService`.
 - `TextBox` has no `QuerySubmitted` on WP8.1 — handle `KeyDown` + `Enter`.
-- The test project needs VB `<Import Include="JellyfinPlayer.Shared" />` and the
-  MSTest import, or `TestClass`/`Assert` are "not declared".
+- The test project needs a reference to `Microsoft.VisualStudio.QualityTools.UnitTestFramework`,
+  or `TestClass`/`Assert` are "not declared".
 
 ## Known limitations
 

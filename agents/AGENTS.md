@@ -1,6 +1,6 @@
 # JellyfinPlayer — agent entry point
 
-Windows Phone Silverlight 8.1 Jellyfin client, written in **VB.NET**, built with
+Windows Phone Silverlight 8.1 Jellyfin client, written in **C# 5**, built with
 **VS2013 / MSBuild 12**. Read these before changing anything:
 
 - [`BUILD.md`](BUILD.md) — exact build and test commands.
@@ -34,8 +34,8 @@ Rules of the road:
    `System.Net.Sockets` and the `Microsoft.Phone` framework assemblies only.
 2. Shared logic is linked, not referenced — see `ARCHITECTURE.md`. Keep it free of
    Windows Phone-only types so the desktop tests keep compiling.
-3. `Shared/*.vb` uses `Namespace Global.JellyfinPlayer.Shared` on purpose; VB would
-   otherwise prepend each project's `RootNamespace`.
+3. `Shared/*.cs` declares `namespace JellyfinPlayer.Shared`; both projects use the
+   same root namespace, so the linked files keep one identity.
 4. **User-visible strings are never literals in code.** Labels and messages come from
    `Resources.resx` / `Resources.it-IT.resx` through `Localized.Text` / `Localized.Format`,
    and failures through `Localized.DescribeError(ex)`; Silverlight has no `x:Uid` lookup.
@@ -43,7 +43,7 @@ Rules of the road:
    `Package.appxmanifest`; keep both files in sync — `LocalizationTests` fails otherwise.
    Brand names and example URLs stay literal.
 5. **Both manifests carry the identity.** `Package.appxmanifest` and
-   `My Project/WMAppManifest.xml` must agree on product id and version;
+   `Properties/WMAppManifest.xml` must agree on product id and version;
    `SilverlightProjectTests` fails otherwise.
 5. **The agent commits and pushes — never with AI attribution.** Once a change is
    verified, run `git add`, `git commit` and `git push` yourself; do not hand the

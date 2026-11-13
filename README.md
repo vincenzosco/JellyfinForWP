@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Browse and play your Jellyfin library on a Windows Phone 8.1 device.</strong><br>
-  The app is written in VB.NET and uses the phone's built-in Silverlight XAML and media player.
+  The app is written in C# and uses the phone's built-in Silverlight XAML and media player.
 </p>
 
 <p align="center">
@@ -123,7 +123,7 @@ Use `-p:Configuration=Debug`, not `/p:Configuration=Debug`. Git Bash may rewrite
 Build the shared-logic test project with the VS2013 toolchain, then run the unit tests with MSTest v1:
 
 ```bash
-"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.Core.Tests/JellyfinPlayer.Core.Tests.vbproj \
+"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.Core.Tests/JellyfinPlayer.Core.Tests.csproj \
   -p:Configuration=Debug -p:Platform=AnyCPU -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 
 MSYS_NO_PATHCONV=1 "/c/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/mstest.exe" \
