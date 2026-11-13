@@ -38,11 +38,14 @@ namespace JellyfinPlayer.Services
             return value;
         }
 
+        // Navigation resolves the XAML by its path inside the assembly, so a page
+        // in Pages/ is "/Pages/Name.xaml"; only the login page sits at the root.
         private static string NavigationUri(Type pageType, object parameter)
         {
             SetPending(parameter);
             string name = pageType.Name;
-            return "/" + name + ".xaml";
+            if (pageType == typeof(MainPage)) return "/MainPage.xaml";
+            return "/Pages/" + name + ".xaml";
         }
 
         public static void GoBack()
