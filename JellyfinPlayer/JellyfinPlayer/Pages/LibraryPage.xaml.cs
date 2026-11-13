@@ -23,6 +23,10 @@ namespace JellyfinPlayer
         private GenreChoice _genre;
         private List<GenreChoice> _genreChoices;
         private bool _suppressGenre;
+        // Bumped by every reset: a page that arrives after one belongs to a list that
+        // no longer exists and is thrown away.
+        private int _loadGeneration;
+        private bool _loadingMore;
 
         public LibraryPage()
         {
@@ -37,11 +41,16 @@ namespace JellyfinPlayer
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            _view = Services.NavigationService.ConsumePending() as BaseItemDto;
-            // The frame caches pages, so this instance can be reused for another
-            // library, or navigated back into. Start from the first page again.
-            _startIndex = 0;
-            _items.Clear();
+            var requested = Services.NavigationService.ConsumePending() as BaseItemDto;
+            // Back from an item re-shows this instance without a parameter: the list,
+            // the order and the genre are what the user left, so they are kept.
+            if (requested == null)
+            {
+                if (_view == null) TitleText.Text = Services.Localized.Text("LibraryTitle");
+                return;
+            }
+
+            _view = requested;
             _sortBy = SortByName;
             _genre = null;
             _genreChoices = null;
@@ -49,8 +58,8 @@ namespace JellyfinPlayer
             UpdateSortLabel();
             UpdateGenreLabel();
             ErrorText.Text = "";
-            TitleText.Text = _view != null ? _view.Name : Services.Localized.Text("LibraryTitle");
-            if (_view == null) return;
+            TitleText.Text = _view.Name;
+            ResetList();
             await LoadGenresAsync();
             await LoadNextPageAsync();
         }
@@ -77,17 +86,26 @@ namespace JellyfinPlayer
 
         private async Task LoadNextPageAsync()
         {
+            // A page reached before a library was chosen has nothing to ask for.
+            if (_view == null) return;
             var session = Services.AppSession.Current;
+            int generation = _loadGeneration;
+            int start = _startIndex;
+            string genreIds = _genre != null && !_genre.IsAll ? _genre.Id : null;
             Busy.Visibility = Visibility.Visible;
             try
             {
-                string genreIds = _genre != null && !_genre.IsAll ? _genre.Id : null;
-                var q = await session.CreateClient().GetItemsAsync(session.UserId, _view.Id, IncludeTypes, _startIndex, PageSize, _sortBy, "Ascending", genreIds);
+                var q = await session.CreateClient().GetItemsAsync(session.UserId, _view.Id, IncludeTypes, start, PageSize, _sortBy, "Ascending", genreIds);
+                // Another filter or order replaced the list while this page was on its
+                // way: its entries would be appended to a list they do not belong to.
+                if (generation != _loadGeneration) return;
                 foreach (var poster in Services.PosterItem.Build(q.Items, session.BaseUrl, session.AccessToken))
                 {
                     _items.Add(poster);
                 }
-                _startIndex += PageSize;
+                // The server may answer with fewer entries than were asked for; the
+                // next page starts after what actually arrived.
+                _startIndex = start + q.Items.Count;
                 // Reset the source so the list re-renders the accumulated items.
                 ItemsList.ItemsSource = null;
                 ItemsList.ItemsSource = _items;
@@ -95,17 +113,39 @@ namespace JellyfinPlayer
             }
             catch (Exception ex)
             {
-                ErrorText.Text = Services.Localized.DescribeError(ex);
+                if (generation == _loadGeneration) ErrorText.Text = Services.Localized.DescribeError(ex);
             }
             finally
             {
-                Busy.Visibility = Visibility.Collapsed;
+                if (generation == _loadGeneration) Busy.Visibility = Visibility.Collapsed;
             }
         }
 
+        // Two taps before the first page arrives would ask for the same page twice
+        // and append its entries twice.
         private async void LoadMore_Click(object sender, RoutedEventArgs e)
         {
-            await LoadNextPageAsync();
+            if (_loadingMore) return;
+            _loadingMore = true;
+            try
+            {
+                await LoadNextPageAsync();
+            }
+            finally
+            {
+                _loadingMore = false;
+            }
+        }
+
+        // A different filter or order is a different first page: the entries go, and
+        // a page still on its way is told to discard what it brings.
+        private void ResetList()
+        {
+            _loadGeneration++;
+            _startIndex = 0;
+            _items.Clear();
+            ItemsList.ItemsSource = null;
+            LoadMoreButton.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateSortLabel()
@@ -140,11 +180,7 @@ namespace JellyfinPlayer
             if (_genre != null && _genre.Id == chosen.Id) return;
             _genre = chosen;
             UpdateGenreLabel();
-            // A different filter means a different first page.
-            _startIndex = 0;
-            _items.Clear();
-            ItemsList.ItemsSource = null;
-            LoadMoreButton.Visibility = Visibility.Collapsed;
+            ResetList();
             if (_view != null) await LoadNextPageAsync();
         }
 
@@ -152,11 +188,7 @@ namespace JellyfinPlayer
         {
             _sortBy = _sortBy == SortByName ? SortByDateAdded : SortByName;
             UpdateSortLabel();
-            // A different order means a different first page, not a second one.
-            _startIndex = 0;
-            _items.Clear();
-            ItemsList.ItemsSource = null;
-            LoadMoreButton.Visibility = Visibility.Collapsed;
+            ResetList();
             if (_view != null) await LoadNextPageAsync();
         }
 
