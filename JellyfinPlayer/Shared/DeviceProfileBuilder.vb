@@ -19,18 +19,33 @@ Namespace Global.JellyfinPlayer.Shared
             dp.DirectPlayProfiles = New List(Of DirectPlayProfileDto) From {
                 New DirectPlayProfileDto With {.Container = "mp4", .Type = "Video", .VideoCodec = "h264", .AudioCodec = "aac,mp3"}
             }
+            ' Encode burns the subtitle into the transcode. Text and image formats
+            ' are both declared, so a PGS or VobSub track can be chosen and still
+            ' reach the phone as a picture it already knows how to draw.
             dp.SubtitleProfiles = New List(Of SubtitleProfileDto) From {
                 New SubtitleProfileDto With {.Format = "srt", .Method = "Encode"},
-                New SubtitleProfileDto With {.Format = "ass", .Method = "Encode"}
+                New SubtitleProfileDto With {.Format = "subrip", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "ass", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "ssa", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "vtt", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "webvtt", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "mov_text", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "pgssub", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "dvdsub", .Method = "Encode"},
+                New SubtitleProfileDto With {.Format = "dvbsub", .Method = "Encode"}
             }
             Return dp
         End Function
 
-        Public Function ToRequest(userId As String, startTicks As Long, Optional maxBitrate As Integer = DefaultBitrate) As PlaybackInfoRequestDto
+        Public Function ToRequest(userId As String, startTicks As Long, Optional maxBitrate As Integer = DefaultBitrate,
+                                  Optional audioStreamIndex As Integer? = Nothing,
+                                  Optional subtitleStreamIndex As Integer? = Nothing) As PlaybackInfoRequestDto
             Return New PlaybackInfoRequestDto With {
                 .UserId = userId,
                 .MaxStreamingBitrate = maxBitrate,
                 .StartTimeTicks = startTicks,
+                .AudioStreamIndex = audioStreamIndex,
+                .SubtitleStreamIndex = subtitleStreamIndex,
                 .AutoOpenLiveStream = True,
                 .DeviceProfile = DefaultProfile(maxBitrate)
             }

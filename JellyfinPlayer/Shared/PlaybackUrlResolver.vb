@@ -12,32 +12,40 @@ Namespace Global.JellyfinPlayer.Shared
     ' SupportsDirectStream/SupportsTranscoding) and expects the client to build
     ' the stream URL. This resolves whatever the server gave us into a playable URL.
     Public Module PlaybackUrlResolver
-        Public Function Resolve(baseUrl As String, token As String, itemId As String, source As MediaSourceInfoDto, maxBitrate As Integer) As ResolvedPlayback
+        Public Function Resolve(baseUrl As String, token As String, itemId As String, source As MediaSourceInfoDto, maxBitrate As Integer,
+                                Optional audioStreamIndex As Integer? = Nothing,
+                                Optional subtitleStreamIndex As Integer? = Nothing) As ResolvedPlayback
             If source Is Nothing Then Return Nothing
             Dim urls As New JellyfinUrls(baseUrl, token)
             Dim plan As New ResolvedPlayback()
             plan.MediaSourceId = source.Id
+            ' A chosen audio track or subtitle can only be honored while the server
+            ' remuxes or burns in, so those requests skip every direct-play branch.
+            Dim tracksRequested = audioStreamIndex.HasValue OrElse subtitleStreamIndex.HasValue
 
-            If Not String.IsNullOrEmpty(source.DirectStreamUrl) Then
-                plan.Url = EnsureKey(source.DirectStreamUrl, token)
-                plan.IsTranscode = False
-                Return plan
-            End If
+            If Not tracksRequested Then
+                If Not String.IsNullOrEmpty(source.DirectStreamUrl) Then
+                    plan.Url = EnsureKey(source.DirectStreamUrl, token)
+                    plan.IsTranscode = False
+                    Return plan
+                End If
 
-            If Not String.IsNullOrEmpty(source.TranscodingUrl) Then
-                plan.Url = EnsureKey(source.TranscodingUrl, token)
-                plan.IsTranscode = True
-                Return plan
-            End If
+                If Not String.IsNullOrEmpty(source.TranscodingUrl) Then
+                    plan.Url = EnsureKey(source.TranscodingUrl, token)
+                    plan.IsTranscode = True
+                    Return plan
+                End If
 
-            If source.SupportsDirectStream OrElse source.SupportsDirectPlay Then
-                plan.Url = urls.VideoStream(itemId, source.Id)
-                plan.IsTranscode = False
-                Return plan
+                If source.SupportsDirectStream OrElse source.SupportsDirectPlay Then
+                    plan.Url = urls.VideoStream(itemId, source.Id)
+                    plan.IsTranscode = False
+                    Return plan
+                End If
             End If
 
             If source.SupportsTranscoding Then
-                plan.Url = urls.VideoTranscode(itemId, source.Id, maxBitrate)
+                plan.Url = WithTracks(urls.VideoTranscode(itemId, source.Id, maxBitrate, audioStreamIndex, subtitleStreamIndex),
+                                      audioStreamIndex, subtitleStreamIndex)
                 plan.IsTranscode = True
                 Return plan
             End If
@@ -53,10 +61,14 @@ Namespace Global.JellyfinPlayer.Shared
         ' The transcode of a source: what the server offered, else the
         ' progressive MP4 this client asks for.
         Public Function TranscodeUrl(baseUrl As String, token As String, itemId As String,
-                                     source As MediaSourceInfoDto, maxBitrate As Integer) As String
+                                     source As MediaSourceInfoDto, maxBitrate As Integer,
+                                     Optional audioStreamIndex As Integer? = Nothing,
+                                     Optional subtitleStreamIndex As Integer? = Nothing) As String
             If source Is Nothing Then Return Nothing
-            If Not String.IsNullOrEmpty(source.TranscodingUrl) Then Return EnsureKey(source.TranscodingUrl, token)
-            Return New JellyfinUrls(baseUrl, token).VideoTranscode(itemId, source.Id, maxBitrate)
+            If Not String.IsNullOrEmpty(source.TranscodingUrl) Then
+                Return WithTracks(EnsureKey(source.TranscodingUrl, token), audioStreamIndex, subtitleStreamIndex)
+            End If
+            Return New JellyfinUrls(baseUrl, token).VideoTranscode(itemId, source.Id, maxBitrate, audioStreamIndex, subtitleStreamIndex)
         End Function
 
         ' The original file, when the server is willing to send it as it is.
@@ -69,6 +81,20 @@ Namespace Global.JellyfinPlayer.Shared
                 Return New JellyfinUrls(baseUrl, token).VideoStream(itemId, source.Id)
             End If
             Return Nothing
+        End Function
+
+        ' Adds the chosen tracks to a URL the server itself produced, without
+        ' duplicating a parameter it already carries.
+        Private Function WithTracks(url As String, audioStreamIndex As Integer?, subtitleStreamIndex As Integer?) As String
+            If String.IsNullOrEmpty(url) Then Return url
+            Dim result = url
+            If audioStreamIndex.HasValue AndAlso result.IndexOf("AudioStreamIndex=", StringComparison.OrdinalIgnoreCase) < 0 Then
+                result &= If(result.Contains("?"), "&", "?") & "AudioStreamIndex=" & audioStreamIndex.Value.ToString()
+            End If
+            If subtitleStreamIndex.HasValue AndAlso result.IndexOf("SubtitleStreamIndex=", StringComparison.OrdinalIgnoreCase) < 0 Then
+                result &= If(result.Contains("?"), "&", "?") & "SubtitleStreamIndex=" & subtitleStreamIndex.Value.ToString() & "&SubtitleMethod=Encode"
+            End If
+            Return result
         End Function
 
         Public Function EnsureKey(url As String, token As String) As String

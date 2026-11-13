@@ -86,8 +86,9 @@ Namespace Global.JellyfinPlayer.Shared
             Return AsList(ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body))
         End Function
 
-        Public Async Function GetItemsAsync(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer) As Task(Of QueryResultDto(Of BaseItemDto))
-            Dim body As String = Await _transport.GetStringAsync(_urls.Items(userId, parentId, includeItemTypes, startIndex, limit, "SortName", "Ascending"), TokenHeaders())
+        Public Async Function GetItemsAsync(userId As String, parentId As String, includeItemTypes As String, startIndex As Integer, limit As Integer,
+                                            Optional sortBy As String = "SortName", Optional sortOrder As String = "Ascending") As Task(Of QueryResultDto(Of BaseItemDto))
+            Dim body As String = Await _transport.GetStringAsync(_urls.Items(userId, parentId, includeItemTypes, startIndex, limit, sortBy, sortOrder), TokenHeaders())
             Dim q = ResponseFailures.Parse(Of QueryResultDto(Of BaseItemDto))(body)
             If q Is Nothing Then q = New QueryResultDto(Of BaseItemDto)()
             If q.Items Is Nothing Then q.Items = New List(Of BaseItemDto)()
@@ -129,8 +130,10 @@ Namespace Global.JellyfinPlayer.Shared
 
         ' ---- playback / user data ------------------------------------------
 
-        Public Async Function GetPlaybackInfoAsync(userId As String, itemId As String, startTicks As Long, Optional maxBitrate As Integer = DeviceProfileBuilder.DefaultBitrate) As Task(Of PlaybackInfoResponseDto)
-            Dim req = DeviceProfileBuilder.ToRequest(userId, startTicks, maxBitrate)
+        Public Async Function GetPlaybackInfoAsync(userId As String, itemId As String, startTicks As Long, Optional maxBitrate As Integer = DeviceProfileBuilder.DefaultBitrate,
+                                                   Optional audioStreamIndex As Integer? = Nothing,
+                                                   Optional subtitleStreamIndex As Integer? = Nothing) As Task(Of PlaybackInfoResponseDto)
+            Dim req = DeviceProfileBuilder.ToRequest(userId, startTicks, maxBitrate, audioStreamIndex, subtitleStreamIndex)
             Dim body As String = Await _transport.PostJsonAsync(_urls.PlaybackInfo(itemId, userId), Json.Serialize(req), TokenHeaders())
             Return ResponseFailures.Parse(Of PlaybackInfoResponseDto)(body)
         End Function

@@ -71,6 +71,35 @@ Public Class UrlsTests
     End Sub
 
     <TestMethod>
+    Public Sub Transcode_url_carries_the_chosen_tracks()
+        Dim u = MakeUrls().VideoTranscode("i1", "m1", 8000000, 2, 3)
+        Assert.IsTrue(u.Contains("AudioStreamIndex=2"), u)
+        Assert.IsTrue(u.Contains("SubtitleStreamIndex=3"), u)
+        Assert.IsTrue(u.Contains("SubtitleMethod=Encode"), u)
+    End Sub
+
+    <TestMethod>
+    Public Sub Transcode_url_without_tracks_has_no_track_parameters()
+        Dim u = MakeUrls().VideoTranscode("i1", "m1", 8000000)
+        Assert.IsFalse(u.Contains("AudioStreamIndex"), u)
+        Assert.IsFalse(u.Contains("SubtitleStreamIndex"), u)
+    End Sub
+
+    <TestMethod>
+    Public Sub Playback_request_carries_the_chosen_tracks()
+        Dim r = DeviceProfileBuilder.ToRequest("u1", 0L, 8000000, 2, 3)
+        Assert.AreEqual(2, r.AudioStreamIndex.Value)
+        Assert.AreEqual(3, r.SubtitleStreamIndex.Value)
+    End Sub
+
+    <TestMethod>
+    Public Sub Subtitle_profiles_cover_image_subtitles()
+        Dim formats = DeviceProfileBuilder.DefaultProfile().SubtitleProfiles.Select(Function(p) p.Format).ToList()
+        Assert.IsTrue(formats.Contains("pgssub"), "PGS subtitles must be offered for burn-in")
+        Assert.IsTrue(formats.Contains("srt"), "text subtitles must stay offered")
+    End Sub
+
+    <TestMethod>
     Public Sub Missing_token_omits_api_key()
         Assert.IsFalse(New JellyfinUrls("http://h").PrimaryImage("i", 100).Contains("ApiKey"), "no token should mean no ApiKey")
     End Sub

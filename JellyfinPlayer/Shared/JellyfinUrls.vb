@@ -112,8 +112,18 @@ Namespace Global.JellyfinPlayer.Shared
         End Function
 
         ' Progressive MP4 transcode (WP8.1 has no AdaptiveMediaSource, so no HLS).
-        Public Function VideoTranscode(itemId As String, mediaSourceId As String, maxBitrate As Integer) As String
-            Return WithKey(U("/Videos/" & itemId & "/stream.mp4?VideoCodec=h264&AudioCodec=aac&MaxStreamingBitrate=" & maxBitrate.ToString() & "&mediaSourceId=" & Uri.EscapeDataString(If(mediaSourceId, ""))))
+        ' A chosen audio track other than the default, or any subtitle, is honored
+        ' here: the server can only switch audio or burn in a subtitle while it
+        ' transcodes, which is why the player uses this URL for both.
+        Public Function VideoTranscode(itemId As String, mediaSourceId As String, maxBitrate As Integer,
+                                       Optional audioStreamIndex As Integer? = Nothing,
+                                       Optional subtitleStreamIndex As Integer? = Nothing) As String
+            Dim q As String = "/Videos/" & itemId & "/stream.mp4?VideoCodec=h264&AudioCodec=aac&MaxStreamingBitrate=" & maxBitrate.ToString() & "&mediaSourceId=" & Uri.EscapeDataString(If(mediaSourceId, ""))
+            If audioStreamIndex.HasValue Then q &= "&AudioStreamIndex=" & audioStreamIndex.Value.ToString()
+            If subtitleStreamIndex.HasValue Then
+                q &= "&SubtitleStreamIndex=" & subtitleStreamIndex.Value.ToString() & "&SubtitleMethod=Encode"
+            End If
+            Return WithKey(U(q))
         End Function
 
         Public Function PrimaryImage(itemId As String, maxHeight As Integer) As String

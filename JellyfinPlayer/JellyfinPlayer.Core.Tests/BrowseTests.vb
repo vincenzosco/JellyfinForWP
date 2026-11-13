@@ -29,6 +29,15 @@ Public Class BrowseTests
     End Sub
 
     <TestMethod>
+    Public Sub GetItems_passes_the_requested_sort()
+        Dim fake = New FakeTransport()
+        fake.Handler = Function(u) "{""Items"":[],""TotalRecordCount"":0}"
+        MakeClient(fake).GetItemsAsync("user1", "v1", "Movie", 0, 50, "DateCreated", "Descending").Wait()
+        Assert.IsTrue(fake.LastUrl.Contains("SortBy=DateCreated"), fake.LastUrl)
+        Assert.IsTrue(fake.LastUrl.Contains("SortOrder=Descending"), fake.LastUrl)
+    End Sub
+
+    <TestMethod>
     Public Sub Search_encodes_term()
         Dim fake = New FakeTransport()
         fake.Handler = Function(u) "{""Items"":[],""TotalRecordCount"":0}"

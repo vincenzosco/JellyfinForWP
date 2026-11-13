@@ -45,6 +45,39 @@ Public Class PlaybackUrlResolverTests
     End Sub
 
     <TestMethod>
+    Public Sub A_subtitle_forces_a_transcode_even_when_direct_play_is_available()
+        Dim s = Source()
+        s.SupportsDirectPlay = True
+        s.SupportsDirectStream = True
+        s.SupportsTranscoding = True
+        s.DirectStreamUrl = "/Videos/i1/stream?static=true"
+        Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000, Nothing, 3)
+        Assert.IsTrue(r.IsTranscode, "a burned-in subtitle needs the transcode")
+        Assert.IsTrue(r.Url.Contains("SubtitleStreamIndex=3"), r.Url)
+        Assert.IsTrue(r.Url.Contains("SubtitleMethod=Encode"), r.Url)
+        Assert.IsFalse(r.Url.Contains("static=true"), r.Url)
+    End Sub
+
+    <TestMethod>
+    Public Sub A_chosen_audio_track_forces_a_transcode()
+        Dim s = Source()
+        s.SupportsDirectPlay = True
+        s.SupportsTranscoding = True
+        Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000, 2)
+        Assert.IsTrue(r.IsTranscode)
+        Assert.IsTrue(r.Url.Contains("AudioStreamIndex=2"), r.Url)
+        Assert.IsFalse(r.Url.Contains("SubtitleStreamIndex"), r.Url)
+    End Sub
+
+    <TestMethod>
+    Public Sub A_source_that_cannot_transcode_cannot_carry_a_track()
+        Dim s = Source()
+        s.SupportsDirectStream = True
+        Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000, Nothing, 3)
+        Assert.IsNull(r, "without transcoding there is nowhere to burn the subtitle")
+    End Sub
+
+    <TestMethod>
     Public Sub Returns_nothing_when_no_source_is_playable()
         Dim s = Source()
         Assert.IsNull(PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000))
