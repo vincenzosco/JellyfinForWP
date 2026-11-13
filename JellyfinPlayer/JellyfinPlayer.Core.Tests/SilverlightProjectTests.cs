@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JellyfinPlayer.Shared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JellyfinPlayer.Core.Tests
@@ -106,12 +107,24 @@ namespace JellyfinPlayer.Core.Tests
         public void The_startup_route_exists_and_is_a_project_page()
         {
             string appSource = File.ReadAllText(Path.Combine(BaseDir, "App", "App.xaml.cs"));
-            var route = Regex.Match(appSource, "Navigate\\(\\s*new Uri\\(\"([^\"]+)\", UriKind\\.Relative\\)");
-            Assert.IsTrue(route.Success, "App.xaml.cs must navigate to a startup page");
-            Assert.AreEqual("/MainPage.xaml", route.Groups[1].Value);
-            Assert.IsTrue(File.Exists(Path.Combine(BaseDir, "Xaml", "MainPage.xaml")),
-                "the startup page must exist");
+            // The first page is the library when a login is saved, the login page
+            // otherwise; both have to be pages this project compiles.
+            StringAssert.Contains(appSource, "StartRoute.For(Services.AppSession.Current.IsLoggedIn)",
+                "App.xaml.cs must pick the startup page from the saved login");
+            foreach (var route in new[] { StartRoute.Login, StartRoute.Library })
+            {
+                string name = route.Substring(route.LastIndexOf('/') + 1);
+                Assert.IsTrue(File.Exists(Path.Combine(BaseDir, "Xaml", name)), route + " must exist");
+            }
             StringAssert.Contains(ProjectText(), "<Page Include=\"MainPage.xaml\"");
+            StringAssert.Contains(ProjectText(), "<Page Include=\"Pages\\HomePage.xaml\"");
+        }
+
+        [TestMethod]
+        public void A_saved_login_opens_the_library()
+        {
+            Assert.AreEqual("/Pages/HomePage.xaml", StartRoute.For(true));
+            Assert.AreEqual("/MainPage.xaml", StartRoute.For(false));
         }
 
         [TestMethod]

@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Navigation;
+using JellyfinPlayer.Shared;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
@@ -32,7 +33,9 @@ namespace JellyfinPlayer
             RootFrame.Navigated += CompleteInitializePhoneApplication;
             RootFrame.NavigationFailed += RootFrame_NavigationFailed;
             RootFrame.BackKeyPress += RootFrame_BackKeyPress;
-            RootFrame.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            // A login saved by a previous run opens the library instead of asking for
+            // the password all over again.
+            RootFrame.Navigate(new Uri(StartRoute.For(Services.AppSession.Current.IsLoggedIn), UriKind.Relative));
         }
 
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
