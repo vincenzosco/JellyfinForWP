@@ -260,10 +260,10 @@
     <value>Inserisci la password di {0}.</value>
   </data>
   <data name="ActionTracks" xml:space="preserve">
-    <value>Audio e sottotitoli</value>
+    <value>Opzioni di riproduzione</value>
   </data>
   <data name="TracksTitle" xml:space="preserve">
-    <value>Audio e sottotitoli</value>
+    <value>Opzioni di riproduzione</value>
   </data>
   <data name="AudioTracksLabel" xml:space="preserve">
     <value>Audio</value>
@@ -279,5 +279,53 @@
   </data>
   <data name="SortByDateAdded" xml:space="preserve">
     <value>Ordina: data di aggiunta</value>
+  </data>
+  <data name="GenreFilter" xml:space="preserve">
+    <value>Genere</value>
+  </data>
+  <data name="GenrePanelTitle" xml:space="preserve">
+    <value>Genere</value>
+  </data>
+  <data name="AllGenres" xml:space="preserve">
+    <value>Tutti i generi</value>
+  </data>
+  <data name="QualityLabel" xml:space="preserve">
+    <value>Qualità</value>
+  </data>
+  <data name="PlaylistsHeader" xml:space="preserve">
+    <value>Playlist</value>
+  </data>
+  <data name="DownloadsHeader" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadsTitle" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadEmpty" xml:space="preserve">
+    <value>Nessun download.</value>
+  </data>
+  <data name="DownloadAction" xml:space="preserve">
+    <value>Scarica</value>
+  </data>
+  <data name="RemoveDownload" xml:space="preserve">
+    <value>Rimuovi download</value>
+  </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>Download {0}%</value>
+  </data>
+  <data name="DownloadNoSpace" xml:space="preserve">
+    <value>Spazio insufficiente per questo download.</value>
+  </data>
+  <data name="ManageDownloads" xml:space="preserve">
+    <value>Gestisci download</value>
+  </data>
+  <data name="DeleteDownload" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="PlayAll" xml:space="preserve">
+    <value>Riproduci tutto</value>
+  </data>
+  <data name="PlaylistEmpty" xml:space="preserve">
+    <value>Questa playlist è vuota.</value>
   </data>
 </root>
