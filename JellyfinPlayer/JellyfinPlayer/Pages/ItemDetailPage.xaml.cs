@@ -23,7 +23,10 @@ namespace JellyfinPlayer
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            _item = Services.NavigationService.ConsumePending() as BaseItemDto;
+            var requested = Services.NavigationService.ConsumePending() as BaseItemDto;
+            // Coming back from the player re-shows this instance without a parameter.
+            // The item stays on screen, and only its user data is fetched again.
+            if (requested != null) _item = requested;
             if (_item == null) return;
 
             var session = Services.AppSession.Current;
@@ -149,6 +152,10 @@ namespace JellyfinPlayer
             }
             catch (Exception ex)
             {
+                // The server did not take it: the switch must not claim it did.
+                _suppressToggle = true;
+                FavoriteToggle.IsChecked = !value;
+                _suppressToggle = false;
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
         }
@@ -164,6 +171,10 @@ namespace JellyfinPlayer
             }
             catch (Exception ex)
             {
+                // Same rule as the favourite switch: a refused change is undone.
+                _suppressToggle = true;
+                PlayedToggle.IsChecked = !value;
+                _suppressToggle = false;
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
         }
