@@ -52,12 +52,12 @@
   <!-- Copied, never compiled: the localisation tests read the real resource files,
        the real XAML and the real app sources instead of a hand-made copy. -->
   <ItemGroup>
-    <None Include="..\JellyfinPlayer\Strings\en-US\Resources.resw">
-      <Link>Localization\en-US\Resources.resw</Link>
+    <None Include="..\JellyfinPlayer\Resources.resx">
+      <Link>Localization\en-US\Resources.resx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\JellyfinPlayer\Strings\it-IT\Resources.resw">
-      <Link>Localization\it-IT\Resources.resw</Link>
+    <None Include="..\JellyfinPlayer\Resources.it-IT.resx">
+      <Link>Localization\it-IT\Resources.resx</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\JellyfinPlayer\MainPage.xaml">
@@ -68,8 +68,19 @@
       <Link>Xaml\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="..\JellyfinPlayer\JellyfinPlayer.vbproj">
+      <LogicalName>JellyfinPlayer.vbproj</LogicalName>
+    </EmbeddedResource>
     <None Include="..\JellyfinPlayer\Package.appxmanifest">
       <Link>Manifest\Package.appxmanifest</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\My Project\WMAppManifest.xml">
+      <Link>Manifest\WMAppManifest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\JellyfinPlayer\App.xaml.vb">
+      <Link>App\App.xaml.vb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\JellyfinPlayer\MainPage.xaml.vb">

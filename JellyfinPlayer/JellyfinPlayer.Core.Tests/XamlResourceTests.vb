@@ -52,12 +52,15 @@ Public Class XamlResourceTests
 
     <TestMethod>
     Public Sub Every_StaticResource_has_an_xKey_in_the_same_file()
+        ' Windows Phone supplies its theme brushes/fonts (Phone* keys) at runtime;
+        ' only app-local resources need a matching x:Key in the same file.
         For Each file In XamlFiles()
             Dim text As String = System.IO.File.ReadAllText(file)
             Dim defined = Regex.Matches(text, "x:Key=""([^""]+)""").Cast(Of Match)().
                                  Select(Function(m) m.Groups(1).Value).ToList()
             For Each m In Regex.Matches(text, "StaticResource\s+([^}\s]+)").Cast(Of Match)()
                 Dim key As String = m.Groups(1).Value
+                If key.StartsWith("Phone", StringComparison.Ordinal) Then Continue For
                 Assert.IsTrue(defined.Contains(key),
                     Path.GetFileName(file) & " uses {StaticResource " & key & "} but defines no x:Key for it")
             Next
