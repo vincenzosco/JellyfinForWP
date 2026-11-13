@@ -70,6 +70,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <Button x:Name="SkipBackButton" Grid.Column="0" Click="SkipBack_Click" Width="48" Height="48"
@@ -115,8 +116,16 @@
                             </Grid>
                         </Button>
 
+                        <!-- Audio and subtitle tracks: a speech bubble with two lines. -->
+                        <Button x:Name="TracksButton" Grid.Column="5" Click="Tracks_Click" Width="48" Height="48"
+                                Margin="4,0,0,0" Padding="0" BorderThickness="0" Background="Transparent"
+                                Visibility="Collapsed">
+                            <Path Data="M 3,4 H 21 V 15 H 12.5 L 8.5,19 V 15 H 3 Z M 6,7 H 18 V 9 H 6 Z M 6,11 H 14 V 13 H 6 Z"
+                                  Width="22" Height="22" Fill="White" Stretch="Uniform"/>
+                        </Button>
+
                         <!-- A hollow frame: the outer square and the inner one, even-odd filled. -->
-                        <Button x:Name="FullScreenButton" Grid.Column="5" Click="FullScreen_Click" Width="48" Height="48"
+                        <Button x:Name="FullScreenButton" Grid.Column="6" Click="FullScreen_Click" Width="48" Height="48"
                                 Margin="4,0,0,0" Padding="0" BorderThickness="0" Background="Transparent">
                             <Grid>
                                 <Path x:Name="IconEnterFullScreen" Data="M 4,4 H 10 V 6.4 H 6.4 V 10 H 4 Z M 14,4 H 20 V 10 H 17.6 V 6.4 H 14 Z M 4,14 H 6.4 V 17.6 H 10 V 20 H 4 Z M 17.6,14 H 20 V 20 H 14 V 17.6 H 17.6 Z" Width="22" Height="22" Fill="White" Stretch="Uniform"/>
@@ -128,6 +137,25 @@
                     <TextBlock x:Name="ErrorText" Foreground="#FF8A80" FontSize="13" TextWrapping="Wrap" Margin="0,6,0,0"/>
                 </StackPanel>
             </Grid>
+
+            <!-- The track picker sits above the controls, so a tap on a row cannot
+                 also toggle them. Closed by choosing a row, by the close button,
+                 or by the controls hiding. -->
+            <Border x:Name="TracksPanel" Visibility="Collapsed" Background="#F2101517"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Width="320"
+                    Padding="16" CornerRadius="10">
+                <StackPanel>
+                    <TextBlock x:Name="TracksTitle" Foreground="White" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock x:Name="AudioTracksLabel" Foreground="#B3FFFFFF" FontSize="13" Margin="0,10,0,2"/>
+                    <ListBox x:Name="AudioList" DisplayMemberPath="Label" MaxHeight="120"
+                             SelectionChanged="Audio_Changed"/>
+                    <TextBlock x:Name="SubtitleTracksLabel" Foreground="#B3FFFFFF" FontSize="13" Margin="0,10,0,2"/>
+                    <ListBox x:Name="SubtitleList" DisplayMemberPath="Label" MaxHeight="120"
+                             SelectionChanged="Subtitle_Changed"/>
+                    <Button x:Name="CloseTracksButton" Click="CloseTracks_Click"
+                            HorizontalAlignment="Right" Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

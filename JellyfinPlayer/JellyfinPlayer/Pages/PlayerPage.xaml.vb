@@ -35,6 +35,11 @@ Partial Public Class PlayerPage
     Private _seekGraceUntil As DateTime
     Private _updatingSeek As Boolean
     Private _surface As PlayerSurfaceController
+    ' The tracks this playback was started with; Nothing means the default audio
+    ' and no subtitle. Changing either restarts the item at the same position.
+    Private _audioIndex As Integer?
+    Private _subtitleIndex As Integer?
+    Private _suppressTracks As Boolean
 
     Public Sub New()
         InitializeComponent()
@@ -45,10 +50,18 @@ Partial Public Class PlayerPage
         _surface = New PlayerSurfaceController(New SilverlightPlayerShell(Me))
         _item = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
         If _item Is Nothing Then Return
+        ' The frame caches this page: a track chosen for the previous item must not
+        ' leak into the next one.
+        _audioIndex = Nothing
+        _subtitleIndex = Nothing
         TitleText.Text = _item.Name
         _client = AppSession.Current.CreateClient()
         BufferingText.Text = Localized.Text("BufferingText.Text")
         DirectButton.Content = Localized.Text("DirectButton.Content")
+        TracksTitle.Text = Localized.Text("TracksTitle")
+        AudioTracksLabel.Text = Localized.Text("AudioTracksLabel")
+        SubtitleTracksLabel.Text = Localized.Text("SubtitleTracksLabel")
+        CloseTracksButton.Content = Localized.Text("ActionClose")
         NameActions()
         ShowControls()
 
@@ -69,12 +82,18 @@ Partial Public Class PlayerPage
         Return True
     End Function
 
-    Private Async Function StartAsync(startTicks As Long, forceDirect As Boolean) As Task
+    Private Async Function StartAsync(startTicks As Long, forceDirect As Boolean,
+                                      Optional audioIndex As Integer? = Nothing,
+                                      Optional subtitleIndex As Integer? = Nothing) As Task
         SetBuffering(True)
         ErrorText.Text = ""
         DirectButton.Visibility = Visibility.Collapsed
+        ' A forced direct retry cannot carry a chosen track: the original file is
+        ' the file, with its own default audio and no burned-in subtitle.
+        _audioIndex = If(forceDirect, Nothing, audioIndex)
+        _subtitleIndex = If(forceDirect, Nothing, subtitleIndex)
         Try
-            _plan = Await PlaybackService.PrepareAsync(_item, startTicks)
+            _plan = Await PlaybackService.PrepareAsync(_item, startTicks, _audioIndex, _subtitleIndex)
             If forceDirect Then
                 If _plan.DirectFallbackUri Is Nothing Then Throw New JellyfinException(Localized.Text("PlaybackNoDirectStream"), 0)
                 _plan.IsTranscode = False
@@ -88,6 +107,7 @@ Partial Public Class PlayerPage
             _playingUri = _plan.Uri
             MediaEl.Play()
             StartUiTimer()
+            BuildTracks()
             Await ReportStartAsync()
         Catch ex As Exception
             SetBuffering(False)
@@ -168,6 +188,7 @@ Partial Public Class PlayerPage
         ShowControls()
         Await ReportProgressAsync()
         Await SafeReportStoppedAsync()
+        Await PlayNextEpisodeAsync()
     End Sub
 
     Private Sub PlayPause_Click(sender As Object, e As RoutedEventArgs)
@@ -217,6 +238,80 @@ Partial Public Class PlayerPage
     Private Async Sub Direct_Click(sender As Object, e As RoutedEventArgs)
         Await StartAsync(Ticks.FromTimeSpan(MediaEl.Position), True)
     End Sub
+
+    ' ---- tracks ---------------------------------------------------------
+
+    ' The panel is rebuilt after every start, because a transcode requested for a
+    ' subtitle can come back with a different set of streams than direct play.
+    Private Sub BuildTracks()
+        If _plan Is Nothing Then Return
+        Dim streams = _plan.Tracks
+        Dim audio = TrackOptions.Audio(streams)
+        Dim subtitles = TrackOptions.Subtitles(streams, Localized.Text("SubtitlesOff"))
+
+        _suppressTracks = True
+        AudioList.ItemsSource = audio
+        SubtitleList.ItemsSource = subtitles
+        AudioList.SelectedIndex = IndexOfOption(audio, If(_audioIndex, TrackOptions.DefaultAudioIndex(streams)))
+        SubtitleList.SelectedIndex = IndexOfOption(subtitles, _subtitleIndex)
+        _suppressTracks = False
+
+        ' One audio track and no subtitles is nothing to choose from.
+        TracksButton.Visibility = If(audio.Count > 1 OrElse subtitles.Count > 1, Visibility.Visible, Visibility.Collapsed)
+    End Sub
+
+    Private Shared Function IndexOfOption(options As List(Of TrackOption), index As Integer?) As Integer
+        If options Is Nothing Then Return -1
+        For i = 0 To options.Count - 1
+            If Nullable.Equals(options(i).Index, index) Then Return i
+        Next
+        Return -1
+    End Function
+
+    Private Sub Tracks_Click(sender As Object, e As RoutedEventArgs)
+        TracksPanel.Visibility = If(TracksPanel.Visibility = Visibility.Visible, Visibility.Collapsed, Visibility.Visible)
+        ShowControls()
+    End Sub
+
+    Private Sub CloseTracks_Click(sender As Object, e As RoutedEventArgs)
+        TracksPanel.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Async Sub Audio_Changed(sender As Object, e As SelectionChangedEventArgs)
+        If _suppressTracks Then Return
+        Dim chosen = TryCast(AudioList.SelectedItem, TrackOption)
+        If chosen Is Nothing OrElse _plan Is Nothing Then Return
+        ' The default audio is sent as Nothing, so it still direct-plays.
+        Await RestartForTracksAsync(TrackOptions.AudioSelection(_plan.Tracks, chosen.Index), _subtitleIndex)
+    End Sub
+
+    Private Async Sub Subtitle_Changed(sender As Object, e As SelectionChangedEventArgs)
+        If _suppressTracks Then Return
+        Dim chosen = TryCast(SubtitleList.SelectedItem, TrackOption)
+        If chosen Is Nothing OrElse _plan Is Nothing Then Return
+        Await RestartForTracksAsync(_audioIndex, chosen.Index)
+    End Sub
+
+    Private Async Function RestartForTracksAsync(audioIndex As Integer?, subtitleIndex As Integer?) As Task
+        Dim position = Ticks.FromTimeSpan(MediaEl.Position)
+        TracksPanel.Visibility = Visibility.Collapsed
+        Await SafeReportStoppedAsync()
+        MediaEl.Stop()
+        Await StartAsync(position, False, audioIndex, subtitleIndex)
+    End Function
+
+    ' An episode that ends moves on to the next one in place, so Back still leaves
+    ' the player instead of walking into a finished episode.
+    Private Async Function PlayNextEpisodeAsync() As Task
+        If _item Is Nothing OrElse Not String.Equals(_item.Type, "Episode", StringComparison.OrdinalIgnoreCase) Then Return
+        Dim nextEpisode = Await PlaybackService.NextEpisodeAsync(_client, AppSession.Current.UserId, _item)
+        If nextEpisode Is Nothing Then Return
+        _item = nextEpisode
+        TitleText.Text = _item.Name
+        ErrorText.Text = ""
+        TracksPanel.Visibility = Visibility.Collapsed
+        Await StartAsync(0, False)
+    End Function
 
     Private Async Sub Stop_Click(sender As Object, e As RoutedEventArgs)
         Await SafeReportStoppedAsync()
@@ -281,7 +376,11 @@ Partial Public Class PlayerPage
             DurationText.Text = Ticks.FormatSpan(Duration())
         End If
 
-        If OverlayRoot.Visibility = Visibility.Visible AndAlso MediaEl.CurrentState = MediaElementState.Playing Then
+        ' The track picker is something the user is reading: the controls wait while
+        ' it is open instead of hiding the panel out from under a choice.
+        If OverlayRoot.Visibility = Visibility.Visible AndAlso
+           TracksPanel.Visibility <> Visibility.Visible AndAlso
+           MediaEl.CurrentState = MediaElementState.Playing Then
             _controlsRemaining -= 1
             If _controlsRemaining <= 0 Then HideControls()
         End If
@@ -302,6 +401,7 @@ Partial Public Class PlayerPage
 
     Private Sub HideControls()
         OverlayRoot.Visibility = Visibility.Collapsed
+        TracksPanel.Visibility = Visibility.Collapsed
         _controlsRemaining = 0
     End Sub
 
@@ -337,6 +437,7 @@ Partial Public Class PlayerPage
         IconEnterFullScreen.Visibility = If(_surface.IsFullScreen, Visibility.Collapsed, Visibility.Visible)
         IconExitFullScreen.Visibility = If(_surface.IsFullScreen, Visibility.Visible, Visibility.Collapsed)
         SetName(FullScreenButton, Localized.Text(If(_surface.IsFullScreen, "ActionExitFullScreen", "ActionFullScreen")))
+        SetName(TracksButton, Localized.Text("ActionTracks"))
     End Sub
 
     Private Sub NameActions()

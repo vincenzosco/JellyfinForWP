@@ -259,4 +259,25 @@
   <data name="PasswordRequiredStatus" xml:space="preserve">
     <value>Inserisci la password di {0}.</value>
   </data>
+  <data name="ActionTracks" xml:space="preserve">
+    <value>Audio e sottotitoli</value>
+  </data>
+  <data name="TracksTitle" xml:space="preserve">
+    <value>Audio e sottotitoli</value>
+  </data>
+  <data name="AudioTracksLabel" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="SubtitleTracksLabel" xml:space="preserve">
+    <value>Sottotitoli</value>
+  </data>
+  <data name="SubtitlesOff" xml:space="preserve">
+    <value>Nessuno</value>
+  </data>
+  <data name="SortByName" xml:space="preserve">
+    <value>Ordina: nome</value>
+  </data>
+  <data name="SortByDateAdded" xml:space="preserve">
+    <value>Ordina: data di aggiunta</value>
+  </data>
 </root>
