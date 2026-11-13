@@ -2,8 +2,8 @@
 
 ## Add an API endpoint
 
-1. Add the URL to `Shared/JellyfinUrls.vb` (append `api_key` via `WithKey` if a
-   `BitmapImage` will fetch it).
+1. Add the URL to `Shared/JellyfinUrls.vb` (append `ApiKey` via `WithKey` if a
+   `BitmapImage` or `MediaElement` will fetch it — never the removed `api_key`).
 2. Add the DTO to `Shared/Models.vb` (`<DataContract>` + `<DataMember>` on every
    field to read).
 3. Add a method to `Shared/JellyfinApiClient.vb` that calls

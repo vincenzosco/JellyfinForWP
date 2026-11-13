@@ -27,10 +27,17 @@ Device="...", DeviceId="...", Version="..."` — all built by
 > call answers 401. The `Authorization: MediaBrowser ...` scheme is not gated by
 > that setting and works on 10.x **and** 12.x, so it is the only form this client
 > sends — no server-version detection.
+>
+> Checked against a live 12.2 server: login, browsing and image fetches with
+> `ApiKey` answer 200, while the same calls with `api_key` answer 401.
 
-**Image URLs** instead append `?api_key=<token>` (a `BitmapImage` cannot set
-headers, and `MediaElement` cannot either), so `JellyfinUrls` adds `api_key` to
-every media URL.
+**Image and media URLs** append `?ApiKey=<token>` (a `BitmapImage` cannot set
+headers, and `MediaElement` cannot either), so `JellyfinUrls.WithKey` adds `ApiKey`
+to every URL a control fetches itself. The legacy `api_key` parameter is gone in
+Jellyfin 12: `12.0` reads only `ApiKey` and the `Authorization` header, and the
+earlier spelling answers 401. `ApiKey` works on 10.x too, so no version detection
+is needed. `PlaybackUrlResolver.EnsureKey` leaves a URL alone when the server
+already signed it with either spelling.
 
 ## Endpoints used
 

@@ -52,7 +52,7 @@ messages are produced by the pure `HttpTransport.MapException`.
   and the page's Back key handling.
 - `Services/SilverlightPlayerShell.vb` — the `IPlayerShell` binding: hides the System
   Tray, allows landscape and disables the idle timeout while the video plays.
-- `Services/ImageHelper.vb` — image URLs (they carry `?api_key=` because
+- `Services/ImageHelper.vb` — image URLs (they carry `?ApiKey=` because
   `BitmapImage` cannot set headers) and the "does this item have a poster" check.
 - `Services/PosterItem.vb` — view model for every grid/list; deliberately avoids
   XAML value converters.
