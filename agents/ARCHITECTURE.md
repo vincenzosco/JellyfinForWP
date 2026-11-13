@@ -68,6 +68,13 @@ messages are produced by the pure `HttpTransport.MapException`.
   number; the service only supplies the list.
 - `Shared/PlaybackUrlResolver.vb` — builds the URL for either path, adding
   `AudioStreamIndex`/`SubtitleStreamIndex` when a track was chosen.
+- `Shared/PlayQueue.vb` — the playlist queue: `PlayRequest` carries the item and
+  its entries, and `NextIndex` says which entry continues.
+- `Shared/LibraryFilters.vb` — the genre panel rows, *All genres* first.
+- `Shared/QualityOptions.vb` — the bitrates the player offers.
+- `Shared/Downloads.vb` — the stored download record and its file-name, size and
+  percentage rules. `Services/DownloadStore.vb` keeps them in isolated storage and
+  `Services/DownloadService.vb` copies the progressive MP4 into it.
 
 ## Data flow
 

@@ -61,6 +61,9 @@ already signed it with either spelling.
 | Favorite | `POST`/`DELETE /Users/{userId}/FavoriteItems/{itemId}` |
 | Primary image | `GET /Items/{itemId}/Images/Primary?maxHeight=&quality=90` |
 | Backdrop | `GET /Items/{itemId}/Images/Backdrop/0?maxWidth=&quality=90` |
+| Genres | `GET /Genres?UserId=&ParentId=` (the library's own genres) |
+| Playlists | `GET /Users/{userId}/Items?IncludeItemTypes=Playlist&Recursive=true` |
+| Playlist entries | `GET /Playlists/{playlistId}/Items?UserId=` (keeps playlist order) |
 
 ## Ticks
 
@@ -82,6 +85,14 @@ already signed it with either spelling.
 `PlaybackService.PrepareAsync` picks the first source with `SupportsDirectPlay`
 and a `DirectStreamUrl`; otherwise the first with `SupportsTranscoding` and a
 `TranscodingUrl`. Both are played with `MediaElement.Source`.
+
+**Library filter.** `Items` accepts `GenreIds=` (one id is enough); the client
+resets paging when the genre or the sort changes.
+
+**Offline copy.** A download asks for the same `PlaybackInfo` at the preferred
+bitrate and stores the progressive MP4 transcode URL's body. Only that URL is
+used: any other container the server might offer is not guaranteed to play on the
+phone.
 
 **Track selection.** `PlaybackInfo` carries `AudioStreamIndex` and
 `SubtitleStreamIndex` when the player asked for them. Choosing the default audio

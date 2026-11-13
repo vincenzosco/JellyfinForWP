@@ -31,12 +31,15 @@ JellyfinPlayer is released under the [MIT License](LICENSE).
 - Provides full-page playback (system tray hidden, landscape allowed), seek back 10 seconds / forward 30 seconds, mute, fit/fill, and playback progress controls.
 - Chooses the audio track and the subtitle track from the player; a non-default audio track or a chosen subtitle is remuxed or burned in by the server, at the same position.
 - Continues with the next episode when one ends.
-- Sorts a library by name or by date added.
+- Sorts a library by name or by date added, and filters it by genre.
+- Lists and plays playlists, continuing through their entries on its own.
+- Downloads an item for offline playback and lists what is stored; the copy plays with no server in reach.
+- Changes the streaming bitrate from the player, restarting at the same position.
 - Includes English and Italian UI text, selected using the device language.
 
 **Good for:** browsing and playing a Jellyfin library from an older Windows Phone 8.1 device.
 
-**Not for:** Live TV, offline downloads, offline sync, collections management, or external subtitle files. The subtitles the server already knows about are selectable and burned into the transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
+**Not for:** Live TV, casting, playlist editing (creating a playlist or adding items to one), collections management, or external subtitle files. The subtitles the server already knows about are selectable and burned into the transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
 
 ## Requirements
 

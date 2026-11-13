@@ -138,6 +138,16 @@ or a device:
   simply stops. Back after the automatic switch leaves the player, not the previous episode.
 - **Library sort**: the header button switches between name and date added, and the grid
   reloads from the first page in the new order.
+- **Genre**: the header genre button lists *All genres* and the library's genres; choosing
+  one shows only those items, and combining it with the sort keeps both applied.
+- **Quality**: in the player panel, picking a lower bitrate restarts the item at the same
+  position; the settings screen shows the same value afterwards.
+- **Playlists**: Home shows the playlists the server has; opening one lists its entries,
+  **Play all** starts the first and the following entries continue when each ends; the
+  last entry ends playback instead of jumping elsewhere.
+- **Download**: the item page downloads with a percentage and then offers to remove the
+  copy; the Home downloads section and **Manage downloads** list it; playing it with the
+  server unreachable starts and resumes from the stored position.
 - **Settings**: bitrate persists; the account name is shown; Sign out returns to the
   picker with the account still saved.
 - **Language**: set the emulator/device language to Italian → every screen and every
