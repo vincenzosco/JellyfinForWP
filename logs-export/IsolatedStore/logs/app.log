@@ -1,0 +1,17 @@
+2026-11-13 13:18:28 INFO App started
+2026-11-13 13:18:29 INFO Discovery: probe sent to 255.255.255.255:7359
+2026-11-13 13:18:33 INFO Discovery: no reply within 2500 ms
+2026-11-13 13:18:33 INFO Discovery found 0 server(s)
+2026-11-13 13:20:04 INFO Server http://192.168.0.108:8096 version 12.4.0
+2026-11-13 13:20:05 INFO Logged in as vincenzo
+2026-11-13 13:56:23 INFO App started
+2026-11-13 13:56:23 INFO Discovery skipped: saved server http://192.168.0.108:8096
+2026-11-13 13:57:01 INFO Server http://192.168.0.108:8096 version 12.4.0
+2026-11-13 13:57:01 INFO Logged in as vincenzo
+2026-11-13 13:57:03 ERROR Unhandled exception
+System.InvalidOperationException: Failed to navigate to /Pages/HomePage.xaml
+   at JellyfinPlayer.App.RootFrame_NavigationFailed(Object sender, NavigationFailedEventArgs e)
+   at System.Windows.Navigation.NavigationService.RaiseNavigationFailed(Uri uri, Exception exception)
+   at System.Windows.Navigation.NavigationService.ContentLoader_BeginLoad_Callback(IAsyncResult result)
+   at System.Windows.Navigation.PageResourceContentLoader.BeginLoad_OnUIThread(AsyncCallback userCallback, PageResourceContentLoaderAsyncResult result)
+   at System.Windows.Navigation.PageResourceContentLoader.<>c__DisplayClass4.<BeginLoad>b__0(Object args)

@@ -41,7 +41,10 @@ namespace JellyfinPlayer
 
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new InvalidOperationException("Failed to navigate to " + e.Uri.ToString());
+            // The inner exception is the only thing that says why: a missing page, a
+            // XAML parse error and a throwing constructor all end up here.
+            Services.AppLog.Error("Navigation failed: " + e.Uri, e.Exception);
+            throw new InvalidOperationException("Failed to navigate to " + e.Uri.ToString(), e.Exception);
         }
 
         private void Application_Launching(object sender, LaunchingEventArgs e)

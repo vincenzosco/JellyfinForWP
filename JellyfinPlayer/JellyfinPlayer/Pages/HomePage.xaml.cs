@@ -14,6 +14,7 @@ namespace JellyfinPlayer
     {
         public HomePage()
         {
+            Services.AppLog.Info("Home page created");
             InitializeComponent();
 
             // The three actions live in the application bar: they cost no layout
