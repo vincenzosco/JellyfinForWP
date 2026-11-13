@@ -108,6 +108,9 @@ Namespace Global.JellyfinPlayer.Shared
         <DataMember> Public Property IndexNumber As Integer?
         <DataMember> Public Property ParentIndexNumber As Integer?
         <DataMember> Public Property SeriesName As String
+        <DataMember> Public Property SeriesId As String
+        <DataMember> Public Property SeasonId As String
+        <DataMember> Public Property ParentId As String
         <DataMember> Public Property ProductionYear As Integer?
         <DataMember> Public Property UserData As UserDataDto
         <DataMember> Public Property ImageTags As ImageTagsDto
