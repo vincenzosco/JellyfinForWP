@@ -21,9 +21,20 @@ namespace JellyfinPlayer
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            _series = Services.NavigationService.ConsumePending() as BaseItemDto;
-            if (_series == null) return;
+            var requested = Services.NavigationService.ConsumePending() as BaseItemDto;
+            // Back from an episode re-shows this instance without a parameter: the
+            // season and its episodes stay, and nothing is reloaded (which would jump
+            // the picker back to the first season).
+            if (requested == null)
+            {
+                return;
+            }
+            _series = requested;
+            ErrorText.Text = "";
             TitleText.Text = _series.Name;
+            SeasonBox.ItemsSource = null;
+            SeasonBox.SelectedIndex = -1;
+            EpisodeList.ItemsSource = null;
 
             var session = Services.AppSession.Current;
             var client = session.CreateClient();
