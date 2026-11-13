@@ -2,15 +2,16 @@ Imports System
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Controls.Primitives
-Imports Windows.UI.Xaml.Input
-Imports Windows.UI.Xaml.Media
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Controls
+Imports System.Windows.Controls.Primitives
+Imports System.Windows.Input
+Imports System.Windows.Media
+Imports System.Windows.Threading
 
-Public NotInheritable Class PlayerPage
-    Inherits Page
+Partial Public Class PlayerPage
+    Inherits PhoneApplicationPage
 
     ' The controls may hide themselves only while the video is playing, and only
     ' after this long without a tap. Paused or buffering, they stay put.
@@ -33,7 +34,7 @@ Public NotInheritable Class PlayerPage
     Private _controlsRemaining As Integer
     Private _seekGraceUntil As DateTime
     Private _updatingSeek As Boolean
-    Private ReadOnly _surface As New PlayerSurfaceController(New WinRtPlayerShell())
+    Private _surface As PlayerSurfaceController
 
     Public Sub New()
         InitializeComponent()
@@ -41,10 +42,13 @@ Public NotInheritable Class PlayerPage
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
-        _item = TryCast(e.Parameter, BaseItemDto)
+        _surface = New PlayerSurfaceController(New SilverlightPlayerShell(Me))
+        _item = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
         If _item Is Nothing Then Return
         TitleText.Text = _item.Name
         _client = AppSession.Current.CreateClient()
+        BufferingText.Text = Localized.Text("BufferingText.Text")
+        DirectButton.Content = Localized.Text("DirectButton.Content")
         NameActions()
         ShowControls()
 
@@ -77,7 +81,7 @@ Public NotInheritable Class PlayerPage
                 _plan.Uri = _plan.DirectFallbackUri
             End If
 
-            ' WP8.1 MediaElement plays both a direct stream and the progressive
+            ' Silverlight MediaElement plays both a direct stream and the progressive
             ' HTTP MP4 that Jellyfin produces for a transcode.
             _retriedTranscode = False
             MediaEl.Source = _plan.Uri
@@ -93,7 +97,7 @@ Public NotInheritable Class PlayerPage
     End Function
 
     ' The duration is unknown until the media opens, and it stays unknown while a
-    ' transcode is still starting - reading .TimeSpan then throws.
+    ' transcode is still starting - reading NaturalDuration then returns false.
     Private Function Duration() As TimeSpan
         If MediaEl.NaturalDuration.HasTimeSpan Then Return MediaEl.NaturalDuration.TimeSpan
         Return TimeSpan.Zero
@@ -147,7 +151,8 @@ Public NotInheritable Class PlayerPage
             Return
         End If
 
-        ErrorText.Text = Localized.Format("PlaybackFailed", If(e.ErrorMessage, Localized.Text("UnknownError")))
+        ErrorText.Text = Localized.Format("PlaybackFailed", If(e.ErrorException IsNot Nothing AndAlso e.ErrorException.Message IsNot Nothing,
+                                                               e.ErrorException.Message, Localized.Text("UnknownError")))
         DirectButton.Visibility = If(_plan IsNot Nothing AndAlso _plan.DirectFallbackUri IsNot Nothing, Visibility.Visible, Visibility.Collapsed)
         Await SafeReportStoppedAsync()
     End Sub
@@ -220,7 +225,7 @@ Public NotInheritable Class PlayerPage
     End Sub
 
     ' A tap anywhere toggles the controls: whatever is hidden is one tap away.
-    Private Sub Root_Tapped(sender As Object, e As TappedRoutedEventArgs)
+    Private Sub Root_Tap(sender As Object, e As GestureEventArgs)
         If OverlayRoot.Visibility = Visibility.Visible Then
             HideControls()
         Else
@@ -228,7 +233,7 @@ Public NotInheritable Class PlayerPage
         End If
     End Sub
 
-    Private Sub Seek_Changed(sender As Object, e As RangeBaseValueChangedEventArgs)
+    Private Sub Seek_Changed(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
         If _updatingSeek Then Return
         SeekTo(SeekTarget.Absolute(SeekSlider.Value, Duration()))
     End Sub
@@ -255,7 +260,7 @@ Public NotInheritable Class PlayerPage
         _uiTimer.Start()
     End Sub
 
-    Private Async Sub UiTimer_Tick(sender As Object, e As Object)
+    Private Async Sub UiTimer_Tick(sender As Object, e As EventArgs)
         _beats += 1
         TickUi()
         If _beats Mod BeatsBetweenReports = 0 Then Await ReportProgressAsync()
@@ -301,7 +306,7 @@ Public NotInheritable Class PlayerPage
     End Sub
 
     Private Sub SetBuffering(active As Boolean)
-        BufferingRing.IsActive = active
+        BufferingRing.Visibility = If(active, Visibility.Visible, Visibility.Collapsed)
         BufferingText.Visibility = If(active, Visibility.Visible, Visibility.Collapsed)
         If active Then ShowControls()
     End Sub
@@ -346,7 +351,7 @@ Public NotInheritable Class PlayerPage
     End Sub
 
     Private Sub SetName(element As FrameworkElement, name As String)
-        Windows.UI.Xaml.Automation.AutomationProperties.SetName(element, name)
+        System.Windows.Automation.AutomationProperties.SetName(element, name)
     End Sub
 
     Private Function BuildProgress() As PlaybackProgressDto

@@ -4,9 +4,10 @@ Namespace Global.JellyfinPlayer.Shared
     Public Module DeviceProfileBuilder
         Public Const DefaultBitrate As Integer = 8000000
 
-        ' Direct play for MP4/MKV H.264+AAC/MP3, with a progressive HTTP MP4
-        ' h264+aac transcode fallback. WP8.1 has no AdaptiveMediaSource (no HLS),
-        ' but MediaElement plays progressive MP4 natively.
+        ' Direct play for MP4 H.264+AAC/MP3, with a progressive HTTP MP4
+        ' h264+aac transcode fallback. The Windows Phone Silverlight MediaElement
+        ' has no AdaptiveMediaSource (no HLS) and no confirmed MKV support, so the
+        ' baseline claims only the container the platform is documented to play.
         Public Function DefaultProfile(Optional maxBitrate As Integer = DefaultBitrate) As DeviceProfileDto
             Dim dp As New DeviceProfileDto()
             dp.MaxStreamingBitrate = maxBitrate
@@ -16,7 +17,7 @@ Namespace Global.JellyfinPlayer.Shared
                                                  .MaxAudioChannels = "2"}
             }
             dp.DirectPlayProfiles = New List(Of DirectPlayProfileDto) From {
-                New DirectPlayProfileDto With {.Container = "mp4,mkv", .Type = "Video", .VideoCodec = "h264", .AudioCodec = "aac,mp3"}
+                New DirectPlayProfileDto With {.Container = "mp4", .Type = "Video", .VideoCodec = "h264", .AudioCodec = "aac,mp3"}
             }
             dp.SubtitleProfiles = New List(Of SubtitleProfileDto) From {
                 New SubtitleProfileDto With {.Format = "srt", .Method = "Encode"},

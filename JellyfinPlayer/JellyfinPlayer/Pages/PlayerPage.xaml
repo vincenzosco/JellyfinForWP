@@ -1,18 +1,18 @@
-<Page
+<phone:PhoneApplicationPage
     x:Class="JellyfinPlayer.PlayerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
     Background="Black">
 
     <!-- Icons are 24x24 viewBox, filled shapes, each written as the path data of
          its own Path: no icon font, so no missing-glyph box can appear on a
-         device. They used to be resources, but the XAML loader cannot create a
-         bare Geometry, and the whole page then refused to load. -->
+         device. -->
 
-    <Grid x:Name="RootGrid" Background="Black" Tapped="Root_Tapped">
+    <Grid x:Name="RootGrid" Background="Black" Tap="Root_Tap">
         <MediaElement x:Name="MediaEl" Stretch="Uniform"
                       MediaOpened="Media_Opened" MediaEnded="Media_Ended" MediaFailed="Media_Failed"
                       CurrentStateChanged="Media_StateChanged" BufferingProgressChanged="Media_BufferingChanged"/>
@@ -39,8 +39,8 @@
                         <Path x:Name="PauseIcon" Data="M 7,4 H 10.6 V 20 H 7 Z M 13.4,4 H 17 V 20 H 13.4 Z" Width="34" Height="34" Fill="White" Stretch="Uniform" Visibility="Collapsed"/>
                     </Grid>
                 </Button>
-                <ProgressRing x:Name="BufferingRing" IsActive="False" Width="32" Height="32" Margin="0,16,0,0"/>
-                <TextBlock x:Name="BufferingText" x:Uid="BufferingText" Foreground="White" FontSize="13"
+                <ProgressBar x:Name="BufferingRing" IsIndeterminate="True" Width="180" Height="24" Visibility="Collapsed" Margin="0,16,0,0"/>
+                <TextBlock x:Name="BufferingText" Foreground="White" FontSize="13"
                            Margin="0,8,0,0" Visibility="Collapsed"/>
             </StackPanel>
 
@@ -89,7 +89,7 @@
                         </Button>
 
                         <!-- Kept with visible text: the one action that is not obvious from a glyph. -->
-                        <Button x:Name="DirectButton" x:Uid="DirectButton" Grid.Column="2" Click="Direct_Click"
+                        <Button x:Name="DirectButton" Grid.Column="2" Click="Direct_Click"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Visibility="Collapsed" Padding="12,6"/>
 
@@ -130,4 +130,4 @@
             </Grid>
         </Grid>
     </Grid>
-</Page>
+</phone:PhoneApplicationPage>

@@ -43,6 +43,16 @@ Public Class UrlsTests
     End Sub
 
     <TestMethod>
+    Public Sub Device_profile_does_not_claim_mkv()
+        ' Windows Phone Silverlight plays MP4/H.264; claiming Matroska would make
+        ' the server choose a direct stream the phone cannot open.
+        Dim dp = DeviceProfileBuilder.DefaultProfile()
+        Dim container = dp.DirectPlayProfiles(0).Container
+        Assert.AreEqual("mp4", container)
+        Assert.IsFalse(container.Contains("mkv"), container)
+    End Sub
+
+    <TestMethod>
     Public Sub Playback_request_carries_user_and_profile()
         Dim r = DeviceProfileBuilder.ToRequest("u1", 0L)
         Assert.AreEqual("u1", r.UserId)
