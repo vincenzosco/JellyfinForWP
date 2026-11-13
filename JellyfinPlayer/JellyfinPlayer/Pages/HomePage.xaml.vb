@@ -2,21 +2,27 @@ Imports System
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Input
 
-Public NotInheritable Class HomePage
-    Inherits Page
+Partial Public Class HomePage
+    Inherits PhoneApplicationPage
 
     Public Sub New()
         InitializeComponent()
+        SwitchAccountButton.Content = Localized.Text("SwitchAccountButton.Content")
+        SearchButton.Content = Localized.Text("SearchButton.Content")
+        SettingsButton.Content = Localized.Text("SettingsButton.Content")
+        ResumeHeader.Text = Localized.Text("ResumeHeader.Text")
+        NextUpHeader.Text = Localized.Text("NextUpHeader.Text")
+        LibrariesHeader.Text = Localized.Text("LibrariesHeader.Text")
     End Sub
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
         If Not AppSession.Current.IsLoggedIn Then
-            NavigationService.Navigate(GetType(MainPage), Nothing)
+            Services.NavigationService.Navigate(GetType(MainPage), Nothing)
             Return
         End If
         Await LoadAsync()
@@ -28,10 +34,10 @@ Public NotInheritable Class HomePage
 
         Try
             Dim views = Await client.GetViewsAsync(session.UserId)
-            ViewsGrid.ItemsSource = PosterItem.Build(views, session.BaseUrl, session.AccessToken)
+            ViewsList.ItemsSource = PosterItem.Build(views, session.BaseUrl, session.AccessToken)
         Catch ex As Exception
             If FailureText.IsUnauthorized(ex) Then
-                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Services.NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
                 Return
             End If
             ErrorText.Text = Localized.DescribeError(ex)
@@ -43,7 +49,7 @@ Public NotInheritable Class HomePage
             ResumeHeader.Visibility = If(resumeItems.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
             If FailureText.IsUnauthorized(ex) Then
-                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Services.NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
                 Return
             End If
             ErrorText.Text = Localized.DescribeError(ex)
@@ -55,7 +61,7 @@ Public NotInheritable Class HomePage
             NextUpHeader.Visibility = If(nextUp.Count > 0, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
             If FailureText.IsUnauthorized(ex) Then
-                NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
+                Services.NavigationService.Navigate(GetType(MainPage), session.ActiveAccount)
                 Return
             End If
             ErrorText.Text = Localized.DescribeError(ex)
@@ -67,31 +73,33 @@ Public NotInheritable Class HomePage
             Try
                 Dim user = Await client.GetUserAsync(session.UserId)
                 If user IsNot Nothing Then session.SetUserName(session.ActiveAccount.Id, user.Name)
-            Catch ex As Exception
+            Catch
                 ' The name is cosmetic: a failure here must not disturb Home.
             End Try
         End If
     End Function
 
-    Private Sub View_Click(sender As Object, e As ItemClickEventArgs)
-        Dim item = TryCast(e.ClickedItem, PosterItem)
-        If item IsNot Nothing Then NavigationService.Navigate(GetType(LibraryPage), item.Raw)
+    Private Sub View_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
+        If item IsNot Nothing Then Services.NavigationService.Navigate(GetType(LibraryPage), item.Raw)
     End Sub
 
-    Private Sub Item_Click(sender As Object, e As ItemClickEventArgs)
-        Dim item = TryCast(e.ClickedItem, PosterItem)
+    Private Sub Item_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
         If item IsNot Nothing Then ItemNavigator.Open(item.Raw)
     End Sub
 
     Private Sub Search_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(SearchPage), Nothing)
+        Services.NavigationService.Navigate(GetType(SearchPage), Nothing)
     End Sub
 
     Private Sub Settings_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(SettingsPage), Nothing)
+        Services.NavigationService.Navigate(GetType(SettingsPage), Nothing)
     End Sub
 
     Private Sub SwitchAccount_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(AccountsPage), Nothing)
+        Services.NavigationService.Navigate(GetType(AccountsPage), Nothing)
     End Sub
 End Class

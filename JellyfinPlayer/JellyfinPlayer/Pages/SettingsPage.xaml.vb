@@ -1,19 +1,23 @@
-Imports System
 Imports System.Collections.Generic
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
 
-Public NotInheritable Class SettingsPage
-    Inherits Page
+Partial Public Class SettingsPage
+    Inherits PhoneApplicationPage
 
     Private ReadOnly _bitrates As Integer() = {2000000, 4000000, 8000000, 20000000}
     Private _suppress As Boolean
 
     Public Sub New()
         InitializeComponent()
+        SettingsHeader.Text = Localized.Text("SettingsHeader.Text")
+        ServerLabel.Text = Localized.Text("ServerLabel.Text")
+        AccountLabel.Text = Localized.Text("AccountLabel.Text")
+        BitrateLabel.Text = Localized.Text("BitrateLabel.Text")
+        SwitchAccountButton.Content = Localized.Text("SwitchAccountButton.Content")
+        SignOutButton.Content = Localized.Text("SignOutButton.Content")
     End Sub
 
     Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
@@ -45,14 +49,14 @@ Public NotInheritable Class SettingsPage
     End Sub
 
     Private Sub Switch_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(AccountsPage), Nothing)
+        Services.NavigationService.Navigate(GetType(AccountsPage), Nothing)
     End Sub
 
     Private Sub SignOut_Click(sender As Object, e As RoutedEventArgs)
         ' Leaves the account without forgetting it: its token stays, so coming
         ' back asks for no password.
         AppSession.Current.SignOut()
-        NavigationService.ClearBackStack()
-        NavigationService.Navigate(GetType(AccountsPage), Nothing)
+        Services.NavigationService.ClearBackStack()
+        Services.NavigationService.Navigate(GetType(AccountsPage), Nothing)
     End Sub
 End Class

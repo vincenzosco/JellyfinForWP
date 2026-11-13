@@ -1,26 +1,32 @@
-<Page
+<phone:PhoneApplicationPage
     x:Class="JellyfinPlayer.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    Background="Transparent">
 
-    <StackPanel Margin="20,16">
-        <TextBlock x:Uid="SettingsHeader" FontSize="26" FontWeight="Bold" Foreground="#00A4DC"/>
+    <ScrollViewer>
+        <StackPanel Margin="20,16">
+            <TextBlock x:Name="SettingsHeader" FontSize="26" FontWeight="Bold" Foreground="#00A4DC"/>
 
-        <TextBlock x:Uid="ServerLabel" Margin="0,16,0,2" FontWeight="Bold"/>
-        <TextBlock x:Name="ServerText" TextWrapping="Wrap" Opacity="0.8"/>
+            <TextBlock x:Name="ServerLabel" Margin="0,16,0,2" FontWeight="Bold"/>
+            <TextBlock x:Name="ServerText" TextWrapping="Wrap" Opacity="0.8"/>
 
-        <TextBlock x:Uid="AccountLabel" Margin="0,12,0,2" FontWeight="Bold"/>
-        <TextBlock x:Name="AccountText" TextWrapping="Wrap" Opacity="0.8"/>
+            <TextBlock x:Name="AccountLabel" Margin="0,12,0,2" FontWeight="Bold"/>
+            <TextBlock x:Name="AccountText" TextWrapping="Wrap" Opacity="0.8"/>
 
-        <TextBlock x:Uid="BitrateLabel" Margin="0,16,0,2" FontWeight="Bold"/>
-        <ComboBox x:Name="BitrateBox" Width="240" HorizontalAlignment="Left" SelectionChanged="Bitrate_Changed"/>
+            <TextBlock x:Name="BitrateLabel" Margin="0,16,0,2" FontWeight="Bold"/>
+            <ComboBox x:Name="BitrateBox" Width="240" HorizontalAlignment="Left" SelectionChanged="Bitrate_Changed"/>
 
-        <Button x:Uid="SwitchAccountButton" Margin="0,24,0,0" Click="Switch_Click"/>
-        <Button x:Uid="SignOutButton" Margin="0,8,0,0" Click="SignOut_Click"/>
-        <TextBlock x:Name="StatusText" Margin="0,12,0,0" Opacity="0.8"/>
-    </StackPanel>
-</Page>
+            <Button x:Name="SwitchAccountButton" Margin="0,24,0,0" Click="Switch_Click"/>
+            <Button x:Name="SignOutButton" Margin="0,8,0,0" Click="SignOut_Click"/>
+            <TextBlock x:Name="StatusText" Margin="0,12,0,0" Opacity="0.8"/>
+        </StackPanel>
+    </ScrollViewer>
+</phone:PhoneApplicationPage>

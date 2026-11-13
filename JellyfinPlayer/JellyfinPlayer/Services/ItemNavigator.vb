@@ -5,9 +5,9 @@ Namespace Services
         Public Sub Open(item As BaseItemDto)
             If item Is Nothing Then Return
             If item.Type = "Series" Then
-                NavigationService.Navigate(GetType(SeriesPage), item)
+                Services.NavigationService.Navigate(GetType(SeriesPage), item)
             Else
-                NavigationService.Navigate(GetType(ItemDetailPage), item)
+                Services.NavigationService.Navigate(GetType(ItemDetailPage), item)
             End If
         End Sub
     End Module

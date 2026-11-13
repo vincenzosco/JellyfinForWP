@@ -1,13 +1,17 @@
-<Page
+<phone:PhoneApplicationPage
     x:Class="JellyfinPlayer.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    Background="Transparent">
 
-    <Grid>
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -15,19 +19,13 @@
 
         <Grid Grid.Row="0" Background="#101517">
             <StackPanel Orientation="Horizontal" Margin="16,10,0,10">
-                <Image Source="ms-appx:///Assets/BrandMark.png" Width="34" Height="34" Margin="0,0,10,0"/>
+                <Image Source="/Assets/BrandMark.png" Width="34" Height="34" Margin="0,0,10,0"/>
                 <TextBlock Text="Jellyfin" FontSize="26" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
-                <!-- The path data lives here rather than in a Geometry resource
-                     keyed with x:Key: WinRT XAML cannot create that base type and
-                     the page would then refuse to load, with nothing on screen. -->
-                <Button x:Uid="SwitchAccountButton" Click="SwitchAccount_Click">
-                    <Path Data="M12,2 A5,5 0 1 1 11.99,2 Z M4,20 C4,16.7 7.6,14.5 12,14.5 C16.4,14.5 20,16.7 20,20 L20,22 L4,22 Z"
-                          Fill="#00A4DC" Stretch="Uniform" Width="20" Height="20"/>
-                </Button>
-                <Button x:Uid="SearchButton" Click="Search_Click"/>
-                <Button x:Uid="SettingsButton" Click="Settings_Click"/>
+                <Button x:Name="SwitchAccountButton" Click="SwitchAccount_Click"/>
+                <Button x:Name="SearchButton" Click="Search_Click"/>
+                <Button x:Name="SettingsButton" Click="Settings_Click"/>
             </StackPanel>
         </Grid>
 
@@ -35,11 +33,16 @@
             <StackPanel>
                 <TextBlock x:Name="ErrorText" Foreground="#D9534F" TextWrapping="Wrap" Margin="16,8,16,0"/>
 
-                <TextBlock x:Name="ResumeHeader" x:Uid="ResumeHeader" FontSize="20" Margin="16,12,0,4"/>
-                <GridView x:Name="ResumeList" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Item_Click" Height="220" Margin="8,0">
-                    <GridView.ItemTemplate>
+                <TextBlock x:Name="ResumeHeader" FontSize="20" Margin="16,12,0,4"/>
+                <ListBox x:Name="ResumeList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6">
+                            <Grid Width="150" Height="205" Margin="6" Tap="Item_Tap">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="150"/>
                                     <RowDefinition Height="*"/>
@@ -50,14 +53,19 @@
                                 <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
                             </Grid>
                         </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-                <TextBlock x:Name="NextUpHeader" x:Uid="NextUpHeader" FontSize="20" Margin="16,12,0,4"/>
-                <GridView x:Name="NextUpList" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Item_Click" Height="220" Margin="8,0">
-                    <GridView.ItemTemplate>
+                <TextBlock x:Name="NextUpHeader" FontSize="20" Margin="16,12,0,4"/>
+                <ListBox x:Name="NextUpList" ScrollViewer.HorizontalScrollBarVisibility="Visible" Margin="8,0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6">
+                            <Grid Width="150" Height="205" Margin="6" Tap="Item_Tap">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="150"/>
                                     <RowDefinition Height="*"/>
@@ -68,14 +76,14 @@
                                 <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="13" Margin="0,4,0,0"/>
                             </Grid>
                         </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-                <TextBlock x:Uid="LibrariesHeader" FontSize="20" Margin="16,12,0,4"/>
-                <GridView x:Name="ViewsGrid" IsItemClickEnabled="True" SelectionMode="None" ItemClick="View_Click" Margin="8,0">
-                    <GridView.ItemTemplate>
+                <TextBlock x:Name="LibrariesHeader" FontSize="20" Margin="16,12,0,4"/>
+                <ListBox x:Name="ViewsList" Margin="8,0">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="150" Height="205" Margin="6">
+                            <Grid Width="150" Height="205" Margin="6" Tap="View_Tap">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="150"/>
                                     <RowDefinition Height="*"/>
@@ -86,9 +94,9 @@
                                 <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" Margin="0,4,0,0"/>
                             </Grid>
                         </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</Page>
+</phone:PhoneApplicationPage>

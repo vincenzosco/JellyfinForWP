@@ -1,6 +1,5 @@
 Imports System
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
+Imports Microsoft.Phone.Controls
 
 Namespace Services
     Public Module NavigationService
@@ -9,16 +8,37 @@ Namespace Services
         ' True means the page consumed the press.
         Public BackInterceptor As Func(Of Boolean)
 
-        Public ReadOnly Property RootFrame As Frame
+        Public ReadOnly Property RootFrame As PhoneApplicationFrame
             Get
-                Return TryCast(Window.Current.Content, Frame)
+                Return TryCast(App.RootFrame, PhoneApplicationFrame)
             End Get
         End Property
 
         Public Sub Navigate(pageType As Type, parameter As Object)
             Dim f = RootFrame
-            If f IsNot Nothing Then f.Navigate(pageType, parameter)
+            If f IsNot Nothing Then f.Navigate(New Uri(NavigationUri(pageType, parameter), UriKind.Relative))
         End Sub
+
+        ' Silverlight navigation only carries a query string, so a DTO is stashed
+        ' in the frame's NavigationContext-backed state instead of being serialised
+        ' into the URL. The pending parameter is consumed once, by the target page.
+        Private _pending As Object
+
+        Public Sub SetPending(parameter As Object)
+            _pending = parameter
+        End Sub
+
+        Public Function ConsumePending() As Object
+            Dim value = _pending
+            _pending = Nothing
+            Return value
+        End Function
+
+        Private Function NavigationUri(pageType As Type, parameter As Object) As String
+            SetPending(parameter)
+            Dim name = pageType.Name
+            Return "/" & name & ".xaml"
+        End Function
 
         Public Sub GoBack()
             Dim f = RootFrame
@@ -29,7 +49,10 @@ Namespace Services
         ' it: going back would walk into another account's library.
         Public Sub ClearBackStack()
             Dim f = RootFrame
-            If f IsNot Nothing Then f.BackStack.Clear()
+            If f IsNot Nothing Then
+                Do While f.RemoveBackEntry() IsNot Nothing
+                Loop
+            End If
         End Sub
 
         Public ReadOnly Property CanGoBack As Boolean

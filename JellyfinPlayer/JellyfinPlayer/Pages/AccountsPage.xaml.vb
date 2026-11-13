@@ -1,18 +1,21 @@
 Imports System
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Input
 
 ''' <summary>
 ''' The account picker: enter one of the saved logins, add another, forget one.
 ''' </summary>
-Public NotInheritable Class AccountsPage
-    Inherits Page
+Partial Public Class AccountsPage
+    Inherits PhoneApplicationPage
 
     Public Sub New()
         InitializeComponent()
+        AccountsHeader.Text = Localized.Text("AccountsHeader.Text")
+        AddButton.Content = Localized.Text("AddAccountButton.Content")
+        RemoveButton.Content = Localized.Text("RemoveAccountButton.Content")
     End Sub
 
     Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
@@ -32,19 +35,20 @@ Public NotInheritable Class AccountsPage
 
     ' A single tap opens the account; selecting a row only enables Remove, so the
     ' two gestures do not fight each other.
-    Private Sub Account_Click(sender As Object, e As ItemClickEventArgs)
-        EnterAccount(TryCast(e.ClickedItem, AccountItem))
+    Private Sub Account_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        EnterAccount(TryCast(row.DataContext, AccountItem))
     End Sub
 
     Private Sub EnterAccount(item As AccountItem)
         If item Is Nothing Then Return
         AppSession.Current.SwitchTo(item.Account.Id)
-        NavigationService.ClearBackStack()
-        NavigationService.Navigate(GetType(HomePage), Nothing)
+        Services.NavigationService.ClearBackStack()
+        Services.NavigationService.Navigate(GetType(HomePage), Nothing)
     End Sub
 
     Private Sub Add_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(MainPage), Nothing)
+        Services.NavigationService.Navigate(GetType(MainPage), Nothing)
     End Sub
 
     Private Sub Remove_Click(sender As Object, e As RoutedEventArgs)

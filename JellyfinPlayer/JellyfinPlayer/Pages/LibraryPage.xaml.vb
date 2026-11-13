@@ -3,12 +3,12 @@ Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Input
 
-Public NotInheritable Class LibraryPage
-    Inherits Page
+Partial Public Class LibraryPage
+    Inherits PhoneApplicationPage
 
     Private Const PageSize As Integer = 50
     Private Const IncludeTypes As String = "Movie,Series,Episode,Video,BoxSet"
@@ -19,11 +19,12 @@ Public NotInheritable Class LibraryPage
 
     Public Sub New()
         InitializeComponent()
+        LoadMoreButton.Content = Localized.Text("LoadMoreButton.Content")
     End Sub
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
-        _view = TryCast(e.Parameter, BaseItemDto)
+        _view = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
         ' The frame caches pages, so this instance can be reused for another
         ' library, or navigated back into. Start from the first page again.
         _startIndex = 0
@@ -36,21 +37,21 @@ Public NotInheritable Class LibraryPage
 
     Private Async Function LoadNextPageAsync() As Task
         Dim session = AppSession.Current
-        Busy.IsActive = True
+        Busy.Visibility = Visibility.Visible
         Try
             Dim q = Await session.CreateClient().GetItemsAsync(session.UserId, _view.Id, IncludeTypes, _startIndex, PageSize)
             For Each poster In PosterItem.Build(q.Items, session.BaseUrl, session.AccessToken)
                 _items.Add(poster)
             Next
             _startIndex += PageSize
-            ' Reset the source so the grid re-renders the accumulated items.
-            ItemsGrid.ItemsSource = Nothing
-            ItemsGrid.ItemsSource = _items
+            ' Reset the source so the list re-renders the accumulated items.
+            ItemsList.ItemsSource = Nothing
+            ItemsList.ItemsSource = _items
             LoadMoreButton.Visibility = If(_items.Count < q.TotalRecordCount, Visibility.Visible, Visibility.Collapsed)
         Catch ex As Exception
             ErrorText.Text = Localized.DescribeError(ex)
         Finally
-            Busy.IsActive = False
+            Busy.Visibility = Visibility.Collapsed
         End Try
     End Function
 
@@ -58,8 +59,9 @@ Public NotInheritable Class LibraryPage
         Await LoadNextPageAsync()
     End Sub
 
-    Private Sub Item_Click(sender As Object, e As ItemClickEventArgs)
-        Dim item = TryCast(e.ClickedItem, PosterItem)
+    Private Sub Item_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
         If item IsNot Nothing Then ItemNavigator.Open(item.Raw)
     End Sub
 End Class

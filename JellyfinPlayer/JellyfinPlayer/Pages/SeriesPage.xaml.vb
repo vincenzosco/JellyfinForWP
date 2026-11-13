@@ -1,13 +1,12 @@
-Imports System
 Imports System.Collections.Generic
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Input
 
-Public NotInheritable Class SeriesPage
-    Inherits Page
+Partial Public Class SeriesPage
+    Inherits PhoneApplicationPage
 
     Private _series As BaseItemDto
     Private _seasons As List(Of BaseItemDto)
@@ -18,7 +17,7 @@ Public NotInheritable Class SeriesPage
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
-        _series = TryCast(e.Parameter, BaseItemDto)
+        _series = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
         If _series Is Nothing Then Return
         TitleText.Text = _series.Name
 
@@ -53,8 +52,9 @@ Public NotInheritable Class SeriesPage
         End Try
     End Sub
 
-    Private Sub Episode_Click(sender As Object, e As ItemClickEventArgs)
-        Dim item = TryCast(e.ClickedItem, PosterItem)
-        If item IsNot Nothing Then NavigationService.Navigate(GetType(ItemDetailPage), item.Raw)
+    Private Sub Episode_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
+        If item IsNot Nothing Then Services.NavigationService.Navigate(GetType(ItemDetailPage), item.Raw)
     End Sub
 End Class

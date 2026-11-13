@@ -1,28 +1,32 @@
-<Page
+<phone:PhoneApplicationPage
     x:Class="JellyfinPlayer.SearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    Background="Transparent">
 
-    <Grid>
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Background="#101517">
-            <TextBox x:Name="QueryBox" x:Uid="QueryBox" KeyDown="QueryBox_KeyDown" Margin="16,10,16,0"/>
+            <TextBox x:Name="QueryBox" KeyDown="QueryBox_KeyDown" Margin="16,10,16,0"/>
             <TextBlock x:Name="ErrorText" Foreground="#FF8A80" TextWrapping="Wrap" Margin="16,4,16,0"/>
-            <TextBlock x:Name="EmptyText" x:Uid="EmptyText" Opacity="0.7" Margin="16,4,16,10"/>
+            <TextBlock x:Name="EmptyText" Opacity="0.7" Margin="16,4,16,10"/>
         </StackPanel>
 
-        <ListView x:Name="ResultsList" Grid.Row="1" IsItemClickEnabled="True" SelectionMode="None" ItemClick="Result_Click">
-            <ListView.ItemTemplate>
+        <ListBox x:Name="ResultsList" Grid.Row="1">
+            <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,4">
+                    <Grid Margin="0,4" Tap="Result_Tap">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -36,7 +40,7 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
-</Page>
+</phone:PhoneApplicationPage>

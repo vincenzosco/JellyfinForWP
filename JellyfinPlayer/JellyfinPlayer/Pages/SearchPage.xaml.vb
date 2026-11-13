@@ -2,19 +2,19 @@ Imports System
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Input
 
-Public NotInheritable Class SearchPage
-    Inherits Page
+Partial Public Class SearchPage
+    Inherits PhoneApplicationPage
 
     Public Sub New()
         InitializeComponent()
     End Sub
 
-    Private Async Sub QueryBox_KeyDown(sender As Object, e As Windows.UI.Xaml.Input.KeyRoutedEventArgs)
-        If e.Key <> Windows.System.VirtualKey.Enter Then Return
+    Private Async Sub QueryBox_KeyDown(sender As Object, e As KeyEventArgs)
+        If e.Key <> Key.Enter Then Return
         Await RunSearchAsync()
     End Sub
 
@@ -41,8 +41,9 @@ Public NotInheritable Class SearchPage
         End Try
     End Function
 
-    Private Sub Result_Click(sender As Object, e As ItemClickEventArgs)
-        Dim item = TryCast(e.ClickedItem, PosterItem)
+    Private Sub Result_Tap(sender As Object, e As GestureEventArgs)
+        Dim row = TryCast(sender, FrameworkElement)
+        Dim item = TryCast(row.DataContext, PosterItem)
         If item IsNot Nothing Then ItemNavigator.Open(item.Raw)
     End Sub
 End Class

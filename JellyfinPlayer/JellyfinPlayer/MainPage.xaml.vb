@@ -3,18 +3,21 @@ Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
 
 ''' <summary>
 ''' Server connect / login page. Auto-detects the server when no address is saved.
 ''' </summary>
-Public NotInheritable Class MainPage
-    Inherits Page
+Partial Public Class MainPage
+    Inherits PhoneApplicationPage
 
     Public Sub New()
         InitializeComponent()
+        ServerAddressLabel.Text = Localized.Text("ServerAddressLabel.Text")
+        UsernameLabel.Text = Localized.Text("UsernameLabel.Text")
+        PasswordLabel.Text = Localized.Text("PasswordLabel.Text")
+        ConnectButton.Content = Localized.Text("ConnectButton.Content")
     End Sub
 
     ' Set when the page was opened to sign in again for one saved account.
@@ -23,7 +26,7 @@ Public NotInheritable Class MainPage
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
 
-        _reLogin = TryCast(e.Parameter, AccountDto)
+        _reLogin = TryCast(Services.NavigationService.ConsumePending(), AccountDto)
         If _reLogin IsNot Nothing Then
             ' Signing in again for one saved account: the address and the user are
             ' known, only the password is missing, and nothing is discovered.
@@ -87,7 +90,7 @@ Public NotInheritable Class MainPage
         End If
         If Not baseUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) Then baseUrl = "http://" & baseUrl
 
-        Busy.IsActive = True
+        Busy.Visibility = Visibility.Visible
         ConnectButton.IsEnabled = False
         StatusText.Text = ""
 
@@ -111,14 +114,14 @@ Public NotInheritable Class MainPage
 
             ' Entering a different account must not leave the previous one's
             ' screens in the back stack.
-            NavigationService.ClearBackStack()
-            NavigationService.Navigate(GetType(HomePage), Nothing)
+            Services.NavigationService.ClearBackStack()
+            Services.NavigationService.Navigate(GetType(HomePage), Nothing)
         Catch ex As JellyfinException
             StatusText.Text = If(ex.StatusCode = 401, Localized.Text("StatusWrongCredentials"), Localized.DescribeError(ex))
         Catch ex As Exception
             StatusText.Text = Localized.DescribeError(ex)
         Finally
-            Busy.IsActive = False
+            Busy.Visibility = Visibility.Collapsed
             ConnectButton.IsEnabled = True
         End Try
     End Sub

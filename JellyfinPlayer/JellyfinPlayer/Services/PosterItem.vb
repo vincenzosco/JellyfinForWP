@@ -1,10 +1,10 @@
 Imports System.Collections.Generic
 Imports JellyfinPlayer.Shared
-Imports Windows.UI.Xaml.Media
-Imports Windows.UI.Xaml.Media.Imaging
+Imports System.Windows.Media
+Imports System.Windows.Media.Imaging
 
 Namespace Services
-    ' View model for the grids; keeps XAML binding simple (no converters).
+    ' View model for the lists; keeps XAML binding simple (no converters).
     Public Class PosterItem
         Public Property Id As String
         Public Property Title As String

@@ -1,12 +1,11 @@
-Imports System
 Imports JellyfinPlayer.Shared
 Imports JellyfinPlayer.Services
-Imports Windows.UI.Xaml
-Imports Windows.UI.Xaml.Controls
-Imports Windows.UI.Xaml.Navigation
+Imports Microsoft.Phone.Controls
+Imports System.Windows
+Imports System.Windows.Media.Imaging
 
-Public NotInheritable Class ItemDetailPage
-    Inherits Page
+Partial Public Class ItemDetailPage
+    Inherits PhoneApplicationPage
 
     Private _item As BaseItemDto
     Private _suppressToggle As Boolean
@@ -17,7 +16,7 @@ Public NotInheritable Class ItemDetailPage
 
     Protected Overrides Async Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
-        _item = TryCast(e.Parameter, BaseItemDto)
+        _item = TryCast(Services.NavigationService.ConsumePending(), BaseItemDto)
         If _item Is Nothing Then Return
 
         Dim session = AppSession.Current
@@ -43,10 +42,10 @@ Public NotInheritable Class ItemDetailPage
         MetaText.Text = meta.Trim()
 
         If ImageHelper.HasBackdropImage(_item) Then
-            BackdropImage.Source = New Windows.UI.Xaml.Media.Imaging.BitmapImage(ImageHelper.BackdropUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
+            BackdropImage.Source = New BitmapImage(ImageHelper.BackdropUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
         ElseIf ImageHelper.HasPrimaryImage(_item) Then
             ' No backdrop: fall back to the primary image so the banner is not empty.
-            BackdropImage.Source = New Windows.UI.Xaml.Media.Imaging.BitmapImage(ImageHelper.ImageUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
+            BackdropImage.Source = New BitmapImage(ImageHelper.ImageUrl(AppSession.Current.BaseUrl, AppSession.Current.AccessToken, _item.Id, 720))
         End If
 
         Dim resuming = _item.UserData IsNot Nothing AndAlso _item.UserData.PlaybackPositionTicks.HasValue AndAlso _item.UserData.PlaybackPositionTicks.Value > 0
@@ -56,10 +55,13 @@ Public NotInheritable Class ItemDetailPage
         FavoriteToggle.IsChecked = _item.UserData IsNot Nothing AndAlso _item.UserData.IsFavorite
         PlayedToggle.IsChecked = _item.UserData IsNot Nothing AndAlso _item.UserData.Played
         _suppressToggle = False
+
+        FavoriteToggle.Content = Localized.Text("FavoriteToggle.Content")
+        PlayedToggle.Content = Localized.Text("PlayedToggle.Content")
     End Sub
 
     Private Sub Play_Click(sender As Object, e As RoutedEventArgs)
-        NavigationService.Navigate(GetType(PlayerPage), _item)
+        Services.NavigationService.Navigate(GetType(PlayerPage), _item)
     End Sub
 
     Private Async Sub Favorite_Click(sender As Object, e As RoutedEventArgs)
