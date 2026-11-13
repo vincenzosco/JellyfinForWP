@@ -256,6 +256,9 @@
   <data name="CurrentAccountMarker" xml:space="preserve">
     <value>In use</value>
   </data>
+  <data name="SavedAccountsLabel" xml:space="preserve">
+    <value>Saved accounts</value>
+  </data>
   <data name="PasswordRequiredStatus" xml:space="preserve">
     <value>Enter the password for {0}.</value>
   </data>

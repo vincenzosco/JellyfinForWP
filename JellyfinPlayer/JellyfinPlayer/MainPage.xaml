@@ -19,6 +19,24 @@
                     <TextBlock Text="Jellyfin" FontSize="30" FontWeight="Bold" Foreground="#00A4DC" VerticalAlignment="Center"/>
                 </StackPanel>
 
+                <!-- A saved login is one tap away: it fills the server and the name
+                     and leaves only the password to type. -->
+                <TextBlock x:Name="SavedAccountsLabel" Margin="0,18,0,4" Visibility="Collapsed"/>
+                <ListBox x:Name="SavedAccountsList" Visibility="Collapsed" Margin="0,0,0,4"
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2,0,6" Tap="SavedAccount_Tap">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" FontSize="24"/>
+                                    <TextBlock Text="{Binding Subtitle}" FontSize="17" Opacity="0.7"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
                 <TextBlock x:Name="ServerAddressLabel" Margin="0,18,0,4"/>
                 <TextBox x:Name="ServerBox" InputScope="Url"/>
                 <TextBlock x:Name="DiscoveryStatus" TextWrapping="Wrap" Opacity="0.7" Margin="0,4,0,0"/>

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using JellyfinPlayer.Shared;
 using JellyfinPlayer.Services;
@@ -20,6 +21,7 @@ namespace JellyfinPlayer
             UsernameLabel.Text = Localized.Text("UsernameLabel.Text");
             PasswordLabel.Text = Localized.Text("PasswordLabel.Text");
             ConnectButton.Content = Localized.Text("ConnectButton.Content");
+            SavedAccountsLabel.Text = Localized.Text("SavedAccountsLabel");
         }
 
         // Set when the page was opened to sign in again for one saved account.
@@ -30,6 +32,9 @@ namespace JellyfinPlayer
             base.OnNavigatedTo(e);
 
             _reLogin = Services.NavigationService.ConsumePending() as AccountDto;
+            // The picker is offered whenever logins are saved, so a password that is
+            // only being asked for again costs one field instead of three.
+            ShowSavedAccounts(_reLogin);
             if (_reLogin != null)
             {
                 // Signing in again for one saved account: the address and the user are
@@ -52,6 +57,37 @@ namespace JellyfinPlayer
 
             ServerBox.Text = "http://";
             await DiscoverAsync();
+        }
+
+        // The saved logins, newest state included: the active one is marked. Hidden
+        // while this screen is already signing one of them in again.
+        private void ShowSavedAccounts(AccountDto reLogin)
+        {
+            var session = AppSession.Current;
+            bool any = reLogin == null && session.Accounts != null && session.Accounts.Count > 0;
+            SavedAccountsLabel.Visibility = any ? Visibility.Visible : Visibility.Collapsed;
+            SavedAccountsList.Visibility = any ? Visibility.Visible : Visibility.Collapsed;
+            if (!any)
+            {
+                SavedAccountsList.ItemsSource = null;
+                return;
+            }
+            SavedAccountsList.ItemsSource = Services.AccountItem.Build(session.Accounts, session.Store.ActiveId);
+        }
+
+        private void SavedAccount_Tap(object sender, GestureEventArgs e)
+        {
+            var row = sender as FrameworkElement;
+            var item = row == null ? null : row.DataContext as Services.AccountItem;
+            if (item == null) return;
+
+            string name = Services.AccountItem.DisplayName(item.Account);
+            ServerBox.IsEnabled = true;
+            ServerBox.Text = item.Account.BaseUrl;
+            UserBox.Text = name;
+            StatusText.Text = "";
+            DiscoveryStatus.Text = Localized.Format("PasswordRequiredStatus", name);
+            PassBox.Focus();
         }
 
         // Fills the address field from the first UDP reply. When nothing answers, or
