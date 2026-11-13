@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using JellyfinPlayer.Shared;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 
 namespace JellyfinPlayer
 {
@@ -19,10 +20,11 @@ namespace JellyfinPlayer
 
             // The three actions live in the application bar: they cost no layout
             // space and cannot collide with the brand, which is what three full
-            // buttons in the header did.
-            SearchMenuItem.Text = Services.Localized.Text("SearchButton.Content");
-            AccountsMenuItem.Text = Services.Localized.Text("SwitchAccountButton.Content");
-            SettingsMenuItem.Text = Services.Localized.Text("SettingsButton.Content");
+            // buttons in the header did. The items are built here because their text
+            // has to be localized, and the bar rejects an empty one while parsing.
+            AddMenuItem("SearchButton.Content", Search_Click);
+            AddMenuItem("SwitchAccountButton.Content", SwitchAccount_Click);
+            AddMenuItem("SettingsButton.Content", Settings_Click);
             ManageDownloadsButton.Content = Services.Localized.Text("ManageDownloads");
 
             // One pivot tab per section; the labels are the section titles.
@@ -38,6 +40,13 @@ namespace JellyfinPlayer
             LibrariesEmpty.Text = empty;
             PlaylistsEmpty.Text = empty;
             DownloadsEmpty.Text = empty;
+        }
+
+        private void AddMenuItem(string resourceKey, EventHandler click)
+        {
+            var item = new ApplicationBarMenuItem(Services.Localized.Text(resourceKey));
+            item.Click += click;
+            ApplicationBar.MenuItems.Add(item);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

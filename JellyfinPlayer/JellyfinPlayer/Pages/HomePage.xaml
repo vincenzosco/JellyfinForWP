@@ -11,14 +11,10 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     Background="Transparent">
 
+    <!-- The menu items are added in code: an ApplicationBarMenuItem needs a non-empty
+         Text while the XAML is parsed, so it cannot wait for the localized value. -->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Minimized">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="SearchMenuItem" Click="Search_Click"/>
-                <shell:ApplicationBarMenuItem x:Name="AccountsMenuItem" Click="SwitchAccount_Click"/>
-                <shell:ApplicationBarMenuItem x:Name="SettingsMenuItem" Click="Settings_Click"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Minimized"/>
     </phone:PhoneApplicationPage.ApplicationBar>
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
