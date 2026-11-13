@@ -5,7 +5,7 @@
 <h1 align="center">JellyfinPlayer</h1>
 
 <p align="center">
-  <strong>Browse and play your Jellyfin library on a Windows Phone 8.1 device.</strong><br>
+  <strong>Browse and play your Jellyfin library on a Windows Phone 8 device.</strong><br>
   The app is written in C# and uses the phone's built-in Silverlight XAML and media player.
 </p>
 
@@ -17,7 +17,7 @@
   <a href="README.it.md">Italiano</a>
 </p>
 
-JellyfinPlayer connects to a Jellyfin server from a Windows Phone 8.1 device. It is a native Windows Phone Silverlight 8.1 app (`.xap`), not a Windows Phone Store/WinRT app. It needs a reachable Jellyfin server; it does not include one.
+JellyfinPlayer connects to a Jellyfin server from a Windows Phone 8 device. It is a native Windows Phone Silverlight 8.0 app (`.xap`), not a Windows Phone Store/WinRT app. It needs a reachable Jellyfin server; it does not include one.
 
 JellyfinPlayer is released under the [MIT License](LICENSE).
 
@@ -37,21 +37,21 @@ JellyfinPlayer is released under the [MIT License](LICENSE).
 - Changes the streaming bitrate from the player, restarting at the same position.
 - Includes English and Italian UI text, selected using the device language.
 
-**Good for:** browsing and playing a Jellyfin library from an older Windows Phone 8.1 device.
+**Good for:** browsing and playing a Jellyfin library from an older Windows Phone 8 device.
 
 **Not for:** Live TV, casting, playlist editing (creating a playlist or adding items to one), collections management, or external subtitle files. The subtitles the server already knows about are selectable and burned into the transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
 
 ## Requirements
 
-- A Windows Phone 8.1 device or emulator.
-- Visual Studio 2013 with the Windows Phone 8.1 SDK (Silverlight) to build and deploy from source.
+- A Windows Phone 8 device or emulator (8.0 or 8.1).
+- Visual Studio 2013 with the Windows Phone 8 SDK (Silverlight) to build and deploy from source.
 - A Jellyfin server reachable from the phone. Port `8096` is the default for HTTP.
 
-Windows Phone 8.1 is an old platform. This project targets that platform; it is not a current Windows, Android, or iOS app.
+Windows Phone 8 is an old platform. This project targets that platform; it is not a current Windows, Android, or iOS app.
 
 ## Install
 
-There is no verified store listing or release download linked from this repository. To build and deploy the app, use a Windows machine with Visual Studio 2013 and the Windows Phone 8.1 SDK.
+There is no verified store listing or release download linked from this repository. To build and deploy the app, use a Windows machine with Visual Studio 2013 and the Windows Phone 8 SDK.
 
 Open `JellyfinPlayer/JellyfinPlayer.sln` in Visual Studio 2013, select the `x86` emulator or `ARM` device target, then build and deploy the `JellyfinPlayer` project.
 

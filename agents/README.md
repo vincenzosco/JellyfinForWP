@@ -5,7 +5,7 @@
 <h1 align="center">JellyfinPlayer: developer guide</h1>
 
 <p align="center">
-  <strong>Build and maintain the Windows Phone 8.1 Jellyfin client.</strong><br>
+  <strong>Build and maintain the Windows Phone 8 Jellyfin client.</strong><br>
   The app uses C#, Windows Phone Silverlight XAML, Visual Studio 2013, and MSBuild 12.
 </p>
 
@@ -16,7 +16,7 @@
   <a href="TESTING.md">Testing</a>
 </p>
 
-JellyfinPlayer is a Windows Phone **Silverlight 8.1** app, packaged as a `.xap`. It is not a WinRT/Store app. The phone app uses `PhoneApplicationPage` screens and the platform's built-in `MediaElement`; API and playback decisions that can be tested without the phone live in `JellyfinPlayer/Shared/`.
+JellyfinPlayer is a Windows Phone **Silverlight 8.0** app, packaged as a `.xap`. It is not a WinRT/Store app. The phone app uses `PhoneApplicationPage` screens and the platform's built-in `MediaElement`; API and playback decisions that can be tested without the phone live in `JellyfinPlayer/Shared/`.
 
 ## Start here
 
@@ -34,7 +34,7 @@ Build an ARM release package with:
   -p:Configuration=Release -p:Platform=ARM -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 ```
 
-Use `-p:` in Git Bash; `/p:` can be rewritten as a filesystem path. The required toolchain is Visual Studio 2013, MSBuild 12, the Windows Phone 8.1 SDK, and the VS2013 MSTest v1 assembly for tests.
+Use `-p:` in Git Bash; `/p:` can be rewritten as a filesystem path. The required toolchain is Visual Studio 2013, MSBuild 12, the Windows Phone 8 SDK, and the VS2013 MSTest v1 assembly for tests.
 
 ## Repository map
 
@@ -50,7 +50,7 @@ agents/                      Build, design, testing, API, and maintenance notes
 ## Working rules
 
 - Do not add NuGet packages. Builds must work without package restore.
-- `Shared/*.cs` is linked into the app and test project, rather than referenced as a library. Keep it limited to APIs supported by both .NET 4.5 and Windows Phone 8.1.
+- `Shared/*.cs` is linked into the app and test project, rather than referenced as a library. Keep it limited to APIs supported by both .NET 4.5 and Windows Phone 8.
 - Shared files use `Namespace Global.JellyfinPlayer.Shared`; the `Global.` prefix prevents each project's `RootNamespace` from changing the namespace.
 - Use C# 5 syntax. Avoid later features such as `?.`, string interpolation and `nameof`.
 - Keep user-facing text in both `Resources.resx` and `Resources.it-IT.resx`. Set labels from code with `Localized.Text` / `Localized.Format`: Silverlight has no `x:Uid` resource lookup.

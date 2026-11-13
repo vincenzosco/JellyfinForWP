@@ -72,10 +72,6 @@
     <EmbeddedResource Include="..\JellyfinPlayer\JellyfinPlayer.csproj">
       <LogicalName>JellyfinPlayer.csproj</LogicalName>
     </EmbeddedResource>
-    <None Include="..\JellyfinPlayer\Package.appxmanifest">
-      <Link>Manifest\Package.appxmanifest</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\JellyfinPlayer\Properties\WMAppManifest.xml">
       <Link>Manifest\WMAppManifest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

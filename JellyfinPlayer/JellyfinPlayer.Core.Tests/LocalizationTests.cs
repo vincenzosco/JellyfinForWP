@@ -124,13 +124,19 @@ namespace JellyfinPlayer.Core.Tests
         [TestMethod]
         public void Manifest_declares_english_and_italian()
         {
-            // The check is about which languages are declared, not about how the XML is
-            // written: Visual Studio reflows this file whenever the manifest designer
-            // saves it, and that must not fail.
-            string text = File.ReadAllText(Path.Combine(BaseDir, "Manifest", "Package.appxmanifest")).Replace(" />", "/>");
-            Assert.IsTrue(text.Contains("<Resource Language=\"en-US\"/>"), text);
-            Assert.IsTrue(text.Contains("<Resource Language=\"it-IT\"/>"), text);
-            Assert.IsFalse(text.Contains("x-generate"), "declare the supported languages explicitly");
+            // A Windows Phone 8 project declares its languages this way: the neutral
+            // language in the phone manifest, the satellites in the project file.
+            string text = File.ReadAllText(Path.Combine(BaseDir, "Manifest", "WMAppManifest.xml")).Replace(" />", "/>");
+            Assert.IsTrue(text.Contains("code=\"en-US\""), text);
+
+            var stream = typeof(LocalizationTests).Assembly.GetManifestResourceStream("JellyfinPlayer.csproj");
+            Assert.IsNotNull(stream, "the app project must be embedded into the test assembly");
+            string project;
+            using (var reader = new StreamReader(stream))
+            {
+                project = reader.ReadToEnd();
+            }
+            StringAssert.Contains(project, "<SupportedCultures>it-IT</SupportedCultures>");
         }
 
         [TestMethod]

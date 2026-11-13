@@ -44,12 +44,13 @@ namespace JellyfinPlayer.Core.Tests
         }
 
         [TestMethod]
-        public void App_project_targets_windows_phone_silverlight_81()
+        public void App_project_targets_windows_phone_silverlight_8()
         {
             string project = ProjectText();
 
             StringAssert.Contains(project, "<TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>");
-            StringAssert.Contains(project, "<TargetFrameworkVersion>v8.1</TargetFrameworkVersion>");
+            StringAssert.Contains(project, "<TargetFrameworkVersion>v8.0</TargetFrameworkVersion>");
+            StringAssert.Contains(project, "Microsoft.WindowsPhone.v8.0.Overrides.targets");
             StringAssert.Contains(project, "<SilverlightApplication>true</SilverlightApplication>");
             StringAssert.Contains(project, "Microsoft.WindowsPhone.CSharp.targets");
             Assert.IsFalse(project.Contains("WindowsXaml"), "remove the WinRT XAML targets");
@@ -147,24 +148,19 @@ namespace JellyfinPlayer.Core.Tests
         }
 
         [TestMethod]
-        public void Both_manifests_agree_on_identity_and_version()
+        // A Windows Phone 8 project has one manifest: the Silverlight 8.1 upgrade is
+        // what adds the appx package manifest, and this target does not have it.
+        public void The_phone_manifest_carries_the_product_identity_and_version()
         {
-            string package = ReadManifest("Package.appxmanifest");
             string phone = ReadManifest("WMAppManifest.xml");
 
-            var packageIdentity = Regex.Match(package, "<Identity[^>]*Name=\"([^\"]+)\"[^>]*Version=\"([^\"]+)\"");
-            Assert.IsTrue(packageIdentity.Success, "Package.appxmanifest must carry an Identity name and version");
-
             var phoneIdentity = Regex.Match(phone, "ProductID=\"\\{([^}]+)\\}\"");
-            // A bare "Version=" would also match the root's AppPlatformVersion="8.1".
+            // A bare "Version=" would also match the root's AppPlatformVersion="8.0".
             var phoneVersion = Regex.Match(phone, "\\sVersion=\"([^\"]+)\"");
             Assert.IsTrue(phoneIdentity.Success, "WMAppManifest.xml must carry a ProductID");
             Assert.IsTrue(phoneVersion.Success, "WMAppManifest.xml must carry a version");
 
-            Assert.AreEqual(packageIdentity.Groups[1].Value, phoneIdentity.Groups[1].Value,
-                "the package and the phone manifest disagree about the product identity");
-            Assert.AreEqual(packageIdentity.Groups[2].Value, phoneVersion.Groups[1].Value,
-                "the package and the phone manifest disagree about the version");
+            StringAssert.Contains(phone, "AppPlatformVersion=\"8.0\"");
             Assert.AreEqual("1.2.1.4", phoneVersion.Groups[1].Value,
                 "the user-approved version must survive the port");
         }

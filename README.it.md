@@ -5,7 +5,7 @@
 <h1 align="center">JellyfinPlayer</h1>
 
 <p align="center">
-  <strong>Esplora e riproduci la tua libreria Jellyfin su un dispositivo Windows Phone 8.1.</strong><br>
+  <strong>Esplora e riproduci la tua libreria Jellyfin su un dispositivo Windows Phone 8.</strong><br>
   L'app è scritta in C# e usa XAML e il lettore multimediale integrato nel telefono.
 </p>
 
@@ -17,7 +17,7 @@
   <a href="README.md">English</a>
 </p>
 
-JellyfinPlayer si collega a un server Jellyfin da un dispositivo Windows Phone 8.1. È un'app Windows Phone Silverlight 8.1 nativa (`.xap`), non un'app Windows Phone Store/WinRT. Serve un server Jellyfin raggiungibile in rete; l'app non ne include uno.
+JellyfinPlayer si collega a un server Jellyfin da un dispositivo Windows Phone 8. È un'app Windows Phone Silverlight 8.0 nativa (`.xap`), non un'app Windows Phone Store/WinRT. Serve un server Jellyfin raggiungibile in rete; l'app non ne include uno.
 
 JellyfinPlayer è distribuito con la [licenza MIT](LICENSE).
 
@@ -37,21 +37,21 @@ JellyfinPlayer è distribuito con la [licenza MIT](LICENSE).
 - Cambia il bitrate dello streaming dal lettore, ripartendo dalla stessa posizione.
 - L'interfaccia è disponibile in inglese e italiano e segue la lingua del dispositivo.
 
-**Adatto a:** esplorare e riprodurre una libreria Jellyfin da un vecchio dispositivo Windows Phone 8.1.
+**Adatto a:** esplorare e riprodurre una libreria Jellyfin da un vecchio dispositivo Windows Phone 8.
 
 **Non adatto a:** Live TV, casting, modifica delle playlist (crearne una o aggiungere elementi), gestione delle raccolte o file di sottotitoli esterni. I sottotitoli già noti al server sono selezionabili e vengono incorporati nella transcodifica. Vedi [le limitazioni note](agents/MAINTENANCE.md#known-limitations).
 
 ## Requisiti
 
-- Un dispositivo o emulatore Windows Phone 8.1.
-- Visual Studio 2013 con Windows Phone 8.1 SDK per compilare e distribuire il sorgente.
+- Un dispositivo o emulatore Windows Phone 8 (8.0 o 8.1).
+- Visual Studio 2013 con Windows Phone 8 SDK per compilare e distribuire il sorgente.
 - Un server Jellyfin raggiungibile dal telefono. La porta HTTP predefinita è `8096`.
 
-Windows Phone 8.1 è una piattaforma datata. Il progetto è destinato a quella piattaforma e non è un'app attuale per Windows, Android o iOS.
+Windows Phone 8 è una piattaforma datata. Il progetto è destinato a quella piattaforma e non è un'app attuale per Windows, Android o iOS.
 
 ## Installazione
 
-Il repository non rimanda a una scheda verificata nello store né a un download di release. Per compilare e distribuire l'app serve un PC Windows con Visual Studio 2013 e Windows Phone 8.1 SDK.
+Il repository non rimanda a una scheda verificata nello store né a un download di release. Per compilare e distribuire l'app serve un PC Windows con Visual Studio 2013 e Windows Phone 8 SDK.
 
 Apri `JellyfinPlayer/JellyfinPlayer.sln` in Visual Studio 2013, seleziona l'emulatore `x86` o il dispositivo `ARM`, quindi compila e distribuisci il progetto `JellyfinPlayer`.
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2014/deployment" AppPlatformVersion="8.1">
+<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{53bed9b8-6040-4fa9-8d92-c13b6192ae80}" Title="Jellyfin" RuntimeType="Silverlight" Version="1.2.1.4" Genre="apps.normal" Author="Vincenzo" Description="A Jellyfin player for Windows Phone 8.1" Publisher="Vincenzo" PublisherID="{00000000-0000-0000-0000-000000000000}">
+  <App xmlns="" ProductID="{53bed9b8-6040-4fa9-8d92-c13b6192ae80}" Title="Jellyfin" RuntimeType="Silverlight" Version="1.2.1.4" Genre="apps.normal" Author="Vincenzo" Description="A Jellyfin player for Windows Phone 8" Publisher="Vincenzo" PublisherID="{00000000-0000-0000-0000-000000000000}">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />

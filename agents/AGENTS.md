@@ -1,6 +1,6 @@
 # JellyfinPlayer — agent entry point
 
-Windows Phone Silverlight 8.1 Jellyfin client, written in **C# 5**, built with
+Windows Phone Silverlight 8.0 Jellyfin client, written in **C# 5**, built with
 **VS2013 / MSBuild 12**. Read these before changing anything:
 
 - [`BUILD.md`](BUILD.md) — exact build and test commands.

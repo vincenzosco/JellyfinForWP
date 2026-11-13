@@ -60,7 +60,7 @@ should expect `Inconclusive`, not a green run.
 
 ## What the unit tests cover for the player
 
-No UI automation exists on WP8.1, so the player's *decisions* live in `Shared/` and are
+No UI automation exists on WP8.0, so the player's *decisions* live in `Shared/` and are
 covered by MSTest: `SeekTargetTests` (a seek never leaves the video, an unknown duration
 never produces one), `TicksTests.FormatSpan*` (the elapsed/total clock), and
 `PlayerSurfaceTests` (entering and leaving the full-page player, the screen staying awake
@@ -101,7 +101,7 @@ a `<Geometry>` object element and a dangling `{StaticResource}`.
 
 ## Verification the automated tests cannot do
 
-WP8.1 has no UI automation, so the app itself is verified manually on the emulator
+WP8.0 has no UI automation, so the app itself is verified manually on the emulator
 or a device:
 
 - **Autodiscovery**: launch with no saved server on a LAN with the server running →

@@ -59,7 +59,7 @@ Edit all three, keeping the numbers identical:
   expression-bodied members or auto-property initializers (`LangVersion 5`).
 - Inside a page, `NavigationService` resolves to the framework property; the app's
   own helper is `Services.NavigationService`.
-- `TextBox` has no `QuerySubmitted` on WP8.1 — handle `KeyDown` + `Enter`.
+- `TextBox` has no `QuerySubmitted` on WP8.0 — handle `KeyDown` + `Enter`.
 - The test project needs a reference to `Microsoft.VisualStudio.QualityTools.UnitTestFramework`,
   or `TestClass`/`Assert` are "not declared".
 
@@ -70,7 +70,7 @@ Edit all three, keeping the numbers identical:
 - Audio track selection is not exposed (the server's default track is used).
 - HTTPS with self-signed certificates is not trusted; use plain HTTP or a
   valid certificate.
-- Windows Phone 8.1 Silverlight only; not portable to UWP without reworking
+- Windows Phone 8 Silverlight only; not portable to UWP without reworking
   `IsolatedStorageSettings`, navigation and playback.
 - "Fullscreen" hides the System Tray and allows landscape; Silverlight for Windows
   Phone has no platform fullscreen video mode.

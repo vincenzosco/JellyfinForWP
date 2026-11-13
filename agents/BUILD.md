@@ -44,8 +44,8 @@ links `Shared/*.cs`; it needs no package restore.
 
 ## Requirements (already present on the reference machine)
 
-- Visual Studio 2013 (MSBuild 12.0.40629.0) and the Windows Phone 8.1 SDK.
-- The Windows Phone 8.1 Silverlight targets (`Microsoft.WindowsPhone.CSharp.targets`).
+- Visual Studio 2013 (MSBuild 12.0.40629.0) and the Windows Phone 8 SDK.
+- The Windows Phone 8 Silverlight targets (`Microsoft.WindowsPhone.CSharp.targets`).
 - `Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll` in the VS2013
   `Common7/IDE/PublicAssemblies` folder (referenced via `$(MSBuildProgramFiles32)`).
 

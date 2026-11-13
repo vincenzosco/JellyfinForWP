@@ -12,7 +12,7 @@
                               | linked as <Compile Include="..\Shared\*.cs">
               +---------------+----------------+
               |                                |
-   JellyfinPlayer (WP8.1 app)      JellyfinPlayer.Core.Tests (MSTest, .NET 4.5)
+   JellyfinPlayer (WP8.0 app)      JellyfinPlayer.Core.Tests (MSTest, .NET 4.5)
    XAML pages + phone services     runs Shared/ on the desktop with FakeTransport
 ```
 
@@ -23,7 +23,7 @@ app, and a PCL adds project-system complexity. Instead both projects compile the
 `Shared/*.cs` files. That keeps the API client unit-testable on the desktop while
 shipping it unchanged in the app.
 
-**Constraint:** `Shared/` may only use APIs present in both .NET 4.5 and WP8.1 —
+**Constraint:** `Shared/` may only use APIs present in both .NET 4.5 and WP8.0 —
 `System.Net.HttpWebRequest`, `System.Runtime.Serialization.Json`, `System.Threading.Tasks`,
 `System.Collections.Generic`, `System.Text`, `System.Uri`. No phone-only types.
 
