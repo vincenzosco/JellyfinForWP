@@ -29,11 +29,14 @@ JellyfinPlayer è distribuito con la [licenza MIT](LICENSE).
 - Riproduce direttamente quando il server offre una sorgente compatibile. Altrimenti richiede una transcodifica MP4 progressiva. L'avanzamento viene inviato al server.
 - Se la riproduzione diretta non riesce, prova una volta la transcodifica. Se fallisce anche quella, il lettore può proporre il flusso diretto come alternativa.
 - Include la riproduzione a tutta pagina (tray di sistema nascosto, orientamento orizzontale consentito), salto indietro di 10 secondi e avanti di 30, mute, adatta/riempi e controlli di avanzamento.
+- Permette di scegliere la traccia audio e i sottotitoli dal lettore; una traccia audio non predefinita o un sottotitolo scelto vengono rimuxati o incorporati dal server, alla stessa posizione.
+- Prosegue con l'episodio successivo quando uno finisce.
+- Ordina una libreria per nome o per data di aggiunta.
 - L'interfaccia è disponibile in inglese e italiano e segue la lingua del dispositivo.
 
 **Adatto a:** esplorare e riprodurre una libreria Jellyfin da un vecchio dispositivo Windows Phone 8.1.
 
-**Non adatto a:** Live TV, download o sincronizzazione offline, gestione delle raccolte, scelta della traccia audio o selezione di sottotitoli esterni. I sottotitoli possono essere incorporati in una transcodifica del server. Vedi [le limitazioni note](agents/MAINTENANCE.md#known-limitations).
+**Non adatto a:** Live TV, download o sincronizzazione offline, gestione delle raccolte o file di sottotitoli esterni. I sottotitoli già noti al server sono selezionabili e vengono incorporati nella transcodifica. Vedi [le limitazioni note](agents/MAINTENANCE.md#known-limitations).
 
 ## Requisiti
 

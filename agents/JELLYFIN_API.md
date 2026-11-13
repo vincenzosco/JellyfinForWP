@@ -75,11 +75,22 @@ already signed it with either spelling.
   deliberately not claimed: the Windows Phone Silverlight player is only verified
   for MP4, and an over-claimed container suppresses the transcode fallback.
 - **Transcode:** `mp4` container over **`http`** (progressive), `h264`+`aac`.
-- **Subtitles:** `srt`/`ass` with `Method="Encode"` (burned in by the transcode).
+- **Subtitles:** text and image formats (`srt`, `subrip`, `ass`, `ssa`, `vtt`,
+  `webvtt`, `mov_text`, `pgssub`, `dvdsub`, `dvbsub`) with `Method="Encode"`, so
+  the server burns the chosen track into the transcode.
 
 `PlaybackService.PrepareAsync` picks the first source with `SupportsDirectPlay`
 and a `DirectStreamUrl`; otherwise the first with `SupportsTranscoding` and a
 `TranscodingUrl`. Both are played with `MediaElement.Source`.
+
+**Track selection.** `PlaybackInfo` carries `AudioStreamIndex` and
+`SubtitleStreamIndex` when the player asked for them. Choosing the default audio
+and no subtitle is sent as `Nothing`, so the item still direct-plays. Any other
+choice goes through the progressive MP4 URL with `AudioStreamIndex` and
+`SubtitleStreamIndex` (plus `SubtitleMethod=Encode` for subtitles): a static file
+cannot remux an audio track or draw a subtitle over itself. `Shared/TrackOptions`
+owns which index counts as the default, and the player restarts at the same
+position when a choice changes.
 
 > **Why not HLS?** The Windows Phone Silverlight `MediaElement` has no adaptive
 > streaming, so HLS cannot be played. A progressive MP4 transcode is the fallback

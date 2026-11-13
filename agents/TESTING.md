@@ -128,6 +128,16 @@ or a device:
   "Play direct" fallback, with the controls still reachable.
 - **Unknown duration**: open a transcode right after it starts → the total time is never
   wrong and skipping cannot move past the end.
+- **Tracks**: open a title with more than one audio track → the tracks button appears;
+  pick another language → playback restarts at the same position with that audio; pick a
+  subtitle → the subtitle is burned in and the video restarts at the same position; pick
+  **Off** → playback returns to direct play. A file with one audio track and no subtitles
+  offers no tracks button.
+- **Next episode**: let an episode end while a following episode exists → the next one
+  starts on its own, from the beginning, on the same screen; the last episode of a series
+  simply stops. Back after the automatic switch leaves the player, not the previous episode.
+- **Library sort**: the header button switches between name and date added, and the grid
+  reloads from the first page in the new order.
 - **Settings**: bitrate persists; the account name is shown; Sign out returns to the
   picker with the account still saved.
 - **Language**: set the emulator/device language to Italian → every screen and every

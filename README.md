@@ -29,11 +29,14 @@ JellyfinPlayer is released under the [MIT License](LICENSE).
 - Plays directly when the server offers a compatible source. Otherwise it asks Jellyfin for a progressive MP4 transcode. Playback progress is sent back to the server.
 - If direct playback fails, tries transcoding once. If transcoding fails, the player can offer the direct stream as a fallback.
 - Provides full-page playback (system tray hidden, landscape allowed), seek back 10 seconds / forward 30 seconds, mute, fit/fill, and playback progress controls.
+- Chooses the audio track and the subtitle track from the player; a non-default audio track or a chosen subtitle is remuxed or burned in by the server, at the same position.
+- Continues with the next episode when one ends.
+- Sorts a library by name or by date added.
 - Includes English and Italian UI text, selected using the device language.
 
 **Good for:** browsing and playing a Jellyfin library from an older Windows Phone 8.1 device.
 
-**Not for:** Live TV, offline downloads, offline sync, collections management, selecting audio tracks, or choosing external subtitles. Subtitles can be burned into a server transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
+**Not for:** Live TV, offline downloads, offline sync, collections management, or external subtitle files. The subtitles the server already knows about are selectable and burned into the transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
 
 ## Requirements
 

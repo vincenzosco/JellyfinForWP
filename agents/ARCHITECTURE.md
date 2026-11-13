@@ -60,6 +60,15 @@ messages are produced by the pure `HttpTransport.MapException`.
   `PlaybackPlan` (direct stream or MP4 transcode).
 - `Services/ItemNavigator.vb` — routes an item to `SeriesPage` or `ItemDetailPage`.
 
+## Shared rules the player leans on
+
+- `Shared/TrackOptions.vb` — the audio/subtitle rows the picker shows, and the
+  rule that the default audio is sent as no choice so direct play survives.
+- `Shared/NextEpisode.vb` — the episode after the current one, by season then
+  number; the service only supplies the list.
+- `Shared/PlaybackUrlResolver.vb` — builds the URL for either path, adding
+  `AudioStreamIndex`/`SubtitleStreamIndex` when a track was chosen.
+
 ## Data flow
 
 `PhoneApplicationPage.OnNavigatedTo` → `AppSession.Current.CreateClient()` → `JellyfinApiClient`
