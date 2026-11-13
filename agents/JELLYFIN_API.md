@@ -17,7 +17,7 @@ The response gives `AccessToken`, `User.Id` and `ServerId`. Every later request
 carries `Authorization: MediaBrowser Token="<AccessToken>", Client="...",
 Device="...", DeviceId="...", Version="..."` — all built by
 `Shared/JellyfinAuthHeader.vb`. The device id is generated once and stored in
-`LocalSettings`.
+`IsolatedStorageSettings`.
 
 > **Why not `X-Emby-Authorization` / `X-Emby-Token`?** Jellyfin 12 ships with
 > `ServerConfiguration.EnableLegacyAuthorization` **off** (and force-disables it
@@ -64,7 +64,9 @@ every media URL.
 
 `GetPlaybackInfoAsync` posts `DeviceProfileBuilder.DefaultProfile()`:
 
-- **Direct play:** `mp4,mkv` container, `h264` video, `aac,mp3` audio.
+- **Direct play:** `mp4` container, `h264` video, `aac,mp3` audio. Matroska is
+  deliberately not claimed: the Windows Phone Silverlight player is only verified
+  for MP4, and an over-claimed container suppresses the transcode fallback.
 - **Transcode:** `mp4` container over **`http`** (progressive), `h264`+`aac`.
 - **Subtitles:** `srt`/`ass` with `Method="Encode"` (burned in by the transcode).
 
@@ -72,6 +74,6 @@ every media URL.
 and a `DirectStreamUrl`; otherwise the first with `SupportsTranscoding` and a
 `TranscodingUrl`. Both are played with `MediaElement.Source`.
 
-> **Why not HLS?** WP8.1 has no `AdaptiveMediaSource` (verified: it is absent from
-> the WP8.1 `Windows.winmd`), so HLS cannot be played. A progressive MP4 transcode
-> is the fallback that `MediaElement` plays natively.
+> **Why not HLS?** The Windows Phone Silverlight `MediaElement` has no adaptive
+> streaming, so HLS cannot be played. A progressive MP4 transcode is the fallback
+> that `MediaElement` plays natively.

@@ -22,16 +22,17 @@
 
 ## Dependencies
 
-- **No NuGet packages, no restore.** Only `System.*` and `Windows.*` framework
-  APIs. JSON goes through `System.Runtime.Serialization.Json`.
+- **No NuGet packages, no restore.** Only `System.*` and `Microsoft.Phone`
+  framework assemblies. JSON goes through `System.Runtime.Serialization.Json`.
 - `DataContractJsonSerializer` cannot map a JSON object onto
   `Dictionary(Of String, String)`. Model fixed-key objects as a class with
   `[DataMember]` properties instead (see `ImageTagsDto`).
 
 ## Pages
 
-- One page per file pair `Pages/<Name>.xaml` + `Pages/<Name>.xaml.vb`; add both the
-  `<Page>` and the `<Compile ... DependentUpon>` entries in `JellyfinPlayer.vbproj`.
+- One page per file pair `Pages/<Name>.xaml` + `Pages/<Name>.xaml.vb`, with a
+  `phone:PhoneApplicationPage` root; add the `<Page>` entry in `JellyfinPlayer.vbproj`
+  (the code-behind is picked up by the `Pages\*.xaml.vb` wildcard).
 - Navigate through `NavigationService.Navigate(GetType(Page), parameter)`; pass a
   `BaseItemDto` (or `Nothing`) as the parameter.
 - Data binding uses plain `{Binding}` on `PosterItem` properties. No converters.

@@ -1,89 +1,143 @@
-# JellyfinPlayer for Windows Phone 8.1
+<p align="center">
+  <img src="JellyfinPlayer/JellyfinPlayer/Assets/BrandMark.png" width="128" alt="JellyfinPlayer logo">
+</p>
 
-A Jellyfin client for **Windows Phone 8.1** (WinRT XAML), written in **VB.NET** and built
-with **Visual Studio 2013 / MSBuild 12**. It talks to a Jellyfin server on your local
-network. The interface is available in **English and Italian** and follows the device
-language.
+<h1 align="center">JellyfinPlayer</h1>
 
-Read this in [Italian](README.it.md).
+<p align="center">
+  <strong>Browse and play your Jellyfin library on a Windows Phone 8.1 device.</strong><br>
+  The app is written in VB.NET and uses the phone's built-in Silverlight XAML and media player.
+</p>
 
-## Features
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#use-the-app">Use the app</a> ·
+  <a href="#troubleshooting">Troubleshooting</a> ·
+  <a href="agents/README.md">Developer guide</a> ·
+  <a href="README.it.md">Italiano</a>
+</p>
 
-- **Server discovery on launch**: a UDP probe on port 7359 fills in the address — and only
-  after that address has answered as a Jellyfin server. Manual entry always works.
-- Sign-in against `/Users/AuthenticateByName`, with **several accounts on one phone**: the
-  app enters the last one used, and the picker switches user without retyping a password.
-- Home: Continue watching, Next up, and the library list.
-- Paged library grid, series page with season picker, item detail with Play/Resume,
-  Favorite and Watched.
-- Search across movies, series and episodes.
-- Playback: direct play when the server says the file is directly playable, otherwise a
-  progressive HTTP MP4 transcode. Progress is reported back so resume works. When the
-  direct stream fails the player retries once through the transcode on its own, and when
-  the transcode fails "Play direct" offers the original file.
-- Fullscreen player: one button hides the status bar and the player's own bars, the video
-  fills the screen, rotation follows the phone and the screen stays awake; the hardware back
-  button leaves fullscreen first and only then leaves the screen.
-- Player controls: back 10 s / forward 30 s, mute, fill/fit, elapsed and total time, a
-  buffering indicator, and controls that hide themselves only while the video plays (a tap
-  brings them back).
-- Settings: maximum streaming bitrate, sign out.
-- English and Italian UI selected by the device language, English by default.
+JellyfinPlayer connects to a Jellyfin server from a Windows Phone 8.1 device. It is a native Windows Phone Silverlight 8.1 app (`.xap`), not a Windows Phone Store/WinRT app. It needs a reachable Jellyfin server; it does not include one.
+
+This repository has no `LICENSE` file, so reuse and redistribution terms are not stated here.
+
+## What it does
+
+- Finds Jellyfin servers on the local network using UDP discovery on port `7359`. You can also enter a server address manually.
+- Signs in through `/Users/AuthenticateByName` and can keep multiple accounts on one phone.
+- Shows Continue watching, Next up, libraries, paged library items, series seasons, item details, and search results for movies, series, and episodes.
+- Plays directly when the server offers a compatible source. Otherwise it asks Jellyfin for a progressive MP4 transcode. Playback progress is sent back to the server.
+- If direct playback fails, tries transcoding once. If transcoding fails, the player can offer the direct stream as a fallback.
+- Provides full-page playback (system tray hidden, landscape allowed), seek back 10 seconds / forward 30 seconds, mute, fit/fill, and playback progress controls.
+- Includes English and Italian UI text, selected using the device language.
+
+**Good for:** browsing and playing a Jellyfin library from an older Windows Phone 8.1 device.
+
+**Not for:** Live TV, offline downloads, offline sync, collections management, selecting audio tracks, or choosing external subtitles. Subtitles can be burned into a server transcode. See [known limitations](agents/MAINTENANCE.md#known-limitations).
 
 ## Requirements
 
-- Visual Studio 2013 with the Windows Phone 8.1 SDK: MSBuild 12, the WindowsXaml v12.0
-  targets, and `Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll` in the VS2013
-  `Common7/IDE/PublicAssemblies` folder.
-- A running Jellyfin server the phone can reach: same network, and on Windows the
-  firewall must allow the server's port (8096 by default).
-- No package restore: the build needs no NuGet packages.
+- A Windows Phone 8.1 device or emulator.
+- Visual Studio 2013 with the Windows Phone 8.1 SDK (Silverlight) to build and deploy from source.
+- A Jellyfin server reachable from the phone. Port `8096` is the default for HTTP.
 
-## Build
+Windows Phone 8.1 is an old platform. This project targets that platform; it is not a current Windows, Android, or iOS app.
 
-Run from the repository root, in bash (Git Bash on Windows):
+## Install
+
+There is no verified store listing or release download linked from this repository. To build and deploy the app, use a Windows machine with Visual Studio 2013 and the Windows Phone 8.1 SDK.
+
+Open `JellyfinPlayer/JellyfinPlayer.sln` in Visual Studio 2013, select the `x86` emulator or `ARM` device target, then build and deploy the `JellyfinPlayer` project.
+
+To build from Git Bash with MSBuild 12:
 
 ```bash
-# Debug, x86 (emulator)
 "/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.sln \
   -p:Configuration=Debug -p:Platform=x86 -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
+```
 
-# Release, ARM (phone)
+For an ARM release build:
+
+```bash
 "/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.sln \
   -p:Configuration=Release -p:Platform=ARM -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 ```
 
-Both end with `Your package has been successfully created.`, under
-`JellyfinPlayer/JellyfinPlayer/AppPackages/`. Use the `-p:` prefix — Git Bash mangles the
-`/p:` form. Deploy with Visual Studio (**Deploy**), or with the `Add-AppDevPackage.ps1`
-inside the `AppPackages/..._Test` folder.
+The generated Silverlight app package (`.xap`) is written under `JellyfinPlayer/JellyfinPlayer/bin/<platform>/Debug/`, for example `JellyfinPlayer_Debug_x86.xap`. Deploy from Visual Studio or use the generated package.
 
-## Tests
+> In Git Bash, use `-p:` for MSBuild properties. The `/p:` form can be converted into a path and break the command.
+
+## Set up the server connection
+
+1. Start the app on the phone.
+2. If Jellyfin discovery works on the local network, the server address is filled in automatically. Otherwise, enter the server URL, for example `http://192.168.1.20:8096`.
+3. Sign in with a Jellyfin username and password.
+4. Open a library, choose an item, and select Play or Resume.
+
+The phone and server need network connectivity to each other. Server discovery uses UDP broadcast, which may not cross subnets or VLANs; manual address entry is available when discovery cannot reach the server.
+
+## Use the app
+
+- **Home:** continue watching, next episodes, and libraries.
+- **Library:** scroll through the paged item grid.
+- **Series:** choose a season to view its episodes.
+- **Item details:** play or resume, and toggle Favorite or Watched.
+- **Accounts:** switch between saved logins without re-entering each password.
+- **Player:** use the on-screen controls to seek, mute, change fit/fill, or enter fullscreen. Pressing the phone's Back button exits fullscreen before leaving the player page.
+- **Settings:** change the maximum streaming bitrate or sign out.
+
+## Troubleshooting
+
+<details>
+<summary>The app does not find my Jellyfin server</summary>
+
+Discovery sends a UDP broadcast on port `7359`; it may be blocked by the network or may not cross a subnet/VLAN. Enter the server address manually, and check that the phone can reach the Jellyfin server's HTTP port (usually `8096`).
+</details>
+
+<details>
+<summary>Jellyfin does not accept the server address</summary>
+
+Enter the base URL, such as `http://192.168.1.20:8096`, not a library or API endpoint. The server must be reachable from the phone. For HTTPS, the server needs a certificate trusted by Windows Phone; self-signed certificates are not trusted by this app.
+</details>
+
+<details>
+<summary>A video will not play</summary>
+
+The phone's built-in player supports a limited set of formats. JellyfinPlayer asks the server for a direct stream or a progressive MP4 transcode, and retries once using a transcode after a direct-stream failure. If both options fail, check the server's playback/transcoding configuration and try the offered direct-play fallback where available.
+</details>
+
+<details>
+<summary>The build fails in Git Bash at an MSBuild property</summary>
+
+Use `-p:Configuration=Debug`, not `/p:Configuration=Debug`. Git Bash may rewrite arguments that start with `/` as filesystem paths.
+</details>
+
+## Build and test
+
+Build the shared-logic test project with the VS2013 toolchain, then run the unit tests with MSTest v1:
 
 ```bash
-# build the test project first
 "/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.Core.Tests/JellyfinPlayer.Core.Tests.vbproj \
   -p:Configuration=Debug -p:Platform=AnyCPU -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 
-# then run it
-"/c/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/mstest.exe" \
+MSYS_NO_PATHCONV=1 "/c/Program Files (x86)/Microsoft Visual Studio 12.0/Common7/IDE/mstest.exe" \
   /testcontainer:JellyfinPlayer/JellyfinPlayer.Core.Tests/bin/Debug/JellyfinPlayer.Core.Tests.dll \
-  /testsettings:JellyfinPlayer/JellyfinPlayer.Core.Tests/run.testsettings
+  /testsettings:JellyfinPlayer/JellyfinPlayer.Core.Tests/run.testsettings \
+  /category:"!Integration" /noresults
 ```
 
-A passing run prints `N/N test(s) Passed`. Some tests talk to a real server: copy
-`JellyfinPlayer/JellyfinPlayer.Core.Tests/test.settings.local.example` to
-`test.settings.local`, fill in the password, and **never commit it**. Without a configured
-server those integration tests report `Inconclusive`.
+`MSYS_NO_PATHCONV=1` keeps Git Bash from rewriting MSTest's `/testcontainer:` arguments. The command above skips integration tests; see [testing instructions](agents/TESTING.md) for the local server settings needed to run them.
 
-## Documentation
+## How it is built
 
-- [`agents/README.md`](agents/README.md) — what the app does and how it is laid out.
-- [`agents/BUILD.md`](agents/BUILD.md) — every build and test command.
-- [`agents/TESTING.md`](agents/TESTING.md) — unit vs. integration tests, and the manual
-  on-device checklist (language switch, logo, autodiscovery, player controls).
-- [`agents/ARCHITECTURE.md`](agents/ARCHITECTURE.md),
-  [`agents/CONVENTIONS.md`](agents/CONVENTIONS.md),
-  [`agents/JELLYFIN_API.md`](agents/JELLYFIN_API.md),
-  [`agents/MAINTENANCE.md`](agents/MAINTENANCE.md) — the internals.
-- [README in italiano](README.it.md).
+The app's Silverlight services and XAML pages are in `JellyfinPlayer/JellyfinPlayer/`. The Jellyfin API client and other platform-independent logic are in `JellyfinPlayer/Shared/`, which is linked into both the phone app and the desktop test project.
+
+More detail:
+
+- [Developer entry point](agents/README.md)
+- [Architecture](agents/ARCHITECTURE.md)
+- [Build commands](agents/BUILD.md)
+- [Testing and device checklist](agents/TESTING.md)
+- [Jellyfin API usage](agents/JELLYFIN_API.md)
+- [Maintenance and limitations](agents/MAINTENANCE.md)
+- [Coding conventions](agents/CONVENTIONS.md)

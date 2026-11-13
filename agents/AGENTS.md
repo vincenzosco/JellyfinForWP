@@ -1,6 +1,6 @@
 # JellyfinPlayer — agent entry point
 
-Windows Phone 8.1 (WinRT XAML) Jellyfin client, written in **VB.NET**, built with
+Windows Phone Silverlight 8.1 Jellyfin client, written in **VB.NET**, built with
 **VS2013 / MSBuild 12**. Read these before changing anything:
 
 - [`BUILD.md`](BUILD.md) — exact build and test commands.
@@ -30,17 +30,21 @@ Quick reference:
 Rules of the road:
 
 1. **Never add a NuGet package.** The solution must build with a bare `msbuild`
-   (no restore). Use `System.Net.Http`, `System.Runtime.Serialization.Json`, and
-   `Windows.*` only.
+   (no restore). Use `System.Net.HttpWebRequest`, `System.Runtime.Serialization.Json`,
+   `System.Net.Sockets` and the `Microsoft.Phone` framework assemblies only.
 2. Shared logic is linked, not referenced — see `ARCHITECTURE.md`. Keep it free of
-   WinRT-only types so the desktop tests keep compiling.
+   Windows Phone-only types so the desktop tests keep compiling.
 3. `Shared/*.vb` uses `Namespace Global.JellyfinPlayer.Shared` on purpose; VB would
    otherwise prepend each project's `RootNamespace`.
-4. **User-visible strings are never literals in code.** XAML uses `x:Uid` with an entry
-   in `Strings/<lang>/Resources.resw`; code-behind uses `Localized.Text` / `Localized.Format`
-   and `Localized.DescribeError(ex)` for failures. Supported languages are `en-US`
-   (default) and `it-IT`, declared in `Package.appxmanifest`; keep both files in sync —
-   `LocalizationTests` fails otherwise. Brand names and example URLs stay literal.
+4. **User-visible strings are never literals in code.** Labels and messages come from
+   `Resources.resx` / `Resources.it-IT.resx` through `Localized.Text` / `Localized.Format`,
+   and failures through `Localized.DescribeError(ex)`; Silverlight has no `x:Uid` lookup.
+   Supported languages are `en-US` (default) and `it-IT`, declared in
+   `Package.appxmanifest`; keep both files in sync — `LocalizationTests` fails otherwise.
+   Brand names and example URLs stay literal.
+5. **Both manifests carry the identity.** `Package.appxmanifest` and
+   `My Project/WMAppManifest.xml` must agree on product id and version;
+   `SilverlightProjectTests` fails otherwise.
 5. **The agent commits and pushes — never with AI attribution.** Once a change is
    verified, run `git add`, `git commit` and `git push` yourself; do not hand the
    commands over. The message must carry no `Co-Authored-By:` agent trailer and no

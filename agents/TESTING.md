@@ -63,22 +63,32 @@ should expect `Inconclusive`, not a green run.
 No UI automation exists on WP8.1, so the player's *decisions* live in `Shared/` and are
 covered by MSTest: `SeekTargetTests` (a seek never leaves the video, an unknown duration
 never produces one), `TicksTests.FormatSpan*` (the elapsed/total clock), and
-`PlayerSurfaceTests` (entering and leaving fullscreen, the screen staying awake while
-playing and not while paused, and `RestoreAll` putting the status bar, portrait rotation
-and the screen timeout back however the screen was left). `Services.WinRtPlayerShell` is
-the WP8.1 binding of the same interface and is verified by the build plus the checklist
-above.
+`PlayerSurfaceTests` (entering and leaving the full-page player, the screen staying awake
+while playing and not while paused, and `RestoreAll` putting the system tray, portrait
+rotation and the screen timeout back however the screen was left).
+`Services/SilverlightPlayerShell.vb` is the Windows Phone binding of the same interface and
+is verified by the build plus the checklist below.
 
 ## Localization consistency tests
 
 `LocalizationTests` read the real files — copied next to the test assembly by
-`JellyfinPlayer.Core.Tests.vbproj` — instead of a hand-made fixture: the two `.resw`
+`JellyfinPlayer.Core.Tests.vbproj` — instead of a hand-made fixture: the two `.resx`
 files, every XAML page, the manifest and the app sources. They fail when English and
-Italian drift apart (missing key, empty value, different `{n}` placeholders), when an
-`x:Uid` has no resource, when a key used from code does not exist, when the manifest
+Italian drift apart (missing key, empty value, different `{n}` placeholders), when a
+`Localized.Text` key has no resource, when a key used from code does not exist, when the manifest
 stops declaring `en-US`/`it-IT`, when a page prints a raw `ex.Message` instead of
 `Localized.DescribeError(ex)`, or when a user-visible XAML literal is left untranslated
 (only the brand name and the example URL are allowed literals).
+
+## Project and markup checks
+
+`SilverlightProjectTests` fails when the app drifts back to WinRT: a `WindowsXaml`
+target, `NETFX_CORE`, `AppContainerExe`, `Windows.UI.Xaml`, `Windows.Storage`,
+`DatagramSocket`, `ResourceLoader`, `ProgressRing`, `ThemeResource`, `ms-appx` or
+`x:Uid` in a maintained file. It also checks that every screen is a
+`phone:PhoneApplicationPage`, that the startup route and every project page exist,
+and that both manifests agree on product id and version. `XamlResourceTests` rejects
+a `<Geometry>` object element and a dangling `{StaticResource}`.
 
 ## Verification the automated tests cannot do
 
@@ -139,7 +149,11 @@ or a device:
   out from another client), then launch → the app asks for that account's password only,
   with the server and user already filled in; typing it enters Home, and the other accounts
   were never touched.
-- **Upgrade from the previous build**: install over a version that had the single session,
-  launch → Home opens for the same user with no login (the four old keys became the first
-  account) and the picker shows that account, by user id until the first Home load has
-  fetched its name.
+- **Upgrade from the old WinRT build**: the Silverlight app stores accounts in
+  `IsolatedStorageSettings`, which the previous WinRT package did not use, so a saved login
+  is **not** carried over. Install over it and confirm the app opens on the login screen with
+  manual entry, then signs in normally. This is expected; it is not a regression.
+- **Authorization on the device**: after signing in, confirm the server accepts the
+  `Authorization: MediaBrowser …` header (Home loads). Silverlight's HTTP stack has header
+  restrictions, so a token that arrives in a desktop test is not proof it arrives here; if
+  it does not, the API calls fail and the app says so instead of silently sending a query key.

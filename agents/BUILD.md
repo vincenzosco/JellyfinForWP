@@ -9,14 +9,17 @@ All commands are run from the repository root in **bash** (Git Bash on Windows).
   -p:Configuration=Debug -p:Platform=x86 -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 ```
 
-Success ends with `Your package has been successfully created.`
+Success ends with `Xap assembly completed` (`Assemblaggio Xap completato` on an Italian
+MSBuild) and writes a `.xap`.
 
 > Use the `-p:` prefix. The `/p:` form is rewritten into a Windows path by Git
 > Bash's MSYS path conversion and silently breaks the build.
 
 Outputs:
-- App binary: `JellyfinPlayer/JellyfinPlayer/bin/x86/Debug/JellyfinPlayer.exe`
-- Package: `JellyfinPlayer/JellyfinPlayer/AppPackages/JellyfinPlayer_1.0.0.0_x86_Debug_Test/`
+- App assembly: `JellyfinPlayer/JellyfinPlayer/bin/x86/Debug/JellyfinPlayer.dll`
+- Package: `JellyfinPlayer/JellyfinPlayer/bin/x86/Debug/JellyfinPlayer_Debug_x86.xap`
+
+An ARM release build writes `JellyfinPlayer/JellyfinPlayer/bin/ARM/Release/JellyfinPlayer_Release_ARM.xap`.
 
 ## Release / ARM
 
@@ -42,12 +45,12 @@ links `Shared/*.vb`; it needs no package restore.
 ## Requirements (already present on the reference machine)
 
 - Visual Studio 2013 (MSBuild 12.0.40629.0) and the Windows Phone 8.1 SDK.
-- `MSBuild/Microsoft/WindowsXaml/v12.0` targets.
+- The Windows Phone 8.1 Silverlight targets (`Microsoft.WindowsPhone.VisualBasic.targets`).
 - `Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll` in the VS2013
   `Common7/IDE/PublicAssemblies` folder (referenced via `$(MSBuildProgramFiles32)`).
 
 ## Deploying to a device/emulator
 
-Use VS2013 (**Deploy**), or the `AppPackages/.../*_Test` folder's PowerShell
-`Add-AppDevPackage.ps1`, or a XAP/APPX deployer. The app requires the
-`internetClientServer` capability, already set in `Package.appxmanifest`.
+Use VS2013 (**Deploy**) or a XAP deployer (for example the Windows Phone
+Application Deployment tool) with the generated `.xap`. The app requires the
+`ID_CAP_NETWORKING` capability, already set in `My Project/WMAppManifest.xml`.

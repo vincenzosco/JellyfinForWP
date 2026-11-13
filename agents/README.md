@@ -1,43 +1,67 @@
-# JellyfinPlayer
+<p align="center">
+  <img src="../JellyfinPlayer/JellyfinPlayer/Assets/BrandMark.png" width="112" alt="JellyfinPlayer logo">
+</p>
 
-A Jellyfin client for **Windows Phone 8.1** (WinRT XAML), VB.NET, built with
-VS2013 / MSBuild 12.
+<h1 align="center">JellyfinPlayer: developer guide</h1>
 
-## Features
+<p align="center">
+  <strong>Build and maintain the Windows Phone 8.1 Jellyfin client.</strong><br>
+  The app uses VB.NET, Windows Phone Silverlight XAML, Visual Studio 2013, and MSBuild 12.
+</p>
 
-- **Auto-detect the server on launch** (UDP probe on port 7359), falling back to manual URL entry; then sign in (`POST /Users/AuthenticateByName`).
-- Home: Continue watching (`/Items/Resume`), Next up (`/Shows/NextUp`), and the library list (`/Users/{id}/Views`).
-- Library grid with `StartIndex`/`Limit` paging.
-- Series page with season picker and episode list.
-- Item detail with Play/Resume, Favorite and Watched toggles.
-- Search across movies, series and episodes.
-- Playback: direct play when the server says the file is directly playable,
-  otherwise a progressive HTTP MP4 transcode. Progress is reported back to the
-  server (`/Sessions/Playing*`) so resume works.
-- Player screen: fullscreen (status bar hidden, screen kept awake, rotation
-  allowed, the back button leaves fullscreen first), skip -10 s/+30 s, mute,
-  fit/fill, elapsed and total time, a buffering indicator and controls that hide
-  themselves while the video plays.
-- Settings: max streaming bitrate, sign out.
-- Logo and splash taken from the remove.bg Jellyfin logo.
+<p align="center">
+  <a href="../README.md">Project README</a> ·
+  <a href="BUILD.md">Build</a> ·
+  <a href="ARCHITECTURE.md">Architecture</a> ·
+  <a href="TESTING.md">Testing</a>
+</p>
 
-## Layout
+JellyfinPlayer is a Windows Phone **Silverlight 8.1** app, packaged as a `.xap`. It is not a WinRT/Store app. The phone app uses `PhoneApplicationPage` screens and the platform's built-in `MediaElement`; API and playback decisions that can be tested without the phone live in `JellyfinPlayer/Shared/`.
 
+## Start here
+
+From the repository root, build the solution for the x86 emulator:
+
+```bash
+"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.sln \
+  -p:Configuration=Debug -p:Platform=x86 -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
 ```
+
+Build an ARM release package with:
+
+```bash
+"/c/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" JellyfinPlayer/JellyfinPlayer.sln \
+  -p:Configuration=Release -p:Platform=ARM -p:VisualStudioVersion=12.0 -t:Build -nologo -v:minimal
+```
+
+Use `-p:` in Git Bash; `/p:` can be rewritten as a filesystem path. The required toolchain is Visual Studio 2013, MSBuild 12, the Windows Phone 8.1 SDK, and the VS2013 MSTest v1 assembly for tests.
+
+## Repository map
+
+```text
 JellyfinPlayer/
-  Shared/                 platform-agnostic logic (linked into both projects)
-  JellyfinPlayer/         the WP8.1 app (XAML pages + WinRT services)
-  JellyfinPlayer.Core.Tests/  desktop MSTest suite over Shared/
-tools/generate_assets.py  regenerates the .scale-240 assets from a source logo
+  Shared/                    API client, DTOs, URL and playback logic
+  JellyfinPlayer/            Silverlight app, XAML pages, and phone services
+  JellyfinPlayer.Core.Tests/ MSTest v1 tests over Shared/
+tools/generate_assets.py     Generates phone asset variants from a source logo
+agents/                      Build, design, testing, API, and maintenance notes
 ```
 
-## Tests
+## Working rules
 
-- Unit tests over `Shared/` (no server) and integration tests against a real
-  server. See [`../agents/TESTING.md`](../agents/TESTING.md).
+- Do not add NuGet packages. Builds must work without package restore.
+- `Shared/*.vb` is linked into the app and test project, rather than referenced as a library. Keep it limited to APIs supported by both .NET 4.5 and Windows Phone 8.1.
+- Shared files use `Namespace Global.JellyfinPlayer.Shared`; the `Global.` prefix prevents each project's `RootNamespace` from changing the namespace.
+- Use VB 12 syntax. Avoid VB14 features such as string interpolation and `NameOf`.
+- Keep user-facing text in both `Resources.resx` and `Resources.it-IT.resx`. Set labels from code with `Localized.Text` / `Localized.Format`: Silverlight has no `x:Uid` resource lookup.
+- Add tests for platform-independent API and playback decisions. Windows Phone UI behavior requires the manual device/emulator checklist because this project has no UI automation.
 
-## Repository readme
+## Guides
 
-The root readme documents the build and the test commands:
-[`../README.md`](../README.md) (English, the default) and
-[`../README.it.md`](../README.it.md) (Italian).
+- [Architecture and data flow](ARCHITECTURE.md)
+- [Build and test commands](BUILD.md)
+- [Testing, local server settings, and device checklist](TESTING.md)
+- [Jellyfin endpoints and playback behavior](JELLYFIN_API.md)
+- [Coding conventions](CONVENTIONS.md)
+- [Maintenance, limitations, and asset generation](MAINTENANCE.md)
+- [User-facing README](../README.md) · [Italian README](../README.it.md)

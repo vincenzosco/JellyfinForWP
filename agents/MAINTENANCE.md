@@ -15,10 +15,12 @@
 
 1. Create `Pages/<Name>.xaml` (+ `.xaml.vb`), `x:Class="JellyfinPlayer.<Name>"`.
 2. Register it in `JellyfinPlayer.vbproj`: a `<Page>` entry under the app-definition
-   `ItemGroup` and a `<Compile ... DependentUpon>` entry under the pages `ItemGroup`.
-3. Navigate with `NavigationService.Navigate(GetType(<Name>), parameter)`.
-4. Set `ScrollViewer.HorizontalScrollMode`/vertical as needed; remember WinRT
-   `StackPanel` has **no `Padding`** — use child margins or a `Border`.
+   `ItemGroup` and the `.xaml.vb` is picked up by `<Compile Include="Pages\*.xaml.vb">`.
+3. Derive from `phone:PhoneApplicationPage` and navigate with
+   `NavigationService.Navigate(GetType(<Name>), parameter)`; handle the Back key with
+   `BackKeyPress`.
+4. Remember Silverlight `StackPanel` has **no `Padding`** — use child margins or a
+   `Border`; a poster grid is a `LongListSelector` or `ListBox`, not a WinRT `GridView`.
 
 ## Tests
 
@@ -43,11 +45,13 @@ references the un-suffixed names (`Assets\Logo.png`); the build resolves the
 
 ## Bump the version
 
-Edit both:
+Edit all three, keeping the numbers identical:
 - `JellyfinPlayer/JellyfinPlayer/My Project/AssemblyInfo.vb`
   (`AssemblyVersion`, `AssemblyFileVersion`),
+- `JellyfinPlayer/JellyfinPlayer/My Project/WMAppManifest.xml`
+  (`<App ... Version="…">`),
 - `JellyfinPlayer/JellyfinPlayer/Package.appxmanifest`
-  (`<Identity ... Version="1.0.0.0">`).
+  (`<Identity ... Version="…">`).
 
 ## Gotchas
 
@@ -64,7 +68,11 @@ Edit both:
 - Audio track selection is not exposed (the server's default track is used).
 - HTTPS with self-signed certificates is not trusted; use plain HTTP or a
   valid certificate.
-- WP8.1 only; not portable to UWP without reworking `LocalSettings`, navigation
-  and playback.
+- Windows Phone 8.1 Silverlight only; not portable to UWP without reworking
+  `IsolatedStorageSettings`, navigation and playback.
+- "Fullscreen" hides the System Tray and allows landscape; Silverlight for Windows
+  Phone has no platform fullscreen video mode.
+- Logins saved by the older WinRT package cannot be read: IsolatedStorageSettings is a
+  separate store, so upgrading asks for the password once.
 - Autodiscovery relies on UDP broadcast, which does not cross subnets/VLANs; VPN
   and guest Wi-Fi often block it. Manual entry always remains available.
