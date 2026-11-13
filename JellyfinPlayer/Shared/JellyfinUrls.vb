@@ -16,9 +16,13 @@ Namespace Global.JellyfinPlayer.Shared
             Return BaseUrl & path
         End Function
 
+        ' Jellyfin 12 disabled the legacy api_key query parameter together with the
+        ' X-Emby-* headers; ApiKey is the modern spelling and both 10.x and 12.x read
+        ' it. Image and media URLs need it because BitmapImage and MediaElement cannot
+        ' attach an Authorization header.
         Private Function WithKey(url As String) As String
             If String.IsNullOrEmpty(Token) Then Return url
-            Return url & If(url.Contains("?"), "&", "?") & "api_key=" & Uri.EscapeDataString(Token)
+            Return url & If(url.Contains("?"), "&", "?") & "ApiKey=" & Uri.EscapeDataString(Token)
         End Function
 
         Public Function SystemInfoPublic() As String

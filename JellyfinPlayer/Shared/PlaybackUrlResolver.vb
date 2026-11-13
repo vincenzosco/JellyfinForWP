@@ -73,8 +73,12 @@ Namespace Global.JellyfinPlayer.Shared
 
         Public Function EnsureKey(url As String, token As String) As String
             If String.IsNullOrEmpty(url) OrElse String.IsNullOrEmpty(token) Then Return url
-            If url.Contains("api_key=") Then Return url
-            Return url & If(url.Contains("?"), "&", "?") & "api_key=" & token
+            ' ApiKey is the parameter Jellyfin 12 still honors; a URL the server
+            ' already signed with either spelling is left alone so the key is not
+            ' sent twice.
+            If url.IndexOf("ApiKey=", StringComparison.OrdinalIgnoreCase) >= 0 OrElse
+               url.Contains("api_key=") Then Return url
+            Return url & If(url.Contains("?"), "&", "?") & "ApiKey=" & token
         End Function
     End Module
 End Namespace

@@ -143,6 +143,48 @@ Public Class LocalServerIntegrationTests
 
     <TestMethod>
     <TestCategory("Integration")>
+    Public Sub Image_url_with_the_modern_key_parameter_is_accepted()
+        ' Jellyfin 12 rejects the legacy api_key parameter, and an image URL has no
+        ' header to fall back on. Fetching one proves the parameter the app builds
+        ' is the one the server accepts.
+        If Not RequireConfigured() Then Return
+        Dim client = AuthenticatedClient()
+        Dim views = client.GetViewsAsync(client.UserId).GetAwaiter().GetResult()
+        If views Is Nothing OrElse views.Count = 0 Then
+            Assert.Inconclusive("The server has no libraries to read an image from.")
+            Return
+        End If
+
+        Dim item As BaseItemDto = Nothing
+        For Each library In views
+            Dim q = client.GetItemsAsync(client.UserId, library.Id, "Movie,Series,Episode,Video,BoxSet", 0, 20).GetAwaiter().GetResult()
+            If q IsNot Nothing AndAlso q.Items IsNot Nothing Then
+                For Each candidate In q.Items
+                    If candidate.ImageTags IsNot Nothing AndAlso Not String.IsNullOrEmpty(candidate.ImageTags.Primary) Then
+                        item = candidate
+                        Exit For
+                    End If
+                Next
+            End If
+            If item IsNot Nothing Then Exit For
+        Next
+        If item Is Nothing Then
+            Assert.Inconclusive("No item with a primary image on this server.")
+            Return
+        End If
+
+        Dim url = New JellyfinUrls(_settings.Url, client.AccessToken).PrimaryImage(item.Id, 120)
+        Assert.IsTrue(url.Contains("ApiKey="), url)
+        Try
+            Dim body As String = New HttpTransport().GetStringAsync(url, Nothing).GetAwaiter().GetResult()
+            Assert.IsNotNull(body)
+        Catch ex As JellyfinException
+            Assert.Fail("Image URL rejected (HTTP " & ex.StatusCode & "): " & ex.Message)
+        End Try
+    End Sub
+
+    <TestMethod>
+    <TestCategory("Integration")>
     Public Sub Resume_list_is_readable()
         If Not RequireConfigured() Then Return
         Dim client = AuthenticatedClient()

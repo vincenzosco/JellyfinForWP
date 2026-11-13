@@ -11,7 +11,7 @@ Public Class PlaybackUrlResolverTests
         Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000)
         Assert.IsFalse(r.IsTranscode)
         Assert.IsTrue(r.Url.Contains("static=true"), r.Url)
-        Assert.IsTrue(r.Url.Contains("api_key=TOK"), r.Url)
+        Assert.IsTrue(r.Url.Contains("ApiKey=TOK"), r.Url)
     End Sub
 
     <TestMethod>
@@ -20,7 +20,7 @@ Public Class PlaybackUrlResolverTests
         s.TranscodingUrl = "/Videos/i1/stream.mp4?x=1"
         Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000)
         Assert.IsTrue(r.IsTranscode)
-        Assert.IsTrue(r.Url.Contains("api_key=TOK"), r.Url)
+        Assert.IsTrue(r.Url.Contains("ApiKey=TOK"), r.Url)
     End Sub
 
     <TestMethod>
@@ -30,7 +30,7 @@ Public Class PlaybackUrlResolverTests
         s.SupportsDirectStream = True
         Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000)
         Assert.IsFalse(r.IsTranscode)
-        Assert.AreEqual("http://h:8096/Videos/i1/stream?static=true&mediaSourceId=m1&api_key=TOK", r.Url)
+        Assert.AreEqual("http://h:8096/Videos/i1/stream?static=true&mediaSourceId=m1&ApiKey=TOK", r.Url)
     End Sub
 
     <TestMethod>
@@ -41,7 +41,7 @@ Public Class PlaybackUrlResolverTests
         Assert.IsTrue(r.IsTranscode)
         Assert.IsTrue(r.Url.Contains("/Videos/i1/stream.mp4"), r.Url)
         Assert.IsTrue(r.Url.Contains("MaxStreamingBitrate=8000000"), r.Url)
-        Assert.IsTrue(r.Url.Contains("api_key=TOK"), r.Url)
+        Assert.IsTrue(r.Url.Contains("ApiKey=TOK"), r.Url)
     End Sub
 
     <TestMethod>
@@ -59,7 +59,7 @@ Public Class PlaybackUrlResolverTests
         s.TranscodingUrl = "/Videos/i1/stream.mp4?DeviceProfileId=abc"
         Dim u = PlaybackUrlResolver.TranscodeUrl("http://h:8096", "TOK", "i1", s, 8000000)
         Assert.IsTrue(u.Contains("DeviceProfileId=abc"), u)
-        Assert.IsTrue(u.Contains("api_key=TOK"), u)
+        Assert.IsTrue(u.Contains("ApiKey=TOK"), u)
     End Sub
 
     <TestMethod>
@@ -67,7 +67,7 @@ Public Class PlaybackUrlResolverTests
         Dim u = PlaybackUrlResolver.TranscodeUrl("http://h:8096", "TOK", "i1", Source(), 2000000)
         Assert.IsTrue(u.Contains("/Videos/i1/stream.mp4"), u)
         Assert.IsTrue(u.Contains("MaxStreamingBitrate=2000000"), u)
-        Assert.IsTrue(u.Contains("api_key=TOK"), u)
+        Assert.IsTrue(u.Contains("ApiKey=TOK"), u)
     End Sub
 
     <TestMethod>
@@ -79,15 +79,26 @@ Public Class PlaybackUrlResolverTests
     Public Sub Direct_url_builds_the_static_stream_when_the_flags_allow_it()
         Dim s = Source()
         s.SupportsDirectStream = True
-        Assert.AreEqual("http://h:8096/Videos/i1/stream?static=true&mediaSourceId=m1&api_key=TOK",
+        Assert.AreEqual("http://h:8096/Videos/i1/stream?static=true&mediaSourceId=m1&ApiKey=TOK",
                         PlaybackUrlResolver.DirectUrl("http://h:8096", "TOK", "i1", s))
     End Sub
 
     <TestMethod>
-    Public Sub Does_not_duplicate_api_key()
+    Public Sub Does_not_duplicate_the_key_parameter()
+        Dim s = Source()
+        s.DirectStreamUrl = "/Videos/i1/stream?static=true&ApiKey=TOK"
+        Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000)
+        Assert.AreEqual(1, Split(r.Url, "ApiKey=").Length - 1, r.Url)
+    End Sub
+
+    <TestMethod>
+    Public Sub Leaves_a_url_the_server_signed_with_the_old_parameter_alone()
+        ' A URL that already carries a token must not get a second one, whichever
+        ' spelling the server used.
         Dim s = Source()
         s.DirectStreamUrl = "/Videos/i1/stream?static=true&api_key=TOK"
         Dim r = PlaybackUrlResolver.Resolve("http://h:8096", "TOK", "i1", s, 8000000)
+        Assert.IsFalse(r.Url.Contains("ApiKey="), r.Url)
         Assert.AreEqual(1, Split(r.Url, "api_key=").Length - 1, r.Url)
     End Sub
 End Class

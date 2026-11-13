@@ -16,7 +16,7 @@ Public Class UrlsTests
 
     <TestMethod>
     Public Sub Primary_image_url_has_api_key()
-        Assert.AreEqual("http://host:8096/Items/id1/Images/Primary?maxHeight=300&quality=90&api_key=TOK", MakeUrls().PrimaryImage("id1", 300))
+        Assert.AreEqual("http://host:8096/Items/id1/Images/Primary?maxHeight=300&quality=90&ApiKey=TOK", MakeUrls().PrimaryImage("id1", 300))
     End Sub
 
     <TestMethod>
@@ -26,7 +26,7 @@ Public Class UrlsTests
         Assert.IsTrue(u.Contains("ParentId=v1"), u)
         Assert.IsTrue(u.Contains("StartIndex=0"), u)
         Assert.IsTrue(u.Contains("Limit=50"), u)
-        Assert.IsTrue(u.Contains("api_key=TOK"), u)
+        Assert.IsTrue(u.Contains("ApiKey=TOK"), u)
     End Sub
 
     <TestMethod>
@@ -40,6 +40,15 @@ Public Class UrlsTests
         Dim dp = DeviceProfileBuilder.DefaultProfile()
         Assert.AreEqual("http", dp.TranscodingProfiles(0).Protocol)
         Assert.AreEqual("mp4", dp.TranscodingProfiles(0).Container)
+    End Sub
+
+    <TestMethod>
+    Public Sub Image_url_uses_the_parameter_jellyfin_12_accepts()
+        ' 12.0 disabled the legacy api_key query parameter along with the X-Emby-*
+        ' headers, and an image URL cannot carry an Authorization header.
+        Dim u = MakeUrls().PrimaryImage("id1", 300)
+        Assert.IsTrue(u.Contains("ApiKey=TOK"), u)
+        Assert.IsFalse(u.Contains("api_key="), "the removed api_key parameter must not be sent: " & u)
     End Sub
 
     <TestMethod>
@@ -63,13 +72,13 @@ Public Class UrlsTests
 
     <TestMethod>
     Public Sub Missing_token_omits_api_key()
-        Assert.IsFalse(New JellyfinUrls("http://h").PrimaryImage("i", 100).Contains("api_key"), "no token should mean no api_key")
+        Assert.IsFalse(New JellyfinUrls("http://h").PrimaryImage("i", 100).Contains("ApiKey"), "no token should mean no ApiKey")
     End Sub
 
     <TestMethod>
     Public Sub User_url_carries_the_api_key()
         Dim u = MakeUrls().User("u1")
         Assert.IsTrue(u.Contains("/Users/u1"), u)
-        Assert.IsTrue(u.Contains("api_key=TOK"), u)
+        Assert.IsTrue(u.Contains("ApiKey=TOK"), u)
     End Sub
 End Class

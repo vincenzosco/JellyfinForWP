@@ -3,7 +3,8 @@ Imports JellyfinPlayer.Shared
 
 Namespace Services
     Public Module ImageHelper
-        ' BitmapImage cannot set HTTP headers, so image URLs carry ?api_key=.
+        ' BitmapImage cannot set HTTP headers, so image URLs carry ?ApiKey= (the
+        ' parameter Jellyfin 12 accepts; the old api_key spelling is rejected).
         Public Function ImageUrl(baseUrl As String, token As String, itemId As String, maxHeight As Integer) As Uri
             Return New Uri(New JellyfinUrls(baseUrl, token).PrimaryImage(itemId, maxHeight))
         End Function
