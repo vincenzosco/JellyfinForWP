@@ -9,6 +9,10 @@ namespace JellyfinPlayer.Shared
     // by that setting, on 10.x or 12.x, so it is the single path this client uses.
     public static class JellyfinAuthHeader
     {
+        // Older servers (10.x) read this name; 12 reads the Authorization header
+        // below. The value is the same string either way.
+        public const string LegacyHeaderName = "X-Emby-Authorization";
+
         public const string ClientName = "JellyfinPlayer";
         public const string DeviceName = "WindowsPhone";
         public const string ClientVersion = "1.0.0";

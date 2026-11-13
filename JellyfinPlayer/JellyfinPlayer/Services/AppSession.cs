@@ -134,10 +134,12 @@ namespace JellyfinPlayer.Services
             _store.Save();
         }
 
-        // A successful login: the same server and user refreshes that entry.
-        public AccountDto SignIn(string baseUrl, string userId, string userName, string token, string serverId, string serverName)
+        // A successful login: the same server and user refreshes that entry. The
+        // server version rides along because it decides the auth spellings.
+        public AccountDto SignIn(string baseUrl, string userId, string userName, string token, string serverId, string serverName,
+                                 string serverVersion = null)
         {
-            var account = _store.AddOrUpdate(baseUrl, userId, userName, token, serverId, serverName);
+            var account = _store.AddOrUpdate(baseUrl, userId, userName, token, serverId, serverName, serverVersion);
             Save();
             return account;
         }
@@ -172,6 +174,9 @@ namespace JellyfinPlayer.Services
             var account = ActiveAccount;
             var urls = new JellyfinUrls(account == null ? null : account.BaseUrl,
                                         account == null ? null : account.AccessToken);
+            // An account saved against an older server keeps talking to it the way
+            // that server understands.
+            urls.LegacyAuth = ServerCompatibility.IsLegacy(account == null ? null : account.ServerVersion);
             var client = new JellyfinApiClient(new HttpTransport(), urls, DeviceId);
             if (account != null)
             {

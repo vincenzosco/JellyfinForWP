@@ -14,6 +14,10 @@ namespace JellyfinPlayer
         {
             InitializeComponent();
             InitializePhoneApplication();
+            // A crash with a debugger detached leaves no trace otherwise; the
+            // stack written here is what the next run can be diagnosed from.
+            UnhandledException += (sender, e) => Services.AppLog.Error("Unhandled exception", e.ExceptionObject as Exception);
+            Services.AppLog.Info("App started");
         }
 
         private void InitializePhoneApplication()

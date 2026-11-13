@@ -81,6 +81,7 @@ namespace JellyfinPlayer
             }
             catch (Exception ex)
             {
+                Services.AppLog.Error("Download of " + downloadingItemId, ex);
                 if (_item != null && _item.Id == downloadingItemId) ErrorText.Text = Services.Localized.DescribeError(ex);
             }
             finally

@@ -62,6 +62,7 @@ namespace JellyfinPlayer
             {
                 var found = await UdpServerDiscovery.DiscoverAsync(2500);
 
+                AppLog.Info("Discovery found " + (found == null ? 0 : found.Count) + " server(s)");
                 if (found == null || found.Count == 0)
                 {
                     DiscoveryStatus.Text = Localized.Text("DiscoveryNone");
@@ -119,16 +120,23 @@ namespace JellyfinPlayer
                 var info = await client.GetServerInfoAsync();
                 if (info == null) throw new JellyfinException(Localized.Text("StatusNotJellyfin"), 0);
 
+                // An older server reads the legacy auth spellings; 12 refuses them.
+                bool legacy = ServerCompatibility.IsLegacy(info.Version);
+                urls.LegacyAuth = legacy;
+                AppLog.Info("Server " + urls.BaseUrl + " version " + info.Version + (legacy ? " (legacy auth)" : ""));
+
                 var result = await client.AuthenticateAsync(UserBox.Text.Trim(), PassBox.Password);
                 if (result == null || string.IsNullOrEmpty(result.AccessToken))
                 {
+                    AppLog.Error("Login refused for " + UserBox.Text.Trim() + " on " + urls.BaseUrl);
                     StatusText.Text = Localized.Text("StatusWrongCredentials");
                     return;
                 }
 
                 // The name is what the picker shows, so it is stored with the token.
                 session.SignIn(urls.BaseUrl, client.UserId, result.User == null ? null : result.User.Name,
-                               client.AccessToken, client.ServerId, info.ServerName);
+                               client.AccessToken, client.ServerId, info.ServerName, info.Version);
+                AppLog.Info("Logged in as " + UserBox.Text.Trim());
 
                 // Entering a different account must not leave the previous one's
                 // screens in the back stack.
@@ -137,10 +145,12 @@ namespace JellyfinPlayer
             }
             catch (JellyfinException ex)
             {
+                AppLog.Error("Login failed", ex);
                 StatusText.Text = ex.StatusCode == 401 ? Localized.Text("StatusWrongCredentials") : Localized.DescribeError(ex);
             }
             catch (Exception ex)
             {
+                AppLog.Error("Login failed", ex);
                 StatusText.Text = Localized.DescribeError(ex);
             }
             finally

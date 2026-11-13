@@ -66,6 +66,15 @@ never produces one), `TicksTests.FormatSpan*` (the elapsed/total clock), and
 `PlayerSurfaceTests` (entering and leaving the full-page player, the screen staying awake
 while playing and not while paused, and `RestoreAll` putting the system tray, portrait
 rotation and the screen timeout back however the screen was left).
+## Reading the app log
+
+On the phone the app writes `logs\app.log` inside its isolated storage: start, unhandled
+exceptions, discovery, login (server version and auth generation), Home sections,
+playback and downloads. Retrieve it with the isolated storage tool of your choice
+(for example the Windows Phone Power Tools file browser, or `IsolatedStorageFile`
+from a debug session) and read the newest lines first. The file is capped at about
+128 KB, so it cannot crowd out the downloads folder.
+
 `Services/SilverlightPlayerShell.cs` is the Windows Phone binding of the same interface and
 is verified by the build plus the checklist below.
 

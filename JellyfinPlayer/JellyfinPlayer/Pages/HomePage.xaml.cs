@@ -57,6 +57,7 @@ namespace JellyfinPlayer
                     Services.NavigationService.Navigate(typeof(MainPage), session.ActiveAccount);
                     return;
                 }
+                Services.AppLog.Error("Home views", ex);
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
 
@@ -73,6 +74,7 @@ namespace JellyfinPlayer
                     Services.NavigationService.Navigate(typeof(MainPage), session.ActiveAccount);
                     return;
                 }
+                Services.AppLog.Error("Home resume", ex);
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
 
@@ -89,6 +91,7 @@ namespace JellyfinPlayer
                     Services.NavigationService.Navigate(typeof(MainPage), session.ActiveAccount);
                     return;
                 }
+                Services.AppLog.Error("Home next up", ex);
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
 
@@ -105,6 +108,7 @@ namespace JellyfinPlayer
                     Services.NavigationService.Navigate(typeof(MainPage), session.ActiveAccount);
                     return;
                 }
+                Services.AppLog.Error("Home playlists", ex);
                 ErrorText.Text = Services.Localized.DescribeError(ex);
             }
 

@@ -171,6 +171,7 @@ namespace JellyfinPlayer
             }
             catch (Exception ex)
             {
+                AppLog.Error("Playback start for " + _item.Id, ex);
                 SetBuffering(false);
                 ErrorText.Text = Localized.DescribeError(ex);
                 DirectButton.Visibility = _plan != null && _plan.DirectFallbackUri != null ? Visibility.Visible : Visibility.Collapsed;
@@ -271,6 +272,8 @@ namespace JellyfinPlayer
                 return;
             }
 
+            AppLog.Error("Playback failed for " + _item.Id,
+                         e.ErrorException == null ? null : e.ErrorException);
             string message = e.ErrorException != null && e.ErrorException.Message != null
                 ? e.ErrorException.Message
                 : Localized.Text("UnknownError");

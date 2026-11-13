@@ -33,7 +33,8 @@ namespace JellyfinPlayer.Shared
 
         // Logging in as the same user on the same server refreshes that entry
         // instead of adding a second one.
-        public AccountDto AddOrUpdate(string baseUrl, string userId, string userName, string token, string serverId, string serverName)
+        public AccountDto AddOrUpdate(string baseUrl, string userId, string userName, string token, string serverId, string serverName,
+                                      string serverVersion = null)
         {
             string normalized = Normalize(baseUrl);
             var account = Find(normalized, userId);
@@ -48,6 +49,7 @@ namespace JellyfinPlayer.Shared
             account.AccessToken = token;
             account.ServerId = serverId;
             if (!string.IsNullOrEmpty(serverName)) account.ServerName = serverName;
+            if (!string.IsNullOrEmpty(serverVersion)) account.ServerVersion = serverVersion;
             _activeId = account.Id;
             Save();
             return account;

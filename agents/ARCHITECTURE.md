@@ -76,6 +76,22 @@ messages are produced by the pure `HttpTransport.MapException`.
   percentage rules. `Services/DownloadStore.cs` keeps them in isolated storage and
   `Services/DownloadService.cs` copies the progressive MP4 into it.
 
+## Server generations
+
+`Shared/ServerCompatibility.cs` decides which auth spellings a request uses. The
+login stores the version `/System/Info/Public` reported in `AccountDto.ServerVersion`:
+a server older than 12 gets the `api_key` query parameter and the
+`X-Emby-Authorization` header, 12 and later get `ApiKey` and `Authorization` only
+(12 refuses the legacy pair). An unknown version is treated as modern.
+
+## Logging
+
+`Services/AppLog.cs` appends timestamped lines to `logs\app.log` in isolated storage
+(about 128 KB, then it keeps the newest half) and mirrors them to the debugger. The
+app logs its start, unhandled exceptions, discovery and login results, Home
+section failures, playback failures and download failures. Reading it back is a
+device-side file read of isolated storage; `AppLog.Read()` returns the whole file.
+
 ## Data flow
 
 `PhoneApplicationPage.OnNavigatedTo` → `AppSession.Current.CreateClient()` → `JellyfinApiClient`

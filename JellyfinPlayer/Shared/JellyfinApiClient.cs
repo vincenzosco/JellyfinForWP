@@ -22,12 +22,16 @@ namespace JellyfinPlayer.Shared
         }
 
         // Both go out as "Authorization: MediaBrowser ...", the one header name Jellyfin
-        // 12 still reads (see JellyfinAuthHeader). The legacy X-Emby-* pair is gone:
-        // sending it is what made login fail with "request.App is null" on 12.x.
+        // 12 still reads (see JellyfinAuthHeader). An older server also gets the legacy
+        // X-Emby-Authorization name: 12 refuses it, 10.x still expects it on some paths.
         private IDictionary<string, string> TokenHeaders()
         {
             var h = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(AccessToken)) h["Authorization"] = JellyfinAuthHeader.WithToken(AccessToken, _deviceId);
+            if (!string.IsNullOrEmpty(AccessToken))
+            {
+                h["Authorization"] = JellyfinAuthHeader.WithToken(AccessToken, _deviceId);
+                if (_urls.LegacyAuth) h[JellyfinAuthHeader.LegacyHeaderName] = h["Authorization"];
+            }
             return h;
         }
 
@@ -35,6 +39,7 @@ namespace JellyfinPlayer.Shared
         {
             var h = new Dictionary<string, string>();
             h["Authorization"] = JellyfinAuthHeader.Identify(_deviceId);
+            if (_urls.LegacyAuth) h[JellyfinAuthHeader.LegacyHeaderName] = h["Authorization"];
             return h;
         }
 

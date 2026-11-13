@@ -9,6 +9,10 @@ namespace JellyfinPlayer.Shared
         public string BaseUrl { get; set; }
         public string Token { get; set; }
 
+        // Set for a server older than 12, which knows the api_key spelling and
+        // not ApiKey. Chosen once at login, from the server's reported version.
+        public bool LegacyAuth { get; set; }
+
         public JellyfinUrls(string baseUrl, string token = null)
         {
             BaseUrl = (baseUrl ?? string.Empty).TrimEnd('/');
@@ -27,7 +31,8 @@ namespace JellyfinPlayer.Shared
         private string WithKey(string url)
         {
             if (string.IsNullOrEmpty(Token)) return url;
-            return url + (url.Contains("?") ? "&" : "?") + "ApiKey=" + Uri.EscapeDataString(Token);
+            string parameter = LegacyAuth ? "api_key=" : "ApiKey=";
+            return url + (url.Contains("?") ? "&" : "?") + parameter + Uri.EscapeDataString(Token);
         }
 
         public string SystemInfoPublic()
