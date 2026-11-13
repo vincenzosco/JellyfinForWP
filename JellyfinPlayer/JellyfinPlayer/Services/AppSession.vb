@@ -1,14 +1,18 @@
 Imports System
 Imports System.Collections.Generic
-Imports Windows.Storage
+Imports System.Globalization
 Imports JellyfinPlayer.Shared
+Imports System.IO.IsolatedStorage
 
 Namespace Services
     ' What the pages see: the active account plus the device-wide settings. The
     ' accounts themselves live in the AccountStore, so a page that only ever
-    ' calls CreateClient() does not know how many logins are saved.
+    ' calls CreateClient() does not know how many logins are saved. Silverlight
+    ' keeps the values in IsolatedStorageSettings; every read/write is serialised
+    ' because that collection is not thread-safe.
     Public Class AppSession
         Private Shared _current As AppSession
+        Private Shared ReadOnly Sync As New Object()
 
         Public Shared ReadOnly Property Current As AppSession
             Get
@@ -84,55 +88,67 @@ Namespace Services
         End Property
 
         Public Sub Load()
-            Dim s = ApplicationData.Current.LocalSettings.Values
-            DeviceId = ReadString(s, KDeviceId)
-            If String.IsNullOrEmpty(DeviceId) Then
-                DeviceId = Guid.NewGuid().ToString("N")
-                s(KDeviceId) = DeviceId
-            End If
+            Dim s = IsolatedStorageSettings.ApplicationSettings
+            SyncLock Sync
+                DeviceId = ReadString(s, KDeviceId)
+                If String.IsNullOrEmpty(DeviceId) Then
+                    DeviceId = Guid.NewGuid().ToString("N")
+                    s(KDeviceId) = DeviceId
+                End If
 
-            Dim raw As Object = Nothing
-            If s.TryGetValue(KBitrate, raw) AndAlso raw IsNot Nothing Then
-                PreferredBitrate = CInt(raw)
-            Else
-                PreferredBitrate = DeviceProfileBuilder.DefaultBitrate
-            End If
+                Dim raw As Object = Nothing
+                If s.TryGetValue(KBitrate, raw) AndAlso raw IsNot Nothing Then
+                    PreferredBitrate = CInt(raw)
+                Else
+                    PreferredBitrate = DeviceProfileBuilder.DefaultBitrate
+                End If
 
-            ' An upgrade arrives with four loose keys and no document.
-            _store.MigrateFromLegacy(ReadString(s, KLegacyBaseUrl), ReadString(s, KLegacyAccessToken),
-                                     ReadString(s, KLegacyUserId), ReadString(s, KLegacyServerId))
-            For Each key In New String() {KLegacyBaseUrl, KLegacyAccessToken, KLegacyUserId, KLegacyServerId}
-                If s.ContainsKey(key) Then s.Remove(key)
-            Next
+                ' An upgrade arrives with four loose keys and no document.
+                _store.MigrateFromLegacy(ReadString(s, KLegacyBaseUrl), ReadString(s, KLegacyAccessToken),
+                                         ReadString(s, KLegacyUserId), ReadString(s, KLegacyServerId))
+                For Each key In New String() {KLegacyBaseUrl, KLegacyAccessToken, KLegacyUserId, KLegacyServerId}
+                    If s.Contains(key) Then s.Remove(key)
+                Next
+                s.Save()
+            End SyncLock
         End Sub
 
         Public Sub Save()
-            Dim s = ApplicationData.Current.LocalSettings.Values
-            s(KDeviceId) = DeviceId
-            s(KBitrate) = PreferredBitrate
+            Dim s = IsolatedStorageSettings.ApplicationSettings
+            SyncLock Sync
+                s(KDeviceId) = DeviceId
+                s(KBitrate) = PreferredBitrate
+                s.Save()
+            End SyncLock
             _store.Save()
         End Sub
 
         ' A successful login: the same server and user refreshes that entry.
         Public Function SignIn(baseUrl As String, userId As String, userName As String, token As String, serverId As String, serverName As String) As AccountDto
-            Return _store.AddOrUpdate(baseUrl, userId, userName, token, serverId, serverName)
+            Dim account = _store.AddOrUpdate(baseUrl, userId, userName, token, serverId, serverName)
+            Save()
+            Return account
         End Function
 
         Public Sub SwitchTo(id As String)
             _store.SetActive(id)
+            Save()
         End Sub
 
         ' Leaving an account keeps it (and its token) saved.
         Public Sub SignOut()
             _store.ClearActive()
+            Save()
         End Sub
 
         Public Sub RemoveAccount(id As String)
             _store.Remove(id)
+            Save()
         End Sub
 
         Public Sub SetUserName(id As String, userName As String)
             _store.SetUserName(id, userName)
+            Save()
         End Sub
 
         Public Function CreateClient() As JellyfinApiClient
