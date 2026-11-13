@@ -15,3 +15,44 @@ System.InvalidOperationException: Failed to navigate to /Pages/HomePage.xaml
    at System.Windows.Navigation.NavigationService.ContentLoader_BeginLoad_Callback(IAsyncResult result)
    at System.Windows.Navigation.PageResourceContentLoader.BeginLoad_OnUIThread(AsyncCallback userCallback, PageResourceContentLoaderAsyncResult result)
    at System.Windows.Navigation.PageResourceContentLoader.<>c__DisplayClass4.<BeginLoad>b__0(Object args)
+2026-11-13 14:43:38 INFO App started
+2026-11-13 14:43:38 INFO Discovery skipped: saved server http://192.168.0.108:8096
+2026-11-13 14:43:48 INFO Server http://192.168.0.108:8096 version 12.4.0
+2026-11-13 14:43:49 INFO Logged in as vincenzo
+2026-11-13 14:43:49 INFO Home page created
+2026-11-13 14:43:50 ERROR Navigation failed: /Pages/HomePage.xaml
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Windows.Markup.XamlParseException: Cannot add instance of type 'Microsoft.Phone.Shell.ApplicationBarMenuItem' to a collection of type 'System.Collections.IList'. [Line: 17 Position: 77] ---> System.InvalidOperationException: Text cannot be empty.
+   at Microsoft.Phone.Shell.ApplicationBarItemContainer.set_Text(String value)
+   at Microsoft.Phone.Shell.ApplicationBarItemContainer.UpdateProperties(Object sender, BoolEventArgs args)
+   at Microsoft.Phone.Shell.ApplicationBarMenuItemContainer.BeginAttachToAppBar()
+   at Microsoft.Phone.Shell.ApplicationBarItemList`1.Insert(Int32 index, TApplicationBarItem item)
+   at Microsoft.Phone.Shell.ApplicationBarItemList`1.System.Collections.IList.Add(Object value)
+   at MS.Internal.XamlManagedRuntimeRPInvokes.Add(XamlQualifiedObject& qoCollection, XamlPropertyToken inCollectionProperty, XamlQualifiedObject& inValue)
+   --- End of inner exception stack trace ---
+   at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
+   at JellyfinPlayer.HomePage.InitializeComponent()
+   at JellyfinPlayer.HomePage..ctor()
+   --- End of inner exception stack trace ---
+   at System.Windows.Navigation.PageResourceContentLoader.EndLoad(IAsyncResult asyncResult)
+   at System.Windows.Navigation.NavigationService.ContentLoader_BeginLoad_Callback(IAsyncResult result)
+2026-11-13 14:43:51 ERROR Unhandled exception
+System.InvalidOperationException: Failed to navigate to /Pages/HomePage.xaml ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Windows.Markup.XamlParseException: Cannot add instance of type 'Microsoft.Phone.Shell.ApplicationBarMenuItem' to a collection of type 'System.Collections.IList'. [Line: 17 Position: 77] ---> System.InvalidOperationException: Text cannot be empty.
+   at Microsoft.Phone.Shell.ApplicationBarItemContainer.set_Text(String value)
+   at Microsoft.Phone.Shell.ApplicationBarItemContainer.UpdateProperties(Object sender, BoolEventArgs args)
+   at Microsoft.Phone.Shell.ApplicationBarMenuItemContainer.BeginAttachToAppBar()
+   at Microsoft.Phone.Shell.ApplicationBarItemList`1.Insert(Int32 index, TApplicationBarItem item)
+   at Microsoft.Phone.Shell.ApplicationBarItemList`1.System.Collections.IList.Add(Object value)
+   at MS.Internal.XamlManagedRuntimeRPInvokes.Add(XamlQualifiedObject& qoCollection, XamlPropertyToken inCollectionProperty, XamlQualifiedObject& inValue)
+   --- End of inner exception stack trace ---
+   at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
+   at JellyfinPlayer.HomePage.InitializeComponent()
+   at JellyfinPlayer.HomePage..ctor()
+   --- End of inner exception stack trace ---
+   at System.Windows.Navigation.PageResourceContentLoader.EndLoad(IAsyncResult asyncResult)
+   at System.Windows.Navigation.NavigationService.ContentLoader_BeginLoad_Callback(IAsyncResult result)
+   --- End of inner exception stack trace ---
+   at JellyfinPlayer.App.RootFrame_NavigationFailed(Object sender, NavigationFailedEventArgs e)
+   at System.Windows.Navigation.NavigationService.RaiseNavigationFailed(Uri uri, Exception exception)
+   at System.Windows.Navigation.NavigationService.ContentLoader_BeginLoad_Callback(IAsyncResult result)
+   at System.Windows.Navigation.PageResourceContentLoader.BeginLoad_OnUIThread(AsyncCallback userCallback, PageResourceContentLoaderAsyncResult result)
+   at System.Windows.Navigation.PageResourceContentLoader.<>c__DisplayClass4.<BeginLoad>b__0(Object args)

@@ -59,6 +59,24 @@ namespace JellyfinPlayer.Core.Tests
         }
 
         [TestMethod]
+        public void Every_ApplicationBar_item_declared_in_XAML_has_text()
+        {
+            // The bar is built before the page's constructor body runs, and an item
+            // rejects an empty Text right there: the whole page then fails to load. An
+            // item whose text is localized has to be added in code instead.
+            foreach (var file in XamlFiles())
+            {
+                string text = File.ReadAllText(file);
+                foreach (Match m in Regex.Matches(text, "<shell:ApplicationBar(MenuItem|Button)\\b[^>]*>"))
+                {
+                    var value = Regex.Match(m.Value, "Text=\"([^\"]*)\"");
+                    Assert.IsTrue(value.Success && value.Groups[1].Value.Trim().Length > 0,
+                        Path.GetFileName(file) + " declares an application bar item without Text; add it in code with the localized string");
+                }
+            }
+        }
+
+        [TestMethod]
         public void Every_StaticResource_has_an_xKey_in_the_same_file()
         {
             // Windows Phone supplies its theme brushes/fonts (Phone* keys) at runtime;
