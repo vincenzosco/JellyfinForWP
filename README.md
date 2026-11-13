@@ -19,7 +19,7 @@
 
 JellyfinPlayer connects to a Jellyfin server from a Windows Phone 8.1 device. It is a native Windows Phone Silverlight 8.1 app (`.xap`), not a Windows Phone Store/WinRT app. It needs a reachable Jellyfin server; it does not include one.
 
-This repository has no `LICENSE` file, so reuse and redistribution terms are not stated here.
+JellyfinPlayer is released under the [MIT License](LICENSE).
 
 ## What it does
 
@@ -141,3 +141,9 @@ More detail:
 - [Jellyfin API usage](agents/JELLYFIN_API.md)
 - [Maintenance and limitations](agents/MAINTENANCE.md)
 - [Coding conventions](agents/CONVENTIONS.md)
+
+## License
+
+MIT — see [LICENSE](LICENSE). You may use, modify, and redistribute the app,
+including commercially, as long as the copyright notice and the permission
+notice stay with it. The software comes with no warranty.
