@@ -9,14 +9,14 @@ namespace JellyfinPlayer.Core.Tests
         [TestMethod]
         public void Identify_names_the_client_before_a_token_exists()
         {
-            Assert.AreEqual("MediaBrowser Client=\"JellyfinPlayer\", Device=\"WindowsPhone\", DeviceId=\"dev1\", Version=\"1.0.0\"",
+            Assert.AreEqual("MediaBrowser Client=\"JellyfinPlayer\", Device=\"Windows Phone 8\", DeviceId=\"dev1\", Version=\"1.2.1.4\"",
                             JellyfinAuthHeader.Identify("dev1"));
         }
 
         [TestMethod]
         public void WithToken_carries_the_token_along_with_the_identification()
         {
-            Assert.AreEqual("MediaBrowser Token=\"TOK\", Client=\"JellyfinPlayer\", Device=\"WindowsPhone\", DeviceId=\"dev1\", Version=\"1.0.0\"",
+            Assert.AreEqual("MediaBrowser Token=\"TOK\", Client=\"JellyfinPlayer\", Device=\"Windows Phone 8\", DeviceId=\"dev1\", Version=\"1.2.1.4\"",
                             JellyfinAuthHeader.WithToken("TOK", "dev1"));
         }
 

@@ -14,8 +14,10 @@ namespace JellyfinPlayer.Shared
         public const string LegacyHeaderName = "X-Emby-Authorization";
 
         public const string ClientName = "JellyfinPlayer";
-        public const string DeviceName = "WindowsPhone";
-        public const string ClientVersion = "1.0.0";
+        // Shown as "Device" in the server dashboard, so it says what the phone is.
+        public const string DeviceName = "Windows Phone 8";
+        // Kept equal to the manifest version, so the dashboard's app version is real.
+        public const string ClientVersion = "1.2.1.4";
 
         // Identifies the client before a token exists, i.e. for login.
         public static string Identify(string deviceId)

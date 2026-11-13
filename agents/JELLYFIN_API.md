@@ -9,7 +9,7 @@ Login sends:
 
 ```
 POST /Users/AuthenticateByName
-Authorization: MediaBrowser Client="JellyfinPlayer", Device="WindowsPhone", DeviceId="<guid>", Version="1.0.0"
+Authorization: MediaBrowser Client="JellyfinPlayer", Device="Windows Phone 8", DeviceId="<guid>", Version="1.2.1.4"
 { "Username": "<user>", "Pw": "<password>" }
 ```
 
